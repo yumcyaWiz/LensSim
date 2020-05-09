@@ -51,6 +51,10 @@ class Lens {
       Real t0 = -b - std::sqrt(D);
       Real t1 = -b + std::sqrt(D);
       Real t = curvature_radius * ray.direction.z() > 0 ? t0 : t1;
+      Vec3 hitPos = ray(t);
+
+      Real r = hitPos.x() * hitPos.x() + hitPos.y() * hitPos.y();
+      if (r > aperture_radius * aperture_radius) return false;
 
       res.t = t;
       res.hitPos = ray(t);
