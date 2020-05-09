@@ -9,7 +9,7 @@
 
 using namespace Prl2;
 
-Vec3 alignNormal(const Vec3& v, const Vec3& n) {
+inline Vec3 alignNormal(const Vec3& v, const Vec3& n) {
   return dot(v, n) < 0 ? n : -n;
 }
 
