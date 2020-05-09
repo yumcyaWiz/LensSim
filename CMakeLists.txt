@@ -11,6 +11,7 @@ endif()
 find_package(Threads REQUIRED)
 
 add_executable(main src/main.cpp)
+target_sources(main PUBLIC src/parallel.cpp)
 
 add_subdirectory(ext)
 
