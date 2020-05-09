@@ -6,8 +6,8 @@
 #include <cmath>
 #include <iostream>
 
-#include "core/constant.h"
-#include "core/type.h"
+#include "constant.h"
+#include "type.h"
 
 namespace Prl2 {
 
