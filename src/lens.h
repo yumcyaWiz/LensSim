@@ -9,6 +9,10 @@
 
 using namespace Prl2;
 
+Vec3 alignNormal(const Vec3& v, const Vec3& n) {
+  return dot(v, n) < 0 ? n : -n;
+}
+
 class Lens {
  public:
   unsigned int index;
@@ -36,7 +40,7 @@ class Lens {
 
       res.t = t;
       res.hitPos = ray(t);
-      res.hitNormal = Vec3(0, 0, -1);
+      res.hitNormal = alignNormal(ray.direction, Vec3(0, 0, -1));
       return true;
     }
     // spherical lens
@@ -58,7 +62,9 @@ class Lens {
 
       res.t = t;
       res.hitPos = ray(t);
-      res.hitNormal = normalize(res.hitPos - center);
+      res.hitNormal =
+          alignNormal(ray.direction, normalize(res.hitPos - center));
+      return true;
     }
   };
 };
