@@ -1,9 +1,10 @@
 #include <iostream>
 
+// ext
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
+
+// prl2
 #include "parallel.h"
 
-int main() {
-  Prl2::Parallel parallel;
-  parallel.parallelFor1D(
-      [](unsigned int i) { std::cout << "asdf" << std::endl; }, 4, 4);
-}
+int main() { json j; }
