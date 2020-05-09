@@ -1,5 +1,5 @@
-#ifndef _LENS_H
-#define _LENS_H
+#ifndef _LENS_ELEMENT_H
+#define _LENS_ELEMENT_H
 
 #include <cmath>
 

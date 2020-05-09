@@ -8,7 +8,7 @@ using json = nlohmann::json;
 #include "parallel.h"
 
 // LensSym
-#include "lens.h"
+#include "lens-element.h"
 
 int main() {
   Ray ray(Vec3(0, 0.5, 0), Vec3(0, 0, 1));
