@@ -15,16 +15,17 @@ find_package(Threads REQUIRED)
 add_executable(main src/main.cpp)
 
 # compile settings
-target_compile_features(main PUBLIC cxx_std_17)
+target_compile_features(main PRIVATE cxx_std_17)
 set_target_properties(main PROPERTIES CXX_EXTENSIONS OFF)
 
 # src
-target_sources(main PUBLIC src/parallel.cpp)
+target_sources(main PRIVATE src/parallel.cpp)
 
 # ext
 add_subdirectory(ext)
 
 # include and link
-target_include_directories(main PUBLIC src)
-target_link_libraries(main PUBLIC Threads::Threads)
-target_link_libraries(main PUBLIC pool)
+target_include_directories(main PRIVATE src)
+target_link_libraries(main PRIVATE Threads::Threads)
+target_link_libraries(main PRIVATE pool)
+target_link_libraries(main PRIVATE nlohmann_json::nlohmann_json)
