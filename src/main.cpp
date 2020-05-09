@@ -11,12 +11,13 @@ using json = nlohmann::json;
 #include "lens.h"
 
 int main() {
-  Ray ray(Vec3(0, 0, 0), Vec3(0, 0, 1));
-  Lens lens(0, 1, 1, 1);
+  Ray ray(Vec3(0, 0.5, 0), Vec3(0, 0, 1));
+  Lens lens(0, 1, 1, 1, 1);
   lens.z = 10;
   Hit res;
   if (lens.intersect(ray, res)) {
-    std::cout << res.hitPos << std::endl;
+    std::cout << "hit" << std::endl;
+    std::cout << res.t << std::endl;
   }
   return 0;
 }
