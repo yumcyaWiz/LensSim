@@ -9,6 +9,7 @@ using json = nlohmann::json;
 
 // LensSym
 #include "lens-element.h"
+#include "lens-system.h"
 
 int main() {
   Ray ray(Vec3(0, 0.5, 0), Vec3(0, 0, 1));

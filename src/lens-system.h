@@ -37,7 +37,45 @@ class LensSystem {
  public:
   std::vector<LensElement> elements;
 
+  // TODO: load lens-system from json
   LensSystem(const std::string& filename){};
+
+  bool raytrace_from_object(const Ray& ray_in, Ray& ray_out,
+                            bool reflection = false) const {
+    int element_index = -1;
+    Ray ray = ray_in;
+    Real ior = 1.0f;
+
+    while (true) {
+      element_index += ray.direction.z() > 0 ? 1 : -1;
+      if (element_index < 0 || element_index >= elements.size()) break;
+      const LensElement* element = &elements[element_index];
+
+      if (const Aperture* aperture = dynamic_cast<const Aperture*>(element)) {
+        Hit res;
+        if (aperture->intersect(ray, res)) {
+          ray = Ray(res.hitPos, ray.direction);
+          ior = 1.0f;
+        } else {
+          return false;
+        }
+      } else if (const Lens* lens = dynamic_cast<const Lens*>(element)) {
+        Hit res;
+        if (lens->intersect(ray, res)) {
+          if (reflection) {
+            // TODO: implement this
+          } else {
+            Vec3 next_direction;
+            if (!refract(-ray.direction, next_direction, res.hitNormal, ior,
+                         next_ior))
+              return false;
+          }
+        } else {
+          return false;
+        }
+      }
+    }
+  };
 };
 
 #endif

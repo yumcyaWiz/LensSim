@@ -5,6 +5,7 @@
 
 #include "hit.h"
 #include "ray.h"
+#include "vec2.h"
 #include "vec3.h"
 
 using namespace Prl2;
