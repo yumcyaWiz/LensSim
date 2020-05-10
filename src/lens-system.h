@@ -1,6 +1,7 @@
 #ifndef _LENS_SYSTEM_H
 #define _LENS_SYSTEM_H
 
+#include <algorithm>
 #include <cmath>
 #include <fstream>
 #include <iostream>
@@ -57,9 +58,37 @@ class LensSystem {
     JSON json;
     stream >> json;
 
+    // push lens elements
     for (const auto& [key, value] : json.items()) {
-      std::cout << key << std::endl;
+      // unit conversion from [mm] to [m]
+      const unsigned int index = value["index"].get<unsigned int>();
+      const Real curvature_radius =
+          value["curvature_radius"].get<Real>() * 1e-3f;
+      const Real thickness = value["thickness"].get<Real>() * 1e-3f;
+      const Real ior = value["eta"].get<Real>();
+      const Real aperture_radius =
+          0.5f * value["aperture_diameter"].get<Real>() * 1e-3f;
+
+      // Aperture
+      if (curvature_radius == 0) {
+        auto element =
+            std::make_shared<Aperture>(index, aperture_radius, thickness);
+        elements.push_back(element);
+      }
+      // Lens
+      else {
+        auto element = std::make_shared<Lens>(index, aperture_radius, thickness,
+                                              curvature_radius, ior);
+        elements.push_back(element);
+      }
     }
+
+    // sort lens elements by index
+    std::sort(elements.begin(), elements.end(),
+              [](const std::shared_ptr<LensElement>& x1,
+                 const std::shared_ptr<LensElement>& x2) {
+                return x1->index < x2->index;
+              });
 
     return true;
   };
