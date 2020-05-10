@@ -12,7 +12,7 @@ using json = nlohmann::json;
 
 int main() {
   LensSystem lsys;
-  lsys.loadJSON("")
+  lsys.loadJSON("../data/dgauss.50mm.json");
 
-      return 0;
+  return 0;
 }

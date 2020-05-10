@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "nlohmann/json.hpp"
-using json = nlohmann::json;
+using JSON = nlohmann::json;
 
 #include "lens-element.h"
 
@@ -53,10 +53,12 @@ class LensSystem {
     }
 
     // parse JSON
-    json j;
-    stream >> j;
+    JSON json;
+    stream >> json;
 
-    std::cout << "a" << std::endl;
+    for (const auto& [key, value] : json.items()) {
+      std::cout << key << std::endl;
+    }
 
     return true;
   };
