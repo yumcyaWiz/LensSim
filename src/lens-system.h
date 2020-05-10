@@ -53,28 +53,47 @@ class LensSystem {
 
       if (const Aperture* aperture = dynamic_cast<const Aperture*>(element)) {
         Hit res;
-        if (aperture->intersect(ray, res)) {
-          ray = Ray(res.hitPos, ray.direction);
-          ior = 1.0f;
-        } else {
-          return false;
-        }
+        if (!aperture->intersect(ray, res)) return false;
+        ray = Ray(res.hitPos, ray.direction);
+        ior = 1.0f;
       } else if (const Lens* lens = dynamic_cast<const Lens*>(element)) {
+        // Compute Next Element
+        const int next_element_index =
+            ray.direction.z() > 0 ? element_index : element_index - 1;
+        const LensElement* next_element = &elements[element_index + 1];
+
+        // Compute Next Element IOR
+        Real next_ior = 0;
+        if (const Aperture* next_aperture =
+                dynamic_cast<const Aperture*>(next_element)) {
+          next_ior = 1.0f;
+        } else if (const Lens* next_lens =
+                       dynamic_cast<const Lens*>(next_element)) {
+          next_ior = next_lens->ior;
+        }
+
+        // Compute Intersection with Lens
         Hit res;
-        if (lens->intersect(ray, res)) {
-          if (reflection) {
-            // TODO: implement this
-          } else {
-            Vec3 next_direction;
-            if (!refract(-ray.direction, next_direction, res.hitNormal, ior,
-                         next_ior))
-              return false;
-          }
+        if (!lens->intersect(ray, res)) return false;
+
+        // Refract and Reflect
+        if (reflection) {
+          // TODO: implement this
         } else {
-          return false;
+          Vec3 next_direction;
+          if (!refract(-ray.direction, next_direction, res.hitNormal, ior,
+                       next_ior))
+            return false;
+
+          // Set Next Ray
+          ray = Ray(res.hitPos, next_direction);
         }
       }
     }
+
+    ray_out = ray;
+
+    return true;
   };
 };
 
