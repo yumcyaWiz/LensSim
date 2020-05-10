@@ -45,7 +45,7 @@ class LensSystem {
   std::vector<std::shared_ptr<LensElement>> elements;
 
   Real object_focal_z;
-  Real image_focal_z;
+  Real object_principal_z;
   Real image_focal_z;
   Real image_principal_z;
 
@@ -115,18 +115,26 @@ class LensSystem {
     Real ior = 1.0f;
 
     while (true) {
+      // update element index
       element_index += ray.direction.z() > 0 ? 1 : -1;
       if (element_index < 0 || element_index >= elements.size()) break;
       const auto element = elements[element_index];
 
+      // Aperture
       if (const std::shared_ptr<Aperture> aperture =
               std::dynamic_pointer_cast<Aperture>(element)) {
         Hit res;
         if (!aperture->intersect(ray, res)) return false;
+
+        // Update ray
         ray = Ray(res.hitPos, ray.direction);
+
+        // Update ior
         ior = 1.0f;
-      } else if (const std::shared_ptr<Lens> lens =
-                     std::dynamic_pointer_cast<Lens>(element)) {
+      }
+      // Lens
+      else if (const std::shared_ptr<Lens> lens =
+                   std::dynamic_pointer_cast<Lens>(element)) {
         // Compute Next Element
         const int next_element_index =
             ray.direction.z() > 0 ? element_index : element_index - 1;
@@ -134,12 +142,9 @@ class LensSystem {
             elements[element_index + 1];
 
         // Compute Next Element IOR
-        Real next_ior = 0;
-        if (const std::shared_ptr<Aperture> next_aperture =
-                std::dynamic_pointer_cast<Aperture>(next_element)) {
-          next_ior = 1.0f;
-        } else if (const std::shared_ptr<Lens> next_lens =
-                       std::dynamic_pointer_cast<Lens>(next_element)) {
+        Real next_ior = 1.0f;
+        if (const std::shared_ptr<Lens> next_lens =
+                std::dynamic_pointer_cast<Lens>(next_element)) {
           next_ior = next_lens->ior;
         }
 
@@ -158,6 +163,9 @@ class LensSystem {
 
           // Set Next Ray
           ray = Ray(res.hitPos, next_direction);
+
+          // update ior
+          ior = next_ior;
         }
       }
     }
