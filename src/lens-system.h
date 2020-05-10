@@ -44,6 +44,11 @@ class LensSystem {
  public:
   std::vector<std::shared_ptr<LensElement>> elements;
 
+  Real object_focal_z;
+  Real image_focal_z;
+  Real image_focal_z;
+  Real image_principal_z;
+
   LensSystem(const std::string& filename) {
     // load json
     loadJSON(filename);
