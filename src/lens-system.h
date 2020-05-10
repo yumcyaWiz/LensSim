@@ -58,7 +58,7 @@ class LensSystem {
     Real length = 0;
     for (auto itr = elements.rbegin(); itr != elements.rend(); itr++) {
       length += (*itr)->thickness;
-      (*itr)->z = length;
+      (*itr)->z = -length;
     }
   }
 
