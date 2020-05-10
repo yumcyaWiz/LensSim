@@ -52,7 +52,14 @@ class LensSystem {
   LensSystem(const std::string& filename) {
     // load json
     loadJSON(filename);
-  };
+
+    // compute z
+    Real length = 0;
+    for (auto itr = elements.rbegin(); itr != elements.rend(); itr++) {
+      length += (*itr)->thickness;
+      (*itr)->z = length;
+    }
+  }
 
   bool loadJSON(const std::string& filename) {
     // open file
