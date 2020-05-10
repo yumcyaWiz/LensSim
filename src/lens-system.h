@@ -42,8 +42,7 @@ class LensSystem {
  public:
   std::vector<LensElement> elements;
 
-  // TODO: load lens-system from json
-  LensSystem(const std::string& filename){};
+  LensSystem(){};
 
   bool loadJSON(const std::string& filename) {
     // open file

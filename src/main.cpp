@@ -8,17 +8,11 @@ using json = nlohmann::json;
 #include "parallel.h"
 
 // LensSym
-#include "lens-element.h"
 #include "lens-system.h"
 
 int main() {
-  Ray ray(Vec3(0, 0.5, 0), Vec3(0, 0, 1));
-  Lens lens(0, 1, 1, 1, 1);
-  lens.z = 10;
-  Hit res;
-  if (lens.intersect(ray, res)) {
-    std::cout << "hit" << std::endl;
-    std::cout << res.t << std::endl;
-  }
-  return 0;
+  LensSystem lsys;
+  lsys.loadJSON("")
+
+      return 0;
 }
