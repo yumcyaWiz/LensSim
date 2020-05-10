@@ -120,8 +120,6 @@ class LensSystem {
       element_index += ray.direction.z() > 0 ? 1 : -1;
       if (element_index < 0 || element_index >= elements.size()) break;
       const auto element = elements[element_index];
-      std::cout << element_index << std::endl;
-      std::cout << ray << std::endl;
 
       // Aperture
       if (const std::shared_ptr<Aperture> aperture =
@@ -142,7 +140,7 @@ class LensSystem {
         const int next_element_index =
             ray.direction.z() > 0 ? element_index : element_index - 1;
         const std::shared_ptr<LensElement> next_element =
-            elements[element_index + 1];
+            elements[next_element_index];
 
         // Compute Next Element IOR
         Real next_ior = 1.0f;
