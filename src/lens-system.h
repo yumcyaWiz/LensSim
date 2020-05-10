@@ -2,7 +2,12 @@
 #define _LENS_SYSTEM_H
 
 #include <cmath>
+#include <fstream>
+#include <iostream>
 #include <vector>
+
+#include "nlohmann/json.hpp"
+using json = nlohmann::json;
 
 #include "lens-element.h"
 
@@ -39,6 +44,23 @@ class LensSystem {
 
   // TODO: load lens-system from json
   LensSystem(const std::string& filename){};
+
+  bool loadJSON(const std::string& filename) {
+    // open file
+    std::ifstream stream(filename);
+    if (!stream) {
+      std::cerr << "failed to open " << filename << std::endl;
+      return false;
+    }
+
+    // parse JSON
+    json j;
+    stream >> j;
+
+    std::cout << "a" << std::endl;
+
+    return true;
+  };
 
   bool raytrace_from_object(const Ray& ray_in, Ray& ray_out,
                             bool reflection = false) const {
