@@ -93,8 +93,8 @@ class LensSystem {
     return true;
   };
 
-  bool raytrace_from_object(const Ray& ray_in, Ray& ray_out,
-                            bool reflection = false) const {
+  bool raytraceFromObject(const Ray& ray_in, Ray& ray_out,
+                          bool reflection = false) const {
     int element_index = -1;
     Ray ray = ray_in;
     Real ior = 1.0f;
