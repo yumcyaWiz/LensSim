@@ -4,6 +4,7 @@
 #include <cmath>
 #include <fstream>
 #include <iostream>
+#include <memory>
 #include <vector>
 
 #include "nlohmann/json.hpp"
@@ -40,7 +41,7 @@ inline bool refract(const Vec3& wi, Vec3& wt, const Vec3& n, const Real& ior1,
 
 class LensSystem {
  public:
-  std::vector<LensElement> elements;
+  std::vector<std::shared_ptr<LensElement>> elements;
 
   LensSystem(){};
 
@@ -72,26 +73,29 @@ class LensSystem {
     while (true) {
       element_index += ray.direction.z() > 0 ? 1 : -1;
       if (element_index < 0 || element_index >= elements.size()) break;
-      const LensElement* element = &elements[element_index];
+      const auto element = elements[element_index];
 
-      if (const Aperture* aperture = dynamic_cast<const Aperture*>(element)) {
+      if (const std::shared_ptr<Aperture> aperture =
+              std::dynamic_pointer_cast<Aperture>(element)) {
         Hit res;
         if (!aperture->intersect(ray, res)) return false;
         ray = Ray(res.hitPos, ray.direction);
         ior = 1.0f;
-      } else if (const Lens* lens = dynamic_cast<const Lens*>(element)) {
+      } else if (const std::shared_ptr<Lens> lens =
+                     std::dynamic_pointer_cast<Lens>(element)) {
         // Compute Next Element
         const int next_element_index =
             ray.direction.z() > 0 ? element_index : element_index - 1;
-        const LensElement* next_element = &elements[element_index + 1];
+        const std::shared_ptr<LensElement> next_element =
+            elements[element_index + 1];
 
         // Compute Next Element IOR
         Real next_ior = 0;
-        if (const Aperture* next_aperture =
-                dynamic_cast<const Aperture*>(next_element)) {
+        if (const std::shared_ptr<Aperture> next_aperture =
+                std::dynamic_pointer_cast<Aperture>(next_element)) {
           next_ior = 1.0f;
-        } else if (const Lens* next_lens =
-                       dynamic_cast<const Lens*>(next_element)) {
+        } else if (const std::shared_ptr<Lens> next_lens =
+                       std::dynamic_pointer_cast<Lens>(next_element)) {
           next_ior = next_lens->ior;
         }
 
