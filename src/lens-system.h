@@ -44,7 +44,10 @@ class LensSystem {
  public:
   std::vector<std::shared_ptr<LensElement>> elements;
 
-  LensSystem(){};
+  LensSystem(const std::string& filename) {
+    // load json
+    loadJSON(filename);
+  };
 
   bool loadJSON(const std::string& filename) {
     // open file

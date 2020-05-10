@@ -11,8 +11,7 @@ using json = nlohmann::json;
 #include "lens-system.h"
 
 int main() {
-  LensSystem lsys;
-  lsys.loadJSON("../data/dgauss.50mm.json");
+  LensSystem lsys("../data/dgauss.50mm.json");
 
   return 0;
 }
