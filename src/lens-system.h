@@ -6,6 +6,7 @@
 #include <fstream>
 #include <iostream>
 #include <memory>
+#include <string>
 #include <vector>
 
 #include "nlohmann/json.hpp"
@@ -85,7 +86,7 @@ class LensSystem {
           0.5f * value["aperture_diameter"].get<Real>() * 1e-3f;
 
       // Aperture
-      if (curvature_radius == 0) {
+      if (curvature_radius == 0.0f) {
         auto element =
             std::make_shared<Aperture>(index, aperture_radius, thickness);
         elements.push_back(element);
@@ -119,6 +120,8 @@ class LensSystem {
       element_index += ray.direction.z() > 0 ? 1 : -1;
       if (element_index < 0 || element_index >= elements.size()) break;
       const auto element = elements[element_index];
+      std::cout << element_index << std::endl;
+      std::cout << ray << std::endl;
 
       // Aperture
       if (const std::shared_ptr<Aperture> aperture =
@@ -167,6 +170,9 @@ class LensSystem {
           // update ior
           ior = next_ior;
         }
+      } else {
+        std::cerr << "invalid lens element" << std::endl;
+        return false;
       }
     }
 
