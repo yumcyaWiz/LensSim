@@ -109,9 +109,9 @@ class LensSystem {
     return true;
   };
 
-  bool raytraceFromObject(const Ray& ray_in, Ray& ray_out,
-                          bool reflection = false) const {
-    int element_index = -1;
+  bool raytrace(const Ray& ray_in, Ray& ray_out,
+                bool reflection = false) const {
+    int element_index = ray_in.direction.z() > 0 ? -1 : elements.size();
     Ray ray = ray_in;
     Real ior = 1.0f;
 
@@ -136,17 +136,19 @@ class LensSystem {
       // Lens
       else if (const std::shared_ptr<Lens> lens =
                    std::dynamic_pointer_cast<Lens>(element)) {
+        // Compute Next Element IOR
+        Real next_ior = 1.0f;
+
         // Compute Next Element
         const int next_element_index =
             ray.direction.z() > 0 ? element_index : element_index - 1;
-        const std::shared_ptr<LensElement> next_element =
-            elements[next_element_index];
-
-        // Compute Next Element IOR
-        Real next_ior = 1.0f;
-        if (const std::shared_ptr<Lens> next_lens =
-                std::dynamic_pointer_cast<Lens>(next_element)) {
-          next_ior = next_lens->ior;
+        if (next_element_index > 0) {
+          const std::shared_ptr<LensElement> next_element =
+              elements[next_element_index];
+          if (const std::shared_ptr<Lens> next_lens =
+                  std::dynamic_pointer_cast<Lens>(next_element)) {
+            next_ior = next_lens->ior;
+          }
         }
 
         // Compute Intersection with Lens
