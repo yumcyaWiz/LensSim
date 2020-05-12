@@ -52,7 +52,7 @@ class LensSystem {
 
   LensSystem(const std::string& filename) {
     // load json
-    loadJSON(filename);
+    if (!loadJSON(filename)) exit(EXIT_FAILURE);
 
     // compute z
     Real length = 0;
