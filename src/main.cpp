@@ -14,7 +14,7 @@ int main() {
   std::shared_ptr<Film> film = std::make_shared<Film>(512, 512);
   LensSystem lsys("../data/dgauss.50mm.json", film);
 
-  std::cout << lsys.computeExitPupilBound(Vec2(0, 0)) << std::endl;
+  lsys.computeExitPupilBounds();
 
   return 0;
 }
