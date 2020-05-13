@@ -255,7 +255,9 @@ class LensSystem {
     return true;
   }
 
-  bool computeExitPupilBound(const Vec2& p) const {
+  Bounds2 computeExitPupilBound(const Vec2& p) const {
+    Bounds2 bounds;
+
     const auto lastElement = elements.back();
     Ray ray_out;
     for (int i = 0; i < 1024; ++i) {
@@ -275,9 +277,11 @@ class LensSystem {
         if (!raytrace(ray_in, ray_out)) continue;
 
         // extend bounding box
-        // TODO: implement this
+        bounds = extendBounds(bounds, Vec2(samplePoint.x(), samplePoint.y()));
       }
     }
+
+    return bounds;
   }
 
   bool computeExitPupilBounds() {
