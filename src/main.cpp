@@ -11,17 +11,10 @@ using json = nlohmann::json;
 #include "lens-system.h"
 
 int main() {
-  // LensSystem lsys("../data/dgauss.50mm.json");
-  // lsys.focus(-1);
-  Film film(512, 512);
-  for (int i = 0; i < film.width; ++i) {
-    for (int j = 0; j < film.height; ++j) {
-      film.setPixel(i, j,
-                    Vec3(float(i) / film.width, float(j) / film.height, 1.0f));
-    }
-  }
+  std::shared_ptr<Film> film = std::make_shared<Film>(512, 512);
+  LensSystem lsys("../data/dgauss.50mm.json", film);
 
-  film.writePPM("output.ppm");
+  std::cout << lsys.computeExitPupilBound(Vec2(0, 0)) << std::endl;
 
   return 0;
 }
