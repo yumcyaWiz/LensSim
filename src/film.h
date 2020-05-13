@@ -29,6 +29,14 @@ class Film {
   }
 
   ~Film() { delete[] pixels; }
+
+  Vec3 getPixel(unsigned int i, unsigned int j) const {
+    return pixels[i + width * j];
+  }
+
+  void setPixel(unsigned int i, unsigned int j, const Vec3& c) {
+    pixels[i + width * j] = c;
+  }
 };
 
 #endif
