@@ -2,6 +2,8 @@
 #define _FILM_H
 
 #include <cmath>
+#include <fstream>
+#include <iostream>
 
 #include "vec3.h"
 
@@ -36,6 +38,25 @@ class Film {
 
   void setPixel(unsigned int i, unsigned int j, const Vec3& c) {
     pixels[i + width * j] = c;
+  }
+
+  void writePPM(const std::string& filename) const {
+    std::ofstream file(filename);
+    file << "P3" << std::endl;
+    file << width << " " << height << std::endl;
+    file << "255" << std::endl;
+
+    for (int j = 0; j < height; ++j) {
+      for (int i = 0; i < width; ++i) {
+        const Vec3 c = getPixel(i, j);
+        unsigned int r = static_cast<unsigned int>(255 * c.x());
+        unsigned int g = static_cast<unsigned int>(255 * c.y());
+        unsigned int b = static_cast<unsigned int>(255 * c.z());
+        file << r << " " << g << " " << b << std::endl;
+      }
+    }
+
+    file.close();
   }
 };
 
