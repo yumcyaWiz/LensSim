@@ -12,7 +12,10 @@
 #include "nlohmann/json.hpp"
 using JSON = nlohmann::json;
 
+#include "bounds2.h"
+#include "film.h"
 #include "lens-element.h"
+#include "parallel.h"
 
 using namespace Prl2;
 
@@ -43,6 +46,8 @@ inline bool refract(const Vec3& wi, Vec3& wt, const Vec3& n, const Real& ior1,
 
 class LensSystem {
  public:
+  std::shared_ptr<Film> film;
+
   std::vector<std::shared_ptr<LensElement>> elements;
 
   Real object_focal_z;
@@ -52,7 +57,12 @@ class LensSystem {
   Real image_principal_z;
   Real image_focal_length;
 
-  LensSystem(const std::string& filename) {
+  static constexpr unsigned int num_exit_pupil_bounds = 64;
+  static constexpr unsigned int num_exit_pupil_bounds_samples = 512;
+  std::vector<Bounds2> exit_pupil_bounds;
+
+  LensSystem(const std::string& filename, const std::shared_ptr<Film> _film)
+      : film(_film) {
     // load json
     if (!loadJSON(filename)) exit(EXIT_FAILURE);
 
@@ -65,6 +75,9 @@ class LensSystem {
 
     // compute cardinal points
     if (!computeCardinalPoints()) exit(EXIT_FAILURE);
+
+    // focus at z = -inf
+    focus(-100);
   }
 
   bool loadJSON(const std::string& filename) {
@@ -225,6 +238,72 @@ class LensSystem {
 
     // compute object focal length
     object_focal_length = object_focal_z - object_principal_z;
+
+    return true;
+  }
+
+  bool focus(Real focus_z) {
+    const Real delta =
+        0.5f * (object_principal_z - focus_z + image_principal_z -
+                std::sqrt((object_principal_z - focus_z - image_principal_z) *
+                          (object_principal_z - focus_z -
+                           4 * image_focal_length - image_principal_z)));
+
+    // move lens elements
+    for (auto& element : elements) {
+      element->z -= delta;
+    }
+
+    // recompute cardinal points
+    if (!computeCardinalPoints()) return false;
+
+    return true;
+  }
+
+  Bounds2 computeExitPupilBound(const Vec2& p) const {
+    Bounds2 bounds;
+
+    const auto lastElement = elements.back();
+    Ray ray_out;
+    for (int i = 0; i < num_exit_pupil_bounds_samples; ++i) {
+      for (int j = 0; j < num_exit_pupil_bounds_samples; ++j) {
+        // sample point on last element surface
+        const Real u = 2.0f * static_cast<Real>(i) / 1024 - 1.0f;
+        const Real v = 2.0f * static_cast<Real>(j) / 1024 - 1.0f;
+        const Vec3 samplePoint =
+            Vec3(lastElement->aperture_radius * u,
+                 lastElement->aperture_radius * v, lastElement->z);
+
+        // make ray
+        const Vec3 origin(p.x(), p.y(), 0);
+        const Ray ray_in(origin, normalize(samplePoint - origin));
+
+        // raytrace
+        if (!raytrace(ray_in, ray_out)) continue;
+
+        // extend bounding box
+        bounds = extendBounds(bounds, Vec2(samplePoint.x(), samplePoint.y()));
+      }
+    }
+
+    return bounds;
+  }
+
+  bool computeExitPupilBounds() {
+    exit_pupil_bounds.resize(num_exit_pupil_bounds);
+
+    Parallel parallel;
+
+    parallel.parallelFor1D(
+        [&](unsigned int idx) {
+          const Real r = static_cast<Real>(idx) / num_exit_pupil_bounds *
+                         film->diagonal_length;
+          exit_pupil_bounds[idx] = computeExitPupilBound(Vec2(0, r));
+
+          std::cout << "finished " << idx
+                    << "th computation of exit pupil bounds" << std::endl;
+        },
+        16, num_exit_pupil_bounds);
 
     return true;
   }
