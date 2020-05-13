@@ -1,0 +1,6 @@
+[submodule "ext/ThreadPool"]
+	path = ext/ThreadPool
+	url = git@github.com:progschj/ThreadPool.git
+[submodule "ext/json"]
+	path = ext/json
+	url = git@github.com:nlohmann/json.git
