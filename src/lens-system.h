@@ -12,6 +12,7 @@
 #include "nlohmann/json.hpp"
 using JSON = nlohmann::json;
 
+#include "bounds2.h"
 #include "film.h"
 #include "lens-element.h"
 
@@ -44,6 +45,8 @@ inline bool refract(const Vec3& wi, Vec3& wt, const Vec3& n, const Real& ior1,
 
 class LensSystem {
  public:
+  std::shared_ptr<Film> film;
+
   std::vector<std::shared_ptr<LensElement>> elements;
 
   Real object_focal_z;
@@ -53,7 +56,10 @@ class LensSystem {
   Real image_principal_z;
   Real image_focal_length;
 
-  LensSystem(const std::string& filename) {
+  std::vector<Bounds2> exit_pupil_bounds;
+
+  LensSystem(const std::string& filename, const std::shared_ptr<Film> _film)
+      : film(_film) {
     // load json
     if (!loadJSON(filename)) exit(EXIT_FAILURE);
 
@@ -249,8 +255,15 @@ class LensSystem {
   }
 
   bool computeExitPupilBounds() {
+    exit_pupil_bounds.resize(1024);
+
+    /*
     for (int idx = 0; idx < 1024; ++idx) {
+      Real r = static_cast<Real>(idx) / 1024 * film->diagonal_length;
+      exit_pupil_bounds[idx] = computeExitPupilBound(Vec2(0, r));
     }
+    */
+
     return false;
   }
 };
