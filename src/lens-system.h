@@ -57,6 +57,8 @@ class LensSystem {
   Real image_principal_z;
   Real image_focal_length;
 
+  static constexpr unsigned int num_exit_pupil_bounds = 100;
+  static constexpr unsigned int num_exit_pupil_bounds_samples = 1024;
   std::vector<Bounds2> exit_pupil_bounds;
 
   LensSystem(const std::string& filename, const std::shared_ptr<Film> _film)
@@ -263,8 +265,8 @@ class LensSystem {
 
     const auto lastElement = elements.back();
     Ray ray_out;
-    for (int i = 0; i < 1024; ++i) {
-      for (int j = 0; j < 1024; ++j) {
+    for (int i = 0; i < num_exit_pupil_bounds_samples; ++i) {
+      for (int j = 0; j < num_exit_pupil_bounds_samples; ++j) {
         // sample point on last element surface
         const Real u = 2.0f * static_cast<Real>(i) / 1024 - 1.0f;
         const Real v = 2.0f * static_cast<Real>(j) / 1024 - 1.0f;
@@ -288,14 +290,12 @@ class LensSystem {
   }
 
   bool computeExitPupilBounds() {
-    exit_pupil_bounds.resize(1024);
+    exit_pupil_bounds.resize(num_exit_pupil_bounds);
 
-    /*
-    for (int idx = 0; idx < 1024; ++idx) {
+    for (int idx = 0; idx < num_exit_pupil_bounds; ++idx) {
       Real r = static_cast<Real>(idx) / 1024 * film->diagonal_length;
       exit_pupil_bounds[idx] = computeExitPupilBound(Vec2(0, r));
     }
-    */
 
     return false;
   }
