@@ -77,7 +77,6 @@ class LensSystem {
       std::cerr << "failed to compute cardinal points" << std::endl;
       return false;
     }
-    std::cout << ray_out << std::endl;
 
     // compute image focal point
     Real t = -ray_out.origin.y() / ray_out.direction.y();
@@ -89,7 +88,24 @@ class LensSystem {
 
     // compute image focal length
     image_focal_length = image_focal_z - image_principal_z;
-    std::cout << image_focal_length << std::endl;
+
+    // raytrace from image plane
+    ray_in = Ray(Vec3(0, height, 0), Vec3(0, 0, -1));
+    if (!raytrace(ray_in, ray_out)) {
+      std::cerr << "failed to compute cardinal points" << std::endl;
+      return false;
+    }
+
+    // compute object focal point
+    t = -ray_out.origin.y() / ray_out.direction.y();
+    object_focal_z = ray_out(t).z();
+
+    // compute object principal point
+    t = -(ray_out.origin.y() - height) / ray_out.direction.y();
+    object_principal_z = ray_out(t).z();
+
+    // compute object focal length
+    object_focal_length = object_focal_z - object_principal_z;
 
     return true;
   }
