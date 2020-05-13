@@ -73,6 +73,9 @@ class LensSystem {
 
     // compute cardinal points
     if (!computeCardinalPoints()) exit(EXIT_FAILURE);
+
+    // focus at z = -inf
+    focus(-100);
   }
 
   bool loadJSON(const std::string& filename) {
