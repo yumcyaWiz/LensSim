@@ -12,6 +12,7 @@
 #include "nlohmann/json.hpp"
 using JSON = nlohmann::json;
 
+#include "film.h"
 #include "lens-element.h"
 
 using namespace Prl2;
@@ -245,10 +246,6 @@ class LensSystem {
     if (!computeCardinalPoints()) return false;
 
     return true;
-  }
-
-  bool computeExitPupilBounds() {
-    // TODO: implement this
   }
 };
 
