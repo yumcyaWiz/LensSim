@@ -228,6 +228,24 @@ class LensSystem {
 
     return true;
   }
+
+  bool focus(Real focus_z) {
+    const Real delta =
+        0.5f * (object_principal_z - focus_z + image_principal_z -
+                std::sqrt((object_principal_z - focus_z - image_principal_z) *
+                          (object_principal_z - focus_z -
+                           4 * image_focal_length - image_principal_z)));
+
+    // move lens elements
+    for (auto& element : elements) {
+      element->z -= delta;
+    }
+
+    // recompute cardinal points
+    if (!computeCardinalPoints()) return false;
+
+    return true;
+  };
 };
 
 #endif
