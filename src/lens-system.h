@@ -45,7 +45,6 @@ class LensSystem {
  public:
   std::vector<std::shared_ptr<LensElement>> elements;
 
-  Real length;
   Real object_focal_z;
   Real object_principal_z;
   Real object_focal_length;
@@ -58,7 +57,7 @@ class LensSystem {
     if (!loadJSON(filename)) exit(EXIT_FAILURE);
 
     // compute system length and z
-    length = 0;
+    Real length = 0;
     for (auto itr = elements.rbegin(); itr != elements.rend(); itr++) {
       length += (*itr)->thickness;
       (*itr)->z = -length;
@@ -78,6 +77,7 @@ class LensSystem {
       std::cerr << "failed to compute cardinal points" << std::endl;
       return false;
     }
+    std::cout << ray_out << std::endl;
 
     // compute image focal point
     Real t = -ray_out.origin.y() / ray_out.direction.y();
@@ -174,7 +174,7 @@ class LensSystem {
         // Compute Next Element
         const int next_element_index =
             ray.direction.z() > 0 ? element_index : element_index - 1;
-        if (next_element_index > 0) {
+        if (next_element_index >= 0) {
           const std::shared_ptr<LensElement> next_element =
               elements[next_element_index];
           if (const std::shared_ptr<Lens> next_lens =
