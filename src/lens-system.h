@@ -268,8 +268,10 @@ class LensSystem {
     for (int i = 0; i < num_exit_pupil_bounds_samples; ++i) {
       for (int j = 0; j < num_exit_pupil_bounds_samples; ++j) {
         // sample point on last element surface
-        const Real u = 2.0f * static_cast<Real>(i) / 1024 - 1.0f;
-        const Real v = 2.0f * static_cast<Real>(j) / 1024 - 1.0f;
+        const Real u =
+            2.0f * static_cast<Real>(i) / num_exit_pupil_bounds_samples - 1.0f;
+        const Real v =
+            2.0f * static_cast<Real>(j) / num_exit_pupil_bounds_samples - 1.0f;
         const Vec3 samplePoint =
             Vec3(lastElement->aperture_radius * u,
                  lastElement->aperture_radius * v, lastElement->z);
@@ -298,10 +300,11 @@ class LensSystem {
         [&](unsigned int idx) {
           const Real r = static_cast<Real>(idx) / num_exit_pupil_bounds *
                          film->diagonal_length;
-          exit_pupil_bounds[idx] = computeExitPupilBound(Vec2(0, r));
+          exit_pupil_bounds[idx] = computeExitPupilBound(Vec2(r, 0));
 
           std::cout << "finished " << idx
                     << "th computation of exit pupil bounds" << std::endl;
+          std::cout << exit_pupil_bounds[idx] << std::endl;
         },
         16, num_exit_pupil_bounds);
 
