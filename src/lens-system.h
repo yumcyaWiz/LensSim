@@ -245,7 +245,11 @@ class LensSystem {
     if (!computeCardinalPoints()) return false;
 
     return true;
-  };
+  }
+
+  bool computeExitPupilBounds() {
+    // TODO: implement this
+  }
 };
 
 #endif
