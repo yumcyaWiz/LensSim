@@ -247,6 +247,12 @@ class LensSystem {
 
     return true;
   }
+
+  bool computeExitPupilBounds() {
+    for (int idx = 0; idx < 1024; ++idx) {
+    }
+    return false;
+  }
 };
 
 #endif
