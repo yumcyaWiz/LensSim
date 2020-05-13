@@ -64,7 +64,7 @@ class LensSystem {
     }
 
     // compute cardinal points
-    computeCardinalPoints();
+    if (!computeCardinalPoints()) exit(EXIT_FAILURE);
   }
 
   bool loadJSON(const std::string& filename) {
