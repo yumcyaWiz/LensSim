@@ -1,6 +1,7 @@
 #ifndef _BOUNDS2_H
 #define _BOUNDS2_H
 #include <iostream>
+#include <limits>
 
 #include "vec2.h"
 
@@ -11,7 +12,9 @@ class Bounds2 {
   Vec2 p0;
   Vec2 p1;
 
-  Bounds2() {}
+  Bounds2()
+      : p0(Vec2(std::numeric_limits<Real>::max())),
+        p1(Vec2(std::numeric_limits<Real>::lowest())) {}
   Bounds2(const Vec2& _p0, const Vec2& _p1) : p0(_p0), p1(_p1) {}
 
   Real area() const { return (p1.x() - p0.x()) * (p1.y() - p0.y()); }
