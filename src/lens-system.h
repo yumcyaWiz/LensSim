@@ -57,7 +57,7 @@ class LensSystem {
   Real image_principal_z;
   Real image_focal_length;
 
-  static constexpr unsigned int num_exit_pupil_bounds = 100;
+  static constexpr unsigned int num_exit_pupil_bounds = 128;
   static constexpr unsigned int num_exit_pupil_bounds_samples = 1024;
   std::vector<Bounds2> exit_pupil_bounds;
 
@@ -292,10 +292,17 @@ class LensSystem {
   bool computeExitPupilBounds() {
     exit_pupil_bounds.resize(num_exit_pupil_bounds);
 
-    for (int idx = 0; idx < num_exit_pupil_bounds; ++idx) {
-      Real r = static_cast<Real>(idx) / 1024 * film->diagonal_length;
-      exit_pupil_bounds[idx] = computeExitPupilBound(Vec2(0, r));
-    }
+    Parallel parallel;
+
+    parallel.parallelFor1D(
+        [&](unsigned int idx) {
+          const Real r = static_cast<Real>(idx) / 1024 * film->diagonal_length;
+          exit_pupil_bounds[idx] = computeExitPupilBound(Vec2(0, r));
+
+          std::cout << "finished " << idx
+                    << "th computation of exit pupil bounds" << std::endl;
+        },
+        16, num_exit_pupil_bounds);
 
     return false;
   }
