@@ -13,6 +13,8 @@ class Bounds2 {
 
   Bounds2() {}
   Bounds2(const Vec2& _p0, const Vec2& _p1) : p0(_p0), p1(_p1) {}
+
+  Real area() const { return (p1.x() - p0.x()) * (p1.y() - p0.y()); }
 };
 
 inline Bounds2 extendBounds(const Bounds2& b, const Vec2& p) {
