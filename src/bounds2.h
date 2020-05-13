@@ -1,5 +1,7 @@
 #ifndef _BOUNDS2_H
 #define _BOUNDS2_H
+#include <iostream>
+
 #include "vec2.h"
 
 using namespace Prl2;
@@ -19,6 +21,11 @@ inline Bounds2 extendBounds(const Bounds2& b, const Vec2& p) {
   const Real p1x = std::max(b.p1.x(), p.x());
   const Real p1y = std::max(b.p1.y(), p.y());
   return Bounds2(Vec2(p0x, p0y), Vec2(p1x, p1y));
+}
+
+std::ofstream& operator<<(std::ofstream& stream, const Bounds2& bounds) {
+  stream << bounds.p0 << ", " << bounds.p1 << std::endl;
+  return stream;
 }
 
 #endif
