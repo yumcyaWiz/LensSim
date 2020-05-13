@@ -23,8 +23,8 @@ inline Bounds2 extendBounds(const Bounds2& b, const Vec2& p) {
   return Bounds2(Vec2(p0x, p0y), Vec2(p1x, p1y));
 }
 
-std::ofstream& operator<<(std::ofstream& stream, const Bounds2& bounds) {
-  stream << bounds.p0 << ", " << bounds.p1 << std::endl;
+inline std::ostream& operator<<(std::ostream& stream, const Bounds2& bounds) {
+  stream << bounds.p0 << ", " << bounds.p1;
   return stream;
 }
 
