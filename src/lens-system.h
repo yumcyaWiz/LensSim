@@ -15,6 +15,7 @@ using JSON = nlohmann::json;
 #include "bounds2.h"
 #include "film.h"
 #include "lens-element.h"
+#include "parallel.h"
 
 using namespace Prl2;
 
@@ -252,6 +253,31 @@ class LensSystem {
     if (!computeCardinalPoints()) return false;
 
     return true;
+  }
+
+  bool computeExitPupilBound(const Vec2& p) const {
+    const auto lastElement = elements.back();
+    Ray ray_out;
+    for (int i = 0; i < 1024; ++i) {
+      for (int j = 0; j < 1024; ++j) {
+        // sample point on last element surface
+        const Real u = 2.0f * Real(i) / 1024 - 1.0f;
+        const Real v = 2.0f * Real(j) / 1024 - 1.0f;
+        const Vec3 samplePoint =
+            Vec3(lastElement->aperture_radius * u,
+                 lastElement->aperture_radius * v, lastElement->z);
+
+        // make ray
+        const Vec3 origin(p.x(), p.y(), 0);
+        const Ray ray_in(origin, normalize(samplePoint - origin));
+
+        // raytrace
+        if (!raytrace(ray_in, ray_out)) continue;
+
+        // extend bounding box
+        // TODO: implement this
+      }
+    }
   }
 
   bool computeExitPupilBounds() {
