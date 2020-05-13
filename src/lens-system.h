@@ -67,49 +67,6 @@ class LensSystem {
     computeCardinalPoints();
   }
 
-  bool computeCardinalPoints() {
-    const Real height = 0.001f;
-
-    // raytrace from object plane
-    Ray ray_in(Vec3(0, height, elements.front()->z - 1.0f), Vec3(0, 0, 1));
-    Ray ray_out;
-    if (!raytrace(ray_in, ray_out)) {
-      std::cerr << "failed to compute cardinal points" << std::endl;
-      return false;
-    }
-
-    // compute image focal point
-    Real t = -ray_out.origin.y() / ray_out.direction.y();
-    image_focal_z = ray_out(t).z();
-
-    // compute image principal point
-    t = -(ray_out.origin.y() - height) / ray_out.direction.y();
-    image_principal_z = ray_out(t).z();
-
-    // compute image focal length
-    image_focal_length = image_focal_z - image_principal_z;
-
-    // raytrace from image plane
-    ray_in = Ray(Vec3(0, height, 0), Vec3(0, 0, -1));
-    if (!raytrace(ray_in, ray_out)) {
-      std::cerr << "failed to compute cardinal points" << std::endl;
-      return false;
-    }
-
-    // compute object focal point
-    t = -ray_out.origin.y() / ray_out.direction.y();
-    object_focal_z = ray_out(t).z();
-
-    // compute object principal point
-    t = -(ray_out.origin.y() - height) / ray_out.direction.y();
-    object_principal_z = ray_out(t).z();
-
-    // compute object focal length
-    object_focal_length = object_focal_z - object_principal_z;
-
-    return true;
-  }
-
   bool loadJSON(const std::string& filename) {
     // open file
     std::ifstream stream(filename);
@@ -227,7 +184,50 @@ class LensSystem {
     ray_out = ray;
 
     return true;
-  };
+  }
+
+  bool computeCardinalPoints() {
+    const Real height = 0.001f;
+
+    // raytrace from object plane
+    Ray ray_in(Vec3(0, height, elements.front()->z - 1.0f), Vec3(0, 0, 1));
+    Ray ray_out;
+    if (!raytrace(ray_in, ray_out)) {
+      std::cerr << "failed to compute cardinal points" << std::endl;
+      return false;
+    }
+
+    // compute image focal point
+    Real t = -ray_out.origin.y() / ray_out.direction.y();
+    image_focal_z = ray_out(t).z();
+
+    // compute image principal point
+    t = -(ray_out.origin.y() - height) / ray_out.direction.y();
+    image_principal_z = ray_out(t).z();
+
+    // compute image focal length
+    image_focal_length = image_focal_z - image_principal_z;
+
+    // raytrace from image plane
+    ray_in = Ray(Vec3(0, height, 0), Vec3(0, 0, -1));
+    if (!raytrace(ray_in, ray_out)) {
+      std::cerr << "failed to compute cardinal points" << std::endl;
+      return false;
+    }
+
+    // compute object focal point
+    t = -ray_out.origin.y() / ray_out.direction.y();
+    object_focal_z = ray_out(t).z();
+
+    // compute object principal point
+    t = -(ray_out.origin.y() - height) / ray_out.direction.y();
+    object_principal_z = ray_out(t).z();
+
+    // compute object focal length
+    object_focal_length = object_focal_z - object_principal_z;
+
+    return true;
+  }
 };
 
 #endif
