@@ -45,21 +45,53 @@ class LensSystem {
  public:
   std::vector<std::shared_ptr<LensElement>> elements;
 
+  Real length;
   Real object_focal_z;
   Real object_principal_z;
+  Real object_focal_length;
   Real image_focal_z;
   Real image_principal_z;
+  Real image_focal_length;
 
   LensSystem(const std::string& filename) {
     // load json
     if (!loadJSON(filename)) exit(EXIT_FAILURE);
 
-    // compute z
-    Real length = 0;
+    // compute system length and z
+    length = 0;
     for (auto itr = elements.rbegin(); itr != elements.rend(); itr++) {
       length += (*itr)->thickness;
       (*itr)->z = -length;
     }
+
+    // compute cardinal points
+    computeCardinalPoints();
+  }
+
+  bool computeCardinalPoints() {
+    const Real height = 0.001f;
+
+    // raytrace from object plane
+    Ray ray_in(Vec3(0, height, elements.front()->z - 1.0f), Vec3(0, 0, 1));
+    Ray ray_out;
+    if (!raytrace(ray_in, ray_out)) {
+      std::cerr << "failed to compute cardinal points" << std::endl;
+      return false;
+    }
+
+    // compute image focal point
+    Real t = -ray_out.origin.y() / ray_out.direction.y();
+    image_focal_z = ray_out(t).z();
+
+    // compute image principal point
+    t = -(ray_out.origin.y() - height) / ray_out.direction.y();
+    image_principal_z = ray_out(t).z();
+
+    // compute image focal length
+    image_focal_length = image_focal_z - image_principal_z;
+    std::cout << image_focal_length << std::endl;
+
+    return true;
   }
 
   bool loadJSON(const std::string& filename) {
