@@ -13,11 +13,5 @@ using json = nlohmann::json;
 int main() {
   LensSystem lsys("../data/dgauss.50mm.json");
 
-  Ray ray_in(Vec3(0, 0.01, -1), Vec3(0, 0, 1));
-  Ray ray_out;
-  if (lsys.raytraceFromObject(ray_in, ray_out)) {
-    std::cout << ray_out << std::endl;
-  }
-
   return 0;
 }
