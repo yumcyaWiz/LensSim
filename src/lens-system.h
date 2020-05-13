@@ -298,7 +298,7 @@ class LensSystem {
 
     parallel.parallelFor1D(
         [&](unsigned int idx) {
-          const Real r = static_cast<Real>(idx) / num_exit_pupil_bounds *
+          const Real r = static_cast<Real>(idx) / num_exit_pupil_bounds * 0.5f *
                          film->diagonal_length;
           exit_pupil_bounds[idx] = computeExitPupilBound(Vec2(r, 0));
 
