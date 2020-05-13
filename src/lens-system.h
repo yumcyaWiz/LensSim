@@ -263,8 +263,8 @@ class LensSystem {
     for (int i = 0; i < 1024; ++i) {
       for (int j = 0; j < 1024; ++j) {
         // sample point on last element surface
-        const Real u = 2.0f * Real(i) / 1024 - 1.0f;
-        const Real v = 2.0f * Real(j) / 1024 - 1.0f;
+        const Real u = 2.0f * static_cast<Real>(i) / 1024 - 1.0f;
+        const Real v = 2.0f * static_cast<Real>(j) / 1024 - 1.0f;
         const Vec3 samplePoint =
             Vec3(lastElement->aperture_radius * u,
                  lastElement->aperture_radius * v, lastElement->z);
