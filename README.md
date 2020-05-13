@@ -4,9 +4,10 @@ Simulation of LensSystem
 
 ## Features
 
-* RayTrace
-* Focusing
-* Rendering with IBL
+-[x] RayTrace
+-[x] Focusing
+-[x] Exit Pupil Sampling
+-[] Rendering with IBL
 
 ### Lens Elements
 
