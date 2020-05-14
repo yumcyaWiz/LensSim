@@ -7,7 +7,9 @@ Simulation of LensSystem
 - [x] RayTrace
 - [x] Focusing
 - [x] Exit Pupil Sampling
-- [ ] Rendering with IBL
+- [x] Rendering with IBL
+- [x] Lens Flare
+- [ ] Chromatic Aberration
 
 ### Lens Elements
 
@@ -27,3 +29,4 @@ make
 
 * [progschj/ThreadPool](https://github.com/progschj/ThreadPool) - zlib License
 * [nlohmann/json](https://github.com/nlohmann/json) - MIT License
+* [nothings/stb](https://github.com/nothings/stb) - Public Domain or MIT License 
