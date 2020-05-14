@@ -334,11 +334,12 @@ class LensSystem {
 
     // sample point on exit pupil bound
     Real pdf_area;
-    const Vec2 pBound = exit_pupil_bound.samplePoint(sampler, pdf_area);
+    Vec2 pBound = exit_pupil_bound.samplePoint(sampler, pdf_area);
 
     // rotate sampled point
     if (r > 0) {
       const Real theta = std::atan2(v, u);
+      pBound = rotate2D(pBound, theta);
     }
 
     // make input ray
