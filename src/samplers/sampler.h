@@ -4,9 +4,9 @@
 #include <cstdint>
 #include <memory>
 
-#include "type.h"
-#include "vec2.h"
-#include "vec3.h"
+#include "core/type.h"
+#include "core/vec2.h"
+#include "core/vec3.h"
 
 namespace Prl2 {
 

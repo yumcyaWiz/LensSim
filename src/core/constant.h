@@ -4,7 +4,7 @@
 #include <cmath>
 #include <limits>
 
-#include "type.h"
+#include "core/type.h"
 
 namespace Prl2 {
 

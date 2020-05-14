@@ -3,10 +3,10 @@
 
 #include <cmath>
 
-#include "hit.h"
-#include "ray.h"
-#include "vec2.h"
-#include "vec3.h"
+#include "core/hit.h"
+#include "core/ray.h"
+#include "core/vec2.h"
+#include "core/vec3.h"
 
 using namespace Prl2;
 

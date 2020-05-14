@@ -1,7 +1,7 @@
 #ifndef RANDOM_H
 #define RANDOM_H
-#include "rng.h"
-#include "sampler.h"
+#include "samplers/rng.h"
+#include "samplers/sampler.h"
 
 namespace Prl2 {
 

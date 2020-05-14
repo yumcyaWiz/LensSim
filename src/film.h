@@ -5,7 +5,7 @@
 #include <fstream>
 #include <iostream>
 
-#include "vec3.h"
+#include "core/vec3.h"
 
 using namespace Prl2;
 
@@ -44,6 +44,17 @@ class Film {
     return Vec2(0.5f * width_length * u, 0.5f * height_length * v);
   }
 
+  void gammaCorrection() {
+    for (int j = 0; j < height; ++j) {
+      for (int i = 0; i < width; ++i) {
+        const Vec3 c = getPixel(i, j);
+        setPixel(i, j,
+                 Vec3(std::pow(c.x(), 1 / 2.2), std::pow(c.y(), 1 / 2.2),
+                      std::pow(c.z(), 1 / 2.2)));
+      }
+    }
+  }
+
   void writePPM(const std::string& filename) const {
     std::ofstream file(filename);
     file << "P3" << std::endl;
@@ -53,9 +64,9 @@ class Film {
     for (int j = 0; j < height; ++j) {
       for (int i = 0; i < width; ++i) {
         const Vec3 c = getPixel(i, j);
-        unsigned int r = static_cast<unsigned int>(255 * c.x());
-        unsigned int g = static_cast<unsigned int>(255 * c.y());
-        unsigned int b = static_cast<unsigned int>(255 * c.z());
+        unsigned int r = std::min(static_cast<unsigned int>(255 * c.x()), 255U);
+        unsigned int g = std::min(static_cast<unsigned int>(255 * c.y()), 255U);
+        unsigned int b = std::min(static_cast<unsigned int>(255 * c.z()), 255U);
         file << r << " " << g << " " << b << std::endl;
       }
     }

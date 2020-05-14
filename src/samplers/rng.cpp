@@ -1,4 +1,4 @@
-#include "rng.h"
+#include "samplers/rng.h"
 
 namespace Prl2 {
 

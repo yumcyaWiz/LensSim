@@ -7,3 +7,10 @@ target_include_directories(pool SYSTEM INTERFACE
 # json
 set(JSON_BuildTests OFF CACHE INTERNAL "")
 add_subdirectory(json)
+
+# stb
+add_library(stb INTERFACE)
+target_compile_definitions(stb INTERFACE
+  STB_IMAGE_IMPLEMENTATION
+)
+target_include_directories(stb SYSTEM INTERFACE stb)

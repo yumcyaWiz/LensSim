@@ -1,4 +1,4 @@
-#include "parallel.h"
+#include "parallel/parallel.h"
 
 #include <algorithm>
 #include <functional>

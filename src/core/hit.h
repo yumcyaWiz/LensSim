@@ -1,7 +1,7 @@
 #ifndef _HIT_H
 #define _HIT_H
-#include "type.h"
-#include "vec3.h"
+#include "core/type.h"
+#include "core/vec3.h"
 
 using namespace Prl2;
 
