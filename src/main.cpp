@@ -8,7 +8,7 @@ using json = nlohmann::json;
 #include "samplers/random.h"
 
 // LensSym
-#include "lens-system.h"
+#include "lens-system/lens-system.h"
 
 int main() {
   std::shared_ptr<Sampler> sampler = std::make_shared<RandomSampler>();
