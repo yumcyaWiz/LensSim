@@ -11,8 +11,8 @@ using json = nlohmann::json;
 #include "samplers/random.h"
 
 int main() {
-  constexpr int width = 128;
-  constexpr int height = 128;
+  constexpr int width = 512;
+  constexpr int height = 512;
   constexpr int num_samples = 100;
   const std::string path_to_lens = "../data/dgauss.50mm.json";
 
@@ -21,32 +21,37 @@ int main() {
   std::shared_ptr<Film> film = std::make_shared<Film>(width, height);
   LensSystem lsys(path_to_lens, film);
 
+  IBL ibl("../data/PaperMill_E_3k.hdr");
+
+  lsys.focus(-1);
   lsys.computeExitPupilBounds();
 
-  for (int j = 0; j < film->height; ++j) {
-    for (int i = 0; i < film->width; ++i) {
-      const Real u =
-          (2.0f * (i + sampler->getNext()) - film->width) / film->height;
-      const Real v =
-          (2.0f * (j + sampler->getNext()) - film->height) / film->height;
+  Parallel parallel;
+  parallel.parallelFor2D(
+      [&](unsigned int i, unsigned int j) {
+        const Real u =
+            (2.0f * (i + sampler->getNext()) - film->width) / film->height;
+        const Real v =
+            (2.0f * (j + sampler->getNext()) - film->height) / film->height;
 
-      Vec3 col;
-      for (int k = 0; k < num_samples; ++k) {
-        // sample ray
-        Ray ray;
-        if (!lsys.sampleRay(u, v, *sampler, ray)) continue;
-        col += 0.5f * (ray.direction + 1.0f);
-      }
+        Vec3 col;
+        for (int k = 0; k < num_samples; ++k) {
+          // sample ray
+          Ray ray;
+          if (!lsys.sampleRay(u, v, *sampler, ray)) continue;
+          col += ibl.getRadiance(ray);
+        }
 
-      // divide by samples
-      col /= num_samples;
+        // divide by samples
+        col /= num_samples;
 
-      // set color on pixel
-      film->setPixel(i, j, col);
-    }
-  }
+        // set color on pixel
+        film->setPixel(i, j, col);
+      },
+      32, 32, width, height);
 
   // output ppm
+  film->gammaCorrection();
   film->writePPM("output.ppm");
 
   return 0;
