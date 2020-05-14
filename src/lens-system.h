@@ -317,6 +317,7 @@ class LensSystem {
     const unsigned int exit_pupil_bounds_index =
         r / film->diagonal_length * num_exit_pupil_bounds;
     const Bounds2 exit_pupil_bound = exit_pupil_bounds[exit_pupil_bounds_index];
+    if (!exit_pupil_bound.isValid()) return false;
 
     // sampler point on exit pupil bound
     Real pdf_area;
