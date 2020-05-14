@@ -15,7 +15,7 @@ using JSON = nlohmann::json;
 #include "core/bounds2.h"
 #include "film.h"
 #include "lens-system/lens-element.h"
-#include "parallel.h"
+#include "parallel/parallel.h"
 
 using namespace Prl2;
 
