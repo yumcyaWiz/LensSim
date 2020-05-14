@@ -3,6 +3,7 @@
 #include <iostream>
 #include <limits>
 
+#include "sampler.h"
 #include "vec2.h"
 
 using namespace Prl2;
@@ -20,6 +21,12 @@ class Bounds2 {
   Real area() const { return (p1.x() - p0.x()) * (p1.y() - p0.y()); }
 
   bool isValid() const { return p0.x() < p1.x() && p0.y() < p1.y(); }
+
+  Vec2 samplePoint(Sampler& sampler, Real& pdf) const {
+    pdf = 1.0f / area();
+    const Vec2 u = sampler.getNext2D();
+    return p0 + u * (p1 - p0);
+  }
 };
 
 inline Bounds2 extendBounds(const Bounds2& b, const Vec2& p) {

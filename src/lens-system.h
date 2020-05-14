@@ -77,7 +77,10 @@ class LensSystem {
     if (!computeCardinalPoints()) exit(EXIT_FAILURE);
 
     // focus at z = -inf
-    focus(-100);
+    if (!focus(-100)) {
+      std::cerr << "failed to focus lens at z = -inf" << std::endl;
+      exit(EXIT_FAILURE);
+    }
   }
 
   bool loadJSON(const std::string& filename) {
@@ -183,7 +186,7 @@ class LensSystem {
             return false;
 
           // Set Next Ray
-          ray = Ray(res.hitPos, next_direction);
+          ray = Ray(res.hitPos, normalize(next_direction));
 
           // update ior
           ior = next_ior;
@@ -307,6 +310,37 @@ class LensSystem {
           std::cout << exit_pupil_bounds[idx] << std::endl;
         },
         16, num_exit_pupil_bounds);
+
+    return true;
+  }
+
+  bool sampleRay(Real u, Real v, Sampler& sampler, Ray& ray_out) const {
+    // compute position on film
+    const Vec2 p = film->computePosition(u, v);
+
+    // choose exit pupil bound
+    const Real r = length(p);
+    const unsigned int exit_pupil_bounds_index =
+        r / (0.5f * film->diagonal_length) * num_exit_pupil_bounds;
+    const Bounds2& exit_pupil_bound =
+        exit_pupil_bounds[exit_pupil_bounds_index];
+    if (!exit_pupil_bound.isValid()) return false;
+
+    // sample point on exit pupil bound
+    Real pdf_area;
+    const Vec2 pBound = exit_pupil_bound.samplePoint(sampler, pdf_area);
+
+    // make input ray
+    const Vec3 origin = Vec3(p.x(), p.y(), 0);
+    const Vec3 direction =
+        normalize(Vec3(pBound.x(), pBound.y(), elements.back()->z) - origin);
+    const Ray ray_in(origin, direction);
+
+    // raytrace
+    Ray ray_tmp;
+    if (!raytrace(ray_in, ray_tmp)) return false;
+
+    ray_out = ray_tmp;
 
     return true;
   }
