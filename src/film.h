@@ -40,6 +40,10 @@ class Film {
     pixels[i + width * j] = c;
   }
 
+  Vec2 computePosition(Real u, Real v) const {
+    return Vec2(0.5f * width_length * u, 0.5f * height_length * v);
+  }
+
   void writePPM(const std::string& filename) const {
     std::ofstream file(filename);
     file << "P3" << std::endl;
