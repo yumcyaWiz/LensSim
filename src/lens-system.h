@@ -310,6 +310,29 @@ class LensSystem {
 
     return true;
   }
+
+  bool sampleRay(const Vec2& p, Sampler& sampler, Ray ray_out) const {
+    // choose exit pupil bound
+    const Real r = length(p);
+    const unsigned int exit_pupil_bounds_index =
+        r / film->diagonal_length * num_exit_pupil_bounds;
+    const Bounds2 exit_pupil_bound = exit_pupil_bounds[exit_pupil_bounds_index];
+
+    // sampler point on exit pupil bound
+    Real pdf_area;
+    const Vec2 pBound = exit_pupil_bound.samplePoint(sampler, pdf_area);
+
+    // make input ray
+    const Vec3 origin = Vec3(p.x(), p.y(), 0);
+    const Vec3 direction =
+        normalize(Vec3(pBound.x(), pBound.y(), elements.back()->z) - origin);
+    const Ray ray_in(origin, direction);
+
+    // raytrace
+    if (!raytrace(ray_in, ray_out)) return false;
+
+    return true;
+  }
 };
 
 #endif
