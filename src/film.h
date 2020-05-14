@@ -53,9 +53,9 @@ class Film {
     for (int j = 0; j < height; ++j) {
       for (int i = 0; i < width; ++i) {
         const Vec3 c = getPixel(i, j);
-        unsigned int r = static_cast<unsigned int>(255 * c.x());
-        unsigned int g = static_cast<unsigned int>(255 * c.y());
-        unsigned int b = static_cast<unsigned int>(255 * c.z());
+        unsigned int r = std::min(static_cast<unsigned int>(255 * c.x()), 255U);
+        unsigned int g = std::min(static_cast<unsigned int>(255 * c.y()), 255U);
+        unsigned int b = std::min(static_cast<unsigned int>(255 * c.z()), 255U);
         file << r << " " << g << " " << b << std::endl;
       }
     }
