@@ -13,17 +13,18 @@ using json = nlohmann::json;
 int main() {
   constexpr int width = 512;
   constexpr int height = 512;
-  constexpr int num_samples = 100;
-  const std::string path_to_lens = "../data/dgauss.50mm.json";
+  constexpr int num_samples = 1000;
+  const std::string path_to_lens = "../data/wide.22mm.json";
 
   std::shared_ptr<Sampler> sampler = std::make_shared<RandomSampler>();
 
   std::shared_ptr<Film> film = std::make_shared<Film>(width, height);
   LensSystem lsys(path_to_lens, film);
+  std::cout << lsys.image_focal_length << std::endl;
 
   IBL ibl("../data/PaperMill_E_3k.hdr");
 
-  lsys.focus(-1);
+  lsys.focus(-0.2);
   lsys.computeExitPupilBounds();
 
   Parallel parallel;
@@ -39,6 +40,8 @@ int main() {
           // sample ray
           Ray ray;
           if (!lsys.sampleRay(u, v, *sampler, ray)) continue;
+
+          // IBL
           col += ibl.getRadiance(ray);
         }
 
