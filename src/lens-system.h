@@ -314,7 +314,10 @@ class LensSystem {
     return true;
   }
 
-  bool sampleRay(const Vec2& p, Sampler& sampler, Ray& ray_out) const {
+  bool sampleRay(Real u, Real v, Sampler& sampler, Ray& ray_out) const {
+    // compute position on film
+    const Vec2 p = film->computePosition(u, v);
+
     // choose exit pupil bound
     const Real r = length(p);
     const unsigned int exit_pupil_bounds_index =
@@ -323,7 +326,7 @@ class LensSystem {
         exit_pupil_bounds[exit_pupil_bounds_index];
     if (!exit_pupil_bound.isValid()) return false;
 
-    // sampler point on exit pupil bound
+    // sample point on exit pupil bound
     Real pdf_area;
     const Vec2 pBound = exit_pupil_bound.samplePoint(sampler, pdf_area);
 
