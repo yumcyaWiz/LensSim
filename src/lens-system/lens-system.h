@@ -337,7 +337,8 @@ class LensSystem {
     return true;
   }
 
-  bool sampleRay(Real u, Real v, Sampler& sampler, Ray& ray_out) const {
+  bool sampleRay(Real u, Real v, Sampler& sampler, Ray& ray_out,
+                 bool reflection = false) const {
     // compute position on film
     const Vec2 p = film->computePosition(u, v);
 
@@ -367,7 +368,7 @@ class LensSystem {
 
     // raytrace
     Ray ray_tmp;
-    if (!raytrace(ray_in, ray_tmp, true, &sampler)) return false;
+    if (!raytrace(ray_in, ray_tmp, reflection, &sampler)) return false;
 
     ray_out = ray_tmp;
 
