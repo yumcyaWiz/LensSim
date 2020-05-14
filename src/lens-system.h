@@ -77,7 +77,10 @@ class LensSystem {
     if (!computeCardinalPoints()) exit(EXIT_FAILURE);
 
     // focus at z = -inf
-    focus(-100);
+    if (!focus(-100)) {
+      std::cerr << "failed to focus lens at z = -inf" << std::endl;
+      exit(EXIT_FAILURE);
+    }
   }
 
   bool loadJSON(const std::string& filename) {
@@ -317,7 +320,8 @@ class LensSystem {
     const unsigned int exit_pupil_bounds_index =
         r / (0.5f * film->diagonal_length) * num_exit_pupil_bounds;
     std::cout << exit_pupil_bounds_index << std::endl;
-    const Bounds2 exit_pupil_bound = exit_pupil_bounds[exit_pupil_bounds_index];
+    const Bounds2& exit_pupil_bound =
+        exit_pupil_bounds[exit_pupil_bounds_index];
     if (!exit_pupil_bound.isValid()) return false;
 
     // sampler point on exit pupil bound
