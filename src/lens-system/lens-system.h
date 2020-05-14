@@ -44,6 +44,12 @@ inline bool refract(const Vec3& wi, Vec3& wt, const Vec3& n, const Real& ior1,
   return true;
 }
 
+// 点を平面で原点中心に回転する
+inline Vec2 rotate2D(const Vec2& p, Real theta) {
+  return Vec2(p.x() * std::cos(theta) - p.y() * std::sin(theta),
+              p.x() * std::sin(theta) + p.y() * std::cos(theta));
+}
+
 class LensSystem {
  public:
   std::shared_ptr<Film> film;
@@ -329,6 +335,11 @@ class LensSystem {
     // sample point on exit pupil bound
     Real pdf_area;
     const Vec2 pBound = exit_pupil_bound.samplePoint(sampler, pdf_area);
+
+    // rotate sampled point
+    if (r > 0) {
+      const Real theta = std::atan2(v, u);
+    }
 
     // make input ray
     const Vec3 origin = Vec3(p.x(), p.y(), 0);
