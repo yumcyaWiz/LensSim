@@ -44,6 +44,17 @@ class Film {
     return Vec2(0.5f * width_length * u, 0.5f * height_length * v);
   }
 
+  void gammaCorrection() {
+    for (int j = 0; j < height; ++j) {
+      for (int i = 0; i < width; ++i) {
+        const Vec3 c = getPixel(i, j);
+        setPixel(i, j,
+                 Vec3(std::pow(c.x(), 1 / 2.2), std::pow(c.y(), 1 / 2.2),
+                      std::pow(c.z(), 1 / 2.2)));
+      }
+    }
+  }
+
   void writePPM(const std::string& filename) const {
     std::ofstream file(filename);
     file << "P3" << std::endl;
