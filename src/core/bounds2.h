@@ -3,8 +3,8 @@
 #include <iostream>
 #include <limits>
 
+#include "core/vec2.h"
 #include "samplers/sampler.h"
-#include "vec2.h"
 
 using namespace Prl2;
 

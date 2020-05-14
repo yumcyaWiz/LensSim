@@ -5,7 +5,7 @@
 #include <fstream>
 #include <iostream>
 
-#include "vec3.h"
+#include "core/vec3.h"
 
 using namespace Prl2;
 

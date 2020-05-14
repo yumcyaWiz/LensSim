@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <cstdint>
 
-#include "constant.h"
+#include "core/constant.h"
 
 #define PCG32_DEFAULT_STATE 0x853c49e6748fea9bULL
 #define PCG32_DEFAULT_STREAM 0xda3e39cb94b95bdbULL
