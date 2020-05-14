@@ -334,7 +334,10 @@ class LensSystem {
     const Ray ray_in(origin, direction);
 
     // raytrace
-    if (!raytrace(ray_in, ray_out)) return false;
+    Ray ray_tmp;
+    if (!raytrace(ray_in, ray_tmp)) return false;
+
+    ray_out = ray_tmp;
 
     return true;
   }
