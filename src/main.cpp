@@ -5,7 +5,7 @@
 using json = nlohmann::json;
 
 // prl2
-#include "random.h"
+#include "samplers/random.h"
 
 // LensSym
 #include "lens-system.h"
