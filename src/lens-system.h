@@ -186,7 +186,7 @@ class LensSystem {
             return false;
 
           // Set Next Ray
-          ray = Ray(res.hitPos, next_direction);
+          ray = Ray(res.hitPos, normalize(next_direction));
 
           // update ior
           ior = next_ior;
