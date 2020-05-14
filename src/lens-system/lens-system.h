@@ -136,9 +136,11 @@ class LensSystem {
     return true;
   };
 
-  bool raytrace(const Ray& ray_in, Ray& ray_out,
-                bool reflection = false) const {
+  bool raytrace(const Ray& ray_in, Ray& ray_out, bool reflection = false,
+                Sampler* sampler = nullptr) const {
     int element_index = ray_in.direction.z() > 0 ? -1 : elements.size();
+    const int initial_element_index = element_index;
+
     Ray ray = ray_in;
     Real ior = 1.0f;
 
@@ -183,25 +185,40 @@ class LensSystem {
         if (!lens->intersect(ray, res)) return false;
 
         // Refract and Reflect
+        Vec3 next_direction;
         if (reflection) {
-          // TODO: implement this
+          const Real fr = fresnel(-ray.direction, res.hitNormal, ior, next_ior);
+          if (sampler->getNext() < fr) {
+            // reflection
+            next_direction = reflect(-ray.direction, res.hitNormal);
+          } else {
+            // refract
+            if (!refract(-ray.direction, next_direction, res.hitNormal, ior,
+                         next_ior)) {
+              // total reflection
+              next_direction = reflect(-ray.direction, res.hitNormal);
+            }
+          }
         } else {
-          Vec3 next_direction;
           if (!refract(-ray.direction, next_direction, res.hitNormal, ior,
                        next_ior))
             return false;
-
-          // Set Next Ray
-          ray = Ray(res.hitPos, normalize(next_direction));
-
-          // update ior
-          ior = next_ior;
         }
+
+        // Set Next Ray
+        ray = Ray(res.hitPos, normalize(next_direction));
+
+        // update ior
+        ior = next_ior;
+
       } else {
         std::cerr << "invalid lens element" << std::endl;
         return false;
       }
     }
+
+    // if ray exits from the same side
+    if (element_index == initial_element_index) return false;
 
     ray_out = ray;
 
@@ -350,7 +367,7 @@ class LensSystem {
 
     // raytrace
     Ray ray_tmp;
-    if (!raytrace(ray_in, ray_tmp)) return false;
+    if (!raytrace(ray_in, ray_tmp, true, &sampler)) return false;
 
     ray_out = ray_tmp;
 
