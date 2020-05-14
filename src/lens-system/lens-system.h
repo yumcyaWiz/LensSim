@@ -64,7 +64,7 @@ class LensSystem {
   Real image_focal_length;
 
   static constexpr unsigned int num_exit_pupil_bounds = 64;
-  static constexpr unsigned int num_exit_pupil_bounds_samples = 512;
+  static constexpr unsigned int num_exit_pupil_bounds_samples = 1024;
   std::vector<Bounds2> exit_pupil_bounds;
 
   LensSystem(const std::string& filename, const std::shared_ptr<Film> _film)
