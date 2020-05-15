@@ -7,3 +7,6 @@
 [submodule "ext/stb"]
 	path = ext/stb
 	url = git@github.com:nothings/stb.git
+[submodule "ext/tinyexr"]
+	path = ext/tinyexr
+	url = git@github.com:syoyo/tinyexr.git
