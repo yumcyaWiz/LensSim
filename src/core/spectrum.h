@@ -155,7 +155,6 @@ class SPD {
     return *this;
   }
 
- private:
   //等色関数(CIE1931)
   // http://cvrl.ucl.ac.uk/cmfs.htm
   static constexpr int color_matching_func_samples = 85;
