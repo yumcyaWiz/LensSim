@@ -9,7 +9,7 @@ Simulation of LensSystem
 - [x] Exit Pupil Sampling
 - [x] Spectral Rendering with IBL
 - [x] Lens Flare
-- [ ] Chromatic Aberration
+- [x] Chromatic Aberration
 
 ### Lens Elements
 
