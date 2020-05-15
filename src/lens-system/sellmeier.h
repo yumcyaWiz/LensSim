@@ -10,6 +10,7 @@ struct SellmeierCofficient {
   Real B[3];
   Real C[3];
 
+  SellmeierCofficient() {}
   SellmeierCofficient(Real ior550, Real b0, Real b1, Real b2, Real c0, Real c1,
                       Real c2) {
     B[0] = b0;
