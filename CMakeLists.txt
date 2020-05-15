@@ -19,7 +19,7 @@ target_compile_features(main PRIVATE cxx_std_17)
 set_target_properties(main PROPERTIES CXX_EXTENSIONS OFF)
 
 # src
-target_sources(main PRIVATE src/parallel/parallel.cpp src/samplers/rng.cpp)
+target_sources(main PRIVATE src/core/spectrum.cpp src/parallel/parallel.cpp src/samplers/rng.cpp)
 
 # ext
 add_subdirectory(ext)
