@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iostream>
 
+#include "core/spectrum.h"
 #include "core/vec3.h"
 
 using namespace Prl2;
@@ -38,6 +39,22 @@ class Film {
 
   void setPixel(unsigned int i, unsigned int j, const Vec3& c) {
     pixels[i + width * j] = c;
+  }
+
+  void addPixel(unsigned int i, unsigned int j, Real lambda, Real radiance) {
+    //対応する等色関数のインデックスを計算
+    const int index = (lambda - 380) / 5;
+
+    // CMFを線形補間して計算
+    Vec3 XYZ;
+    if (index >= 0 && index <= SPD::color_matching_func_samples - 1) {
+      XYZ[0] = radiance * SPD::color_matching_func_x[index];
+      XYZ[1] = radiance * SPD::color_matching_func_y[index];
+      XYZ[2] = radiance * SPD::color_matching_func_z[index];
+    }
+
+    // (i, j)に加算
+    pixels[i + width * j] *= XYZ;
   }
 
   Vec2 computePosition(Real u, Real v) const {
