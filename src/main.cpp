@@ -48,7 +48,7 @@ int main() {
           if (!lsys.sampleRay(u, v, lambda, *sampler, ray)) continue;
 
           // IBL
-          Real radiance = ibl.getRadiance(ray);
+          Real radiance = ibl.getRadiance(ray) / lambda_pdf;
 
           film->addPixel(i, j, ray.lambda, radiance);
         }
@@ -57,7 +57,7 @@ int main() {
 
   // output ppm
   film->divide(num_samples);
-  film->writePPM("output.ppm");
+  film->writeEXR("output.exr");
 
   return 0;
 }
