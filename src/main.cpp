@@ -5,6 +5,7 @@
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
+#include "core/spectrum.h"
 #include "ibl.h"
 #include "lens-system/lens-system.h"
 #include "parallel/parallel.h"
@@ -13,7 +14,7 @@ using json = nlohmann::json;
 int main() {
   constexpr int width = 512;
   constexpr int height = 512;
-  constexpr int num_samples = 1000;
+  constexpr int num_samples = 100;
   const std::string path_to_lens = "../data/wide.22mm.json";
 
   std::shared_ptr<Sampler> sampler = std::make_shared<RandomSampler>();
@@ -35,26 +36,27 @@ int main() {
         const Real v =
             (2.0f * (j + sampler->getNext()) - film->height) / film->height;
 
-        Vec3 col;
         for (int k = 0; k < num_samples; ++k) {
+          // sample wavelength
+          const Real lambda_pdf = 1.0f / (SPD::LAMBDA_MAX - SPD::LAMBDA_MIN);
+          const Real lambda =
+              sampler->getNext() * (SPD::LAMBDA_MAX - SPD::LAMBDA_MIN) +
+              SPD::LAMBDA_MIN;
+
           // sample ray
           Ray ray;
-          if (!lsys.sampleRay(u, v, *sampler, ray)) continue;
+          if (!lsys.sampleRay(u, v, lambda, *sampler, ray)) continue;
 
           // IBL
-          col += ibl.getRadiance(ray);
+          Real radiance = ibl.getRadiance(ray);
+
+          film->addPixel(i, j, ray.lambda, radiance);
         }
-
-        // divide by samples
-        col /= num_samples;
-
-        // set color on pixel
-        film->setPixel(i, j, col);
       },
       32, 32, width, height);
 
   // output ppm
-  film->gammaCorrection();
+  film->divide(num_samples);
   film->writePPM("output.ppm");
 
   return 0;
