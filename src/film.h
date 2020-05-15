@@ -54,7 +54,7 @@ class Film {
     }
 
     // (i, j)に加算
-    pixels[i + width * j] *= XYZ;
+    pixels[i + width * j] += XYZ;
   }
 
   void divide(unsigned int k) {
