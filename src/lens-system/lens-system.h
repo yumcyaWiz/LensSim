@@ -176,7 +176,7 @@ class LensSystem {
               elements[next_element_index];
           if (const std::shared_ptr<Lens> next_lens =
                   std::dynamic_pointer_cast<Lens>(next_element)) {
-            next_ior = next_lens->ior;
+            next_ior = next_lens->ior(ray.lambda);
           }
         }
 
