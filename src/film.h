@@ -57,6 +57,14 @@ class Film {
     pixels[i + width * j] *= XYZ;
   }
 
+  void divide(unsigned int k) {
+    for (int j = 0; j < height; ++j) {
+      for (int i = 0; i < width; ++i) {
+        pixels[i + width * j] /= k;
+      }
+    }
+  }
+
   Vec2 computePosition(Real u, Real v) const {
     return Vec2(0.5f * width_length * u, 0.5f * height_length * v);
   }
