@@ -50,7 +50,6 @@ int main() {
           // IBL
           Real radiance = ibl.getRadiance(ray);
 
-          std::cout << ray.lambda << std::endl;
           film->addPixel(i, j, ray.lambda, radiance);
         }
       },
