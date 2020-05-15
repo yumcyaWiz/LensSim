@@ -157,7 +157,7 @@ class LensSystem {
         if (!aperture->intersect(ray, res)) return false;
 
         // Update ray
-        ray = Ray(res.hitPos, ray.direction);
+        ray.origin = res.hitPos;
 
         // Update ior
         ior = 1.0f;
@@ -206,7 +206,8 @@ class LensSystem {
         }
 
         // Set Next Ray
-        ray = Ray(res.hitPos, normalize(next_direction));
+        ray.origin = res.hitPos;
+        ray.direction = normalize(next_direction);
 
         // update ior
         ior = next_ior;
@@ -337,7 +338,7 @@ class LensSystem {
     return true;
   }
 
-  bool sampleRay(Real u, Real v, Sampler& sampler, Ray& ray_out,
+  bool sampleRay(Real u, Real v, Real lambda, Sampler& sampler, Ray& ray_out,
                  bool reflection = false) const {
     // compute position on film
     const Vec2 p = film->computePosition(u, v);
@@ -364,13 +365,10 @@ class LensSystem {
     const Vec3 origin = Vec3(p.x(), p.y(), 0);
     const Vec3 direction =
         normalize(Vec3(pBound.x(), pBound.y(), elements.back()->z) - origin);
-    const Ray ray_in(origin, direction);
+    const Ray ray_in(origin, direction, lambda);
 
     // raytrace
-    Ray ray_tmp;
-    if (!raytrace(ray_in, ray_tmp, reflection, &sampler)) return false;
-
-    ray_out = ray_tmp;
+    if (!raytrace(ray_in, ray_out, reflection, &sampler)) return false;
 
     return true;
   }

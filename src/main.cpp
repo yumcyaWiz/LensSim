@@ -38,20 +38,19 @@ int main() {
 
         for (int k = 0; k < num_samples; ++k) {
           // sample wavelength
-          Real lambda_pdf = 1.0f / (SPD::LAMBDA_MAX - SPD::LAMBDA_MIN);
-          Real lambda =
+          const Real lambda_pdf = 1.0f / (SPD::LAMBDA_MAX - SPD::LAMBDA_MIN);
+          const Real lambda =
               sampler->getNext() * (SPD::LAMBDA_MAX - SPD::LAMBDA_MIN) +
               SPD::LAMBDA_MIN;
-          lambda = std::clamp(lambda, SPD::LAMBDA_MIN, SPD::LAMBDA_MAX);
 
           // sample ray
           Ray ray;
-          ray.lambda = lambda;
-          if (!lsys.sampleRay(u, v, *sampler, ray)) continue;
+          if (!lsys.sampleRay(u, v, lambda, *sampler, ray)) continue;
 
           // IBL
           Real radiance = ibl.getRadiance(ray);
 
+          std::cout << ray.lambda << std::endl;
           film->addPixel(i, j, ray.lambda, radiance);
         }
       },
@@ -59,7 +58,6 @@ int main() {
 
   // output ppm
   film->divide(num_samples);
-  film->gammaCorrection();
   film->writePPM("output.ppm");
 
   return 0;
