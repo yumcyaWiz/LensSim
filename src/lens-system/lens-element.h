@@ -7,6 +7,7 @@
 #include "core/ray.h"
 #include "core/vec2.h"
 #include "core/vec3.h"
+#include "lens-system/sellmeier.h"
 
 using namespace Prl2;
 
@@ -51,13 +52,15 @@ class Aperture : public LensElement {
 class Lens : public LensElement {
  public:
   Real curvature_radius;
-  Real ior;
+  SellmeierCofficient sellmeier;
 
   Lens(unsigned int _index, Real _aperture_radius, Real _thickness,
-       Real _curvature_radius, Real _ior)
+       Real _curvature_radius, Real _ior550)
       : LensElement(_index, _aperture_radius, _thickness),
-        curvature_radius(_curvature_radius),
-        ior(_ior){};
+        curvature_radius(_curvature_radius) {
+    sellmeier =
+        SellmeierCofficient(_ior550, 1.03, 0.23, 1.01, 0.006, 0.02, 103.56);
+  }
 
   bool intersect(const Ray& ray, Hit& res) const override {
     Vec3 center(0, 0, z + curvature_radius);
@@ -79,6 +82,8 @@ class Lens : public LensElement {
     res.hitNormal = alignNormal(ray.direction, normalize(res.hitPos - center));
     return true;
   }
+
+  Real ior(Real lambda) { return sellmeier.ior(lambda); }
 };
 
 #endif
