@@ -7,7 +7,7 @@ Simulation of LensSystem
 - [x] RayTrace
 - [x] Focusing
 - [x] Exit Pupil Sampling
-- [x] Rendering with IBL
+- [x] Spectral Rendering with IBL
 - [x] Lens Flare
 - [ ] Chromatic Aberration
 
