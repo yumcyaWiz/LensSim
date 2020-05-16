@@ -14,7 +14,7 @@ using json = nlohmann::json;
 int main() {
   constexpr int width = 512;
   constexpr int height = 512;
-  constexpr int num_samples = 2000;
+  constexpr int num_samples = 100;
   const std::string path_to_lens = "../data/wide.22mm.json";
 
   std::shared_ptr<Sampler> sampler = std::make_shared<RandomSampler>();
@@ -45,10 +45,11 @@ int main() {
 
           // sample ray
           Ray ray;
-          if (!lsys.sampleRay(u, v, lambda, *sampler, ray)) continue;
+          Real ray_pdf;
+          if (!lsys.sampleRay(u, v, lambda, *sampler, ray, ray_pdf)) continue;
 
           // IBL
-          Real radiance = ibl.getRadiance(ray) / lambda_pdf;
+          Real radiance = ibl.getRadiance(ray) / (ray_pdf * lambda_pdf);
 
           film->addPixel(i, j, ray.lambda, radiance);
         }
