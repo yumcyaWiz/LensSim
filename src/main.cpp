@@ -1,3 +1,4 @@
+#include <cmath>
 #include <iostream>
 #include <string>
 
@@ -15,6 +16,7 @@ int main() {
   constexpr int width = 512;
   constexpr int height = 512;
   constexpr int num_samples = 100;
+  const bool reflection = true;
   const std::string path_to_lens = "../data/wide.22mm.json";
 
   std::shared_ptr<Sampler> sampler = std::make_shared<RandomSampler>();
@@ -46,10 +48,12 @@ int main() {
           // sample ray
           Ray ray;
           Real ray_pdf;
-          if (!lsys.sampleRay(u, v, lambda, *sampler, ray, ray_pdf)) continue;
+          if (!lsys.sampleRay(u, v, lambda, *sampler, ray, ray_pdf, reflection))
+            continue;
+          Real cos = std::abs(dot(ray.direction, Vec3(0, 0, -1)));
 
           // IBL
-          Real radiance = ibl.getRadiance(ray) / (ray_pdf * lambda_pdf);
+          Real radiance = ibl.getRadiance(ray) * cos / (ray_pdf * lambda_pdf);
 
           film->addPixel(i, j, ray.lambda, radiance);
         }
