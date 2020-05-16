@@ -363,12 +363,12 @@ class LensSystem {
 
     // make input ray
     const Vec3 origin = Vec3(p.x(), p.y(), 0);
-    const Vec3 direction =
-        normalize(Vec3(pBound.x(), pBound.y(), elements.back()->z) - origin);
+    const Vec3 pBound3 = Vec3(pBound.x(), pBound.y(), elements.back()->z);
+    const Vec3 direction = normalize(pBound3 - origin);
     const Ray ray_in(origin, direction, lambda);
 
     // convert area pdf to solid angle pdf
-    const Real l = length(pBound - origin);
+    const Real l = length(pBound3 - origin);
     pdf = l * l / std::abs(dot(direction, Vec3(0, 0, -1))) * pdf_area;
 
     // raytrace
