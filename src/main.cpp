@@ -15,7 +15,7 @@ using json = nlohmann::json;
 int main() {
   constexpr int width = 512;
   constexpr int height = 512;
-  constexpr int num_samples = 100;
+  constexpr int num_samples = 10000;
   const bool reflection = true;
   const std::string path_to_lens = "../data/wide.22mm.json";
 
