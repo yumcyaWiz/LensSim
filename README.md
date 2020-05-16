@@ -1,13 +1,16 @@
 # LensSim
 
-Simulation of LensSystem
+LensSim is a raytracer for Photographic Lens System.
+
+LensSim can simulate image of Lens System with IBL(Image Based Lighting) by Montecarlo Light Transportation.
 
 ## Features
 
-- [x] RayTrace
+- [x] Ray Tracing
 - [x] Focusing
 - [x] Exit Pupil Sampling
 - [x] Spectral Rendering with IBL
+- [x] Vignetting
 - [x] Lens Flare
 - [x] Chromatic Aberration
 
@@ -21,7 +24,7 @@ Simulation of LensSystem
 ```
 mkdir build
 cd build
-cmake ..
+cmake -DCMAKE_BUILD_TYPE=Release ..
 make
 ```
 
