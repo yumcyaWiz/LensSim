@@ -339,7 +339,7 @@ class LensSystem {
   }
 
   bool sampleRay(Real u, Real v, Real lambda, Sampler& sampler, Ray& ray_out,
-                 bool reflection = false) const {
+                 Real& pdf, bool reflection = false) const {
     // compute position on film
     const Vec2 p = film->computePosition(u, v);
 
@@ -366,6 +366,10 @@ class LensSystem {
     const Vec3 direction =
         normalize(Vec3(pBound.x(), pBound.y(), elements.back()->z) - origin);
     const Ray ray_in(origin, direction, lambda);
+
+    // convert area pdf to solid angle pdf
+    const Real l = std::abs(elements.back()->z);
+    pdf = l * l / std::abs(dot(direction, Vec3(0, 0, -1))) * pdf_area;
 
     // raytrace
     if (!raytrace(ray_in, ray_out, reflection, &sampler)) return false;
