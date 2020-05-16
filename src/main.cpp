@@ -50,10 +50,11 @@ int main() {
           Real ray_pdf;
           if (!lsys.sampleRay(u, v, lambda, *sampler, ray, ray_pdf, reflection))
             continue;
-          Real cos = std::abs(dot(ray.direction, Vec3(0, 0, -1)));
+          const Real cos = std::abs(dot(ray.direction, Vec3(0, 0, -1)));
 
           // IBL
-          Real radiance = ibl.getRadiance(ray) * cos / (ray_pdf * lambda_pdf);
+          const Real radiance =
+              ibl.getRadiance(ray) * cos / (ray_pdf * lambda_pdf);
 
           film->addPixel(i, j, ray.lambda, radiance);
         }
