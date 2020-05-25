@@ -13,9 +13,9 @@ using json = nlohmann::json;
 #include "samplers/random.h"
 
 int main() {
-  constexpr int width = 512;
-  constexpr int height = 512;
-  constexpr int num_samples = 100;
+  constexpr int width = 1000;
+  constexpr int height = 1000;
+  constexpr int num_samples = 200;
   const std::string path_to_lens = "../data/wide.22mm.json";
 
   constexpr Real plane_z = -1.0f;
