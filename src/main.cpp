@@ -34,10 +34,8 @@ int main() {
   Parallel parallel;
   parallel.parallelFor2D(
       [&](unsigned int i, unsigned int j) {
-        const Real u =
-            (2.0f * (i + sampler->getNext()) - film->width) / film->height;
-        const Real v =
-            (2.0f * (j + sampler->getNext()) - film->height) / film->height;
+        const Real u = (2.0f * (i + 0.5f) - film->width) / film->width;
+        const Real v = (2.0f * (j + 0.5f) - film->height) / film->height;
 
         for (int k = 0; k < num_samples; ++k) {
           // sample ray
@@ -67,6 +65,7 @@ int main() {
 
   // output ppm
   film->divide(num_samples);
+  film->writePPM("output.ppm");
   film->writeCSV("output.csv");
 
   return 0;
