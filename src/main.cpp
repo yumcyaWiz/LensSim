@@ -16,18 +16,19 @@ int main() {
   constexpr int width = 512;
   constexpr int height = 512;
   constexpr int num_samples = 100;
-  const bool reflection = true;
-  const std::string path_to_lens = "../data/dgauss.50mm.json";
+  const std::string path_to_lens = "../data/wide.22mm.json";
+
+  constexpr Real plane_z = -1.0f;
+  constexpr Real line_width = 0.1;
+  constexpr Real grid_interval = 0.2;
 
   std::shared_ptr<Sampler> sampler = std::make_shared<RandomSampler>();
 
-  std::shared_ptr<Film> film = std::make_shared<Film>(width, height);
+  std::shared_ptr<Film> film =
+      std::make_shared<Film>(width, height, 0.024, 0.024);
   LensSystem lsys(path_to_lens, film);
-  std::cout << lsys.image_focal_length << std::endl;
 
-  IBL ibl("../data/PaperMill_E_3k.hdr");
-
-  lsys.focus(-0.5);
+  lsys.focus(plane_z);
   lsys.computeExitPupilBounds();
 
   Parallel parallel;
@@ -39,31 +40,34 @@ int main() {
             (2.0f * (j + sampler->getNext()) - film->height) / film->height;
 
         for (int k = 0; k < num_samples; ++k) {
-          // sample wavelength
-          const Real lambda_pdf = 1.0f / (SPD::LAMBDA_MAX - SPD::LAMBDA_MIN);
-          const Real lambda =
-              sampler->getNext() * (SPD::LAMBDA_MAX - SPD::LAMBDA_MIN) +
-              SPD::LAMBDA_MIN;
-
           // sample ray
           Ray ray;
           Real ray_pdf;
-          if (!lsys.sampleRay(u, v, lambda, *sampler, ray, ray_pdf, reflection))
+          Real lambda = 550.0f;
+          if (!lsys.sampleRay(u, v, lambda, *sampler, ray, ray_pdf, false))
             continue;
           const Real cos = std::abs(dot(ray.direction, Vec3(0, 0, -1)));
 
-          // IBL
-          const Real radiance =
-              ibl.getRadiance(ray) * cos / (ray_pdf * lambda_pdf);
+          // Compute Intersection with Plane
+          const Real t = -(ray.origin.z() - plane_z) / ray.direction.z();
+          const Vec3 hitPos = ray(t);
 
-          film->addPixel(i, j, ray.lambda, radiance);
+          // Grid Color
+          const Real sx = std::sin(2 * PI / grid_interval * hitPos.x());
+          const Real sy = std::sin(2 * PI / grid_interval * hitPos.y());
+          Real intensity = 0;
+          if (std::abs(sx) < line_width || std::abs(sy) < line_width) {
+            intensity = 1.0f;
+          }
+
+          film->addPixel(i, j, intensity);
         }
       },
       32, 32, width, height);
 
   // output ppm
   film->divide(num_samples);
-  film->writeEXR("output.exr");
+  film->writeCSV("output.csv");
 
   return 0;
 }

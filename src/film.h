@@ -9,7 +9,6 @@
 #include "tinyexr.h"
 
 // prl2
-#include "core/spectrum.h"
 #include "core/vec3.h"
 
 using namespace Prl2;
@@ -22,7 +21,7 @@ class Film {
   Real height_length;
   Real diagonal_length;
 
-  Vec3* pixels;
+  Real* pixels;
 
   Film(unsigned int _width, unsigned int _height, Real _width_length = 0.036f,
        Real _height_length = 0.024f)
@@ -30,35 +29,23 @@ class Film {
         height(_height),
         width_length(_width_length),
         height_length(_height_length) {
-    pixels = new Vec3[width * height];
+    pixels = new Real[width * height];
     diagonal_length =
         std::sqrt(width_length * width_length + height_length * height_length);
   }
 
   ~Film() { delete[] pixels; }
 
-  Vec3 getPixel(unsigned int i, unsigned int j) const {
+  Real getPixel(unsigned int i, unsigned int j) const {
     return pixels[i + width * j];
   }
 
-  void setPixel(unsigned int i, unsigned int j, const Vec3& c) {
+  void setPixel(unsigned int i, unsigned int j, const Real& c) {
     pixels[i + width * j] = c;
   }
 
-  void addPixel(unsigned int i, unsigned int j, Real lambda, Real radiance) {
-    //対応する等色関数のインデックスを計算
-    const int index = (lambda - 380) / 5;
-
-    // CMFを線形補間して計算
-    Vec3 XYZ;
-    if (index >= 0 && index <= SPD::color_matching_func_samples - 1) {
-      XYZ[0] = radiance * SPD::color_matching_func_x[index];
-      XYZ[1] = radiance * SPD::color_matching_func_y[index];
-      XYZ[2] = radiance * SPD::color_matching_func_z[index];
-    }
-
-    // (i, j)に加算
-    pixels[i + width * j] += XYZ;
+  void addPixel(unsigned int i, unsigned int j, Real radiance) {
+    pixels[i + width * j] += radiance;
   }
 
   void divide(unsigned int k) {
@@ -81,7 +68,7 @@ class Film {
 
     for (int j = 0; j < height; ++j) {
       for (int i = 0; i < width; ++i) {
-        const Vec3 rgb = XYZ2RGB(getPixel(i, j));
+        const Vec3 rgb(getPixel(i, j));
         unsigned int r = std::min(
             static_cast<unsigned int>(255 * std::pow(rgb.x(), 1 / 2.2)), 255U);
         unsigned int g = std::min(
@@ -111,7 +98,7 @@ class Film {
     images[2].resize(width * height);
 
     for (size_t i = 0; i < width * height; ++i) {
-      const Vec3 rgb = XYZ2RGB(pixels[i]);
+      const Vec3 rgb(pixels[i]);
       images[0][i] = rgb.x();
       images[1][i] = rgb.y();
       images[2][i] = rgb.z();
@@ -154,6 +141,24 @@ class Film {
     delete[] header.channels;
     delete[] header.pixel_types;
     delete[] header.requested_pixel_types;
+  }
+
+  void writeCSV(const std::string& filename) const {
+    std::ofstream file(filename);
+
+    for (int j = 0; j < height; ++j) {
+      for (int i = 0; i < width; ++i) {
+        const Real r = getPixel(i, j);
+        if (i < width - 1) {
+          file << r << ",";
+        } else {
+          file << r;
+        }
+      }
+      file << std::endl;
+    }
+
+    file.close();
   }
 };
 
