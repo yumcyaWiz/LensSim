@@ -228,7 +228,7 @@ class LensSystem {
 
   bool computeCardinalPoints() {
     // raytrace from object plane
-    Real height = 0.01f * elements.front()->aperture_radius;
+    Real height = 0.001f * elements.front()->aperture_radius;
     Ray ray_in(Vec3(0, height, elements.front()->z - 1.0f), Vec3(0, 0, 1));
     Ray ray_out;
     if (!raytrace(ray_in, ray_out)) {
@@ -248,7 +248,7 @@ class LensSystem {
     image_focal_length = image_focal_z - image_principal_z;
 
     // raytrace from image plane
-    height = 0.01f * elements.back()->aperture_radius;
+    height = 0.001f * elements.back()->aperture_radius;
     ray_in = Ray(Vec3(0, height, 0), Vec3(0, 0, -1));
     if (!raytrace(ray_in, ray_out)) {
       std::cerr << "failed to compute cardinal points" << std::endl;
