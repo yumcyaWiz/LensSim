@@ -15,8 +15,8 @@ using json = nlohmann::json;
 #include "sphere.h"
 
 int main() {
-  constexpr int width = 128;
-  constexpr int height = 128;
+  constexpr int width = 512;
+  constexpr int height = 512;
   constexpr int num_samples = 100;
   const std::string path_to_lens = "../data/wide.22mm.json";
 

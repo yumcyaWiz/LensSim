@@ -17,6 +17,7 @@ add_executable(main src/sphere.cpp)
 # compile settings
 target_compile_features(main PRIVATE cxx_std_17)
 set_target_properties(main PROPERTIES CXX_EXTENSIONS OFF)
+target_compile_options(main PRIVATE -O2 -ftree-vectorize -DNDEBUG -march=native -mtune=native)
 
 # src
 target_sources(main PRIVATE src/core/spectrum.cpp src/parallel/parallel.cpp src/samplers/rng.cpp)
