@@ -45,7 +45,12 @@ class Film {
   ~Film() { delete[] pixels; }
 
   Vec3 getPixel(unsigned int i, unsigned int j) const {
-    return pixels[i + width * j] / samples[i + width * j];
+    unsigned int s = samples[i + width * j];
+    if (s > 0) {
+      return pixels[i + width * j] / s;
+    } else {
+      return Vec3(0, 0, 0);
+    }
   }
 
   void setPixel(unsigned int i, unsigned int j, const Vec3& c) {
