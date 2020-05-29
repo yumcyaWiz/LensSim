@@ -13,9 +13,9 @@ using json = nlohmann::json;
 #include "samplers/random.h"
 
 int main() {
-  constexpr int width = 1000;
-  constexpr int height = 1000;
-  constexpr int num_samples = 200;
+  constexpr int width = 1024;
+  constexpr int height = 1024;
+  constexpr int num_samples = 512;
   const std::string path_to_lens = "../data/wide.22mm.json";
 
   constexpr Real plane_z = -1.0f;
@@ -27,6 +27,7 @@ int main() {
   std::shared_ptr<Film> film =
       std::make_shared<Film>(width, height, 0.024, 0.024);
   LensSystem lsys(path_to_lens, film);
+  std::cout << lsys.image_focal_length << std::endl;
 
   lsys.focus(plane_z);
   lsys.computeExitPupilBounds();
