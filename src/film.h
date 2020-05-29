@@ -107,7 +107,7 @@ class Film {
     images[2].resize(width * height);
 
     for (size_t i = 0; i < width * height; ++i) {
-      const Vec3 rgb = pixels[i];
+      const Vec3 rgb = pixels[i] / samples[i];
       images[0][i] = rgb.x();
       images[1][i] = rgb.y();
       images[2][i] = rgb.z();
