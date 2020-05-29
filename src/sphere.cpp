@@ -15,9 +15,9 @@ using json = nlohmann::json;
 #include "sphere.h"
 
 int main() {
-  constexpr int width = 512;
-  constexpr int height = 512;
-  constexpr int num_samples = 1;
+  constexpr int width = 1024;
+  constexpr int height = 1024;
+  constexpr int num_samples = 1000;
   const std::string path_to_lens = "../data/wide.22mm.json";
 
   std::shared_ptr<Sampler> sampler = std::make_shared<RandomSampler>();
@@ -29,6 +29,8 @@ int main() {
   // Scene
   LinearIntersector intersector;
   intersector.add(std::make_shared<Sphere>(Vec3(0, 0, -1), 0.2));
+  intersector.add(std::make_shared<Sphere>(Vec3(0.5, 0, -2), 0.2));
+  intersector.add(std::make_shared<Sphere>(Vec3(1, 0, -3), 0.2));
 
   lsys.focus(-1);
   lsys.computeExitPupilBounds();
@@ -58,7 +60,6 @@ int main() {
   // output ppm
   film->divide(num_samples);
   film->writePPM("output.ppm");
-  film->writeCSV("output.csv");
 
   return 0;
 }
