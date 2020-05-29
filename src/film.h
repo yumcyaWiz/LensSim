@@ -34,9 +34,9 @@ class Film {
         std::sqrt(width_length * width_length + height_length * height_length);
 
     // Init Pixels
-    for(unsigned int j = 0; j < height; ++j) {
-      for(unsigned int i = 0; i < width; ++i) {
-        pixels[i + width*j] = 0.0f;
+    for (unsigned int j = 0; j < height; ++j) {
+      for (unsigned int i = 0; i < width; ++i) {
+        pixels[i + width * j] = 0.0f;
       }
     }
   }

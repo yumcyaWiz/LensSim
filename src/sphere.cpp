@@ -20,18 +20,17 @@ int main() {
   constexpr int num_samples = 1;
   const std::string path_to_lens = "../data/wide.22mm.json";
 
-  constexpr Real plane_z = -1.0f;
-  constexpr Real line_width = 0.1;
-  constexpr Real grid_interval = 0.2;
-
   std::shared_ptr<Sampler> sampler = std::make_shared<RandomSampler>();
 
   std::shared_ptr<Film> film =
       std::make_shared<Film>(width, height, 0.024, 0.024);
   LensSystem lsys(path_to_lens, film);
-  std::cout << lsys.image_focal_length << std::endl;
 
-  lsys.focus(plane_z);
+  // Scene
+  LinearIntersector intersector;
+  intersector.add(std::make_shared<Sphere>(Vec3(0, 0, -1), 0.2));
+
+  lsys.focus(-1);
   lsys.computeExitPupilBounds();
 
   Parallel parallel;
@@ -47,21 +46,11 @@ int main() {
           Real lambda = 550.0f;
           if (!lsys.sampleRay(u, v, lambda, *sampler, ray, ray_pdf, false))
             continue;
-          const Real cos = std::abs(dot(ray.direction, Vec3(0, 0, -1)));
 
-          // Compute Intersection with Plane
-          const Real t = -(ray.origin.z() - plane_z) / ray.direction.z();
-          const Vec3 hitPos = ray(t);
-
-          // Grid Color
-          const Real sx = std::sin(2 * PI / grid_interval * hitPos.x());
-          const Real sy = std::sin(2 * PI / grid_interval * hitPos.y());
-          Real intensity = 0;
-          if (std::abs(sx) < line_width || std::abs(sy) < line_width) {
-            intensity = 1.0f;
+          Hit res;
+          if (intersector.intersect(ray, res)) {
+            film->addPixel(i, j, 0.5f * (res.hitNormal + 1.0f));
           }
-
-          film->addPixel(i, j, intensity);
         }
       },
       32, 32, width, height);
