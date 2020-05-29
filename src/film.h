@@ -22,6 +22,7 @@ class Film {
   Real diagonal_length;
 
   Vec3* pixels;
+  unsigned int* samples;
 
   Film(unsigned int _width, unsigned int _height, Real _width_length = 0.036f,
        Real _height_length = 0.024f)
@@ -30,14 +31,21 @@ class Film {
         width_length(_width_length),
         height_length(_height_length) {
     pixels = new Vec3[width * height];
+    samples = new unsigned int[width * height];
     diagonal_length =
         std::sqrt(width_length * width_length + height_length * height_length);
+
+    for (int j = 0; j < height; ++j) {
+      for (int i = 0; i < width; ++i) {
+        samples[i + width * j] = 0;
+      }
+    }
   }
 
   ~Film() { delete[] pixels; }
 
   Vec3 getPixel(unsigned int i, unsigned int j) const {
-    return pixels[i + width * j];
+    return pixels[i + width * j] / samples[i + width * j];
   }
 
   void setPixel(unsigned int i, unsigned int j, const Vec3& c) {
@@ -46,6 +54,7 @@ class Film {
 
   void addPixel(unsigned int i, unsigned int j, const Vec3& radiance) {
     pixels[i + width * j] += radiance;
+    samples[i + width * j] += 1;
   }
 
   void divide(unsigned int k) {
