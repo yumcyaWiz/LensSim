@@ -21,7 +21,7 @@ class Film {
   Real height_length;
   Real diagonal_length;
 
-  Real* pixels;
+  Vec3* pixels;
 
   Film(unsigned int _width, unsigned int _height, Real _width_length = 0.036f,
        Real _height_length = 0.024f)
@@ -29,29 +29,22 @@ class Film {
         height(_height),
         width_length(_width_length),
         height_length(_height_length) {
-    pixels = new Real[width * height];
+    pixels = new Vec3[width * height];
     diagonal_length =
         std::sqrt(width_length * width_length + height_length * height_length);
-
-    // Init Pixels
-    for (unsigned int j = 0; j < height; ++j) {
-      for (unsigned int i = 0; i < width; ++i) {
-        pixels[i + width * j] = 0.0f;
-      }
-    }
   }
 
   ~Film() { delete[] pixels; }
 
-  Real getPixel(unsigned int i, unsigned int j) const {
+  Vec3 getPixel(unsigned int i, unsigned int j) const {
     return pixels[i + width * j];
   }
 
-  void setPixel(unsigned int i, unsigned int j, const Real& c) {
+  void setPixel(unsigned int i, unsigned int j, const Vec3& c) {
     pixels[i + width * j] = c;
   }
 
-  void addPixel(unsigned int i, unsigned int j, Real radiance) {
+  void addPixel(unsigned int i, unsigned int j, const Vec3& radiance) {
     pixels[i + width * j] += radiance;
   }
 
@@ -75,7 +68,7 @@ class Film {
 
     for (int j = 0; j < height; ++j) {
       for (int i = 0; i < width; ++i) {
-        const Vec3 rgb(getPixel(i, j));
+        const Vec3 rgb = getPixel(i, j);
         unsigned int r = std::min(
             static_cast<unsigned int>(255 * std::pow(rgb.x(), 1 / 2.2)), 255U);
         unsigned int g = std::min(
@@ -105,7 +98,7 @@ class Film {
     images[2].resize(width * height);
 
     for (size_t i = 0; i < width * height; ++i) {
-      const Vec3 rgb(pixels[i]);
+      const Vec3 rgb = pixels[i];
       images[0][i] = rgb.x();
       images[1][i] = rgb.y();
       images[2][i] = rgb.z();
@@ -155,11 +148,11 @@ class Film {
 
     for (int j = 0; j < height; ++j) {
       for (int i = 0; i < width; ++i) {
-        const Real r = getPixel(i, j);
+        const Vec3 r = getPixel(i, j);
         if (i < width - 1) {
-          file << r << ",";
+          file << r.x() << ",";
         } else {
-          file << r;
+          file << r.x();
         }
       }
       file << std::endl;
