@@ -52,6 +52,8 @@ int main() {
           Hit res;
           if (intersector.intersect(ray, res)) {
             film->addPixel(i, j, 0.5f * (res.hitNormal + 1.0f));
+          } else {
+            film->addPixel(i, j, Vec3(0));
           }
         }
       },
@@ -59,6 +61,7 @@ int main() {
 
   // output ppm
   film->writePPM("output.ppm");
+  film->writeEXR("output.exr");
 
   return 0;
 }
