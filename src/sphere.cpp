@@ -9,6 +9,7 @@ using json = nlohmann::json;
 #include "core/spectrum.h"
 #include "ibl.h"
 #include "lens-system/lens-system.h"
+#include "linear.h"
 #include "parallel/parallel.h"
 #include "samplers/random.h"
 #include "sphere.h"
