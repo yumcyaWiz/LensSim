@@ -12,7 +12,7 @@ endif()
 find_package(Threads REQUIRED)
 
 # executable
-add_executable(main src/grid.cpp)
+add_executable(main src/sphere.cpp)
 
 # compile settings
 target_compile_features(main PRIVATE cxx_std_17)
