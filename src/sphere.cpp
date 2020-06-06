@@ -15,9 +15,9 @@ using json = nlohmann::json;
 #include "sphere.h"
 
 int main() {
-  constexpr int width = 1024;
-  constexpr int height = 1024;
-  constexpr int num_samples = 1000;
+  constexpr int width = 512;
+  constexpr int height = 512;
+  constexpr int num_samples = 100;
   const std::string path_to_lens = "../data/fisheye.10mm.json";
 
   std::shared_ptr<Sampler> sampler = std::make_shared<RandomSampler>();
@@ -28,11 +28,12 @@ int main() {
 
   // Scene
   LinearIntersector intersector;
-  intersector.add(std::make_shared<Sphere>(Vec3(0, 0, -0.5), 0.2));
-  intersector.add(std::make_shared<Sphere>(Vec3(0.5, 0, -1), 0.2));
-  intersector.add(std::make_shared<Sphere>(Vec3(1, 0, -1.5), 0.2));
+  constexpr Real radius = 0.2f;
+  intersector.add(std::make_shared<Sphere>(Vec3(0, 0, -0.5), radius));
+  intersector.add(std::make_shared<Sphere>(Vec3(0.5, 0, -1), radius));
+  intersector.add(std::make_shared<Sphere>(Vec3(1, 0, -1.5), radius));
 
-  lsys.focus(-0.5);
+  lsys.focus(-100);
   lsys.computeExitPupilBounds();
 
   Parallel parallel;
@@ -51,7 +52,24 @@ int main() {
 
           Hit res;
           if (intersector.intersect(ray, res)) {
-            film->addPixel(i, j, 0.5f * (res.hitNormal + 1.0f));
+            // compute spherical coordinate
+            Real phi = std::atan2(res.hitNormal.z(), res.hitNormal.x());
+            if (phi < 0) phi += PI_MUL_2;
+            const Real theta =
+                std::acos(std::clamp(res.hitNormal.y(), -1.0f, 1.0f));
+
+            // checkerboard
+            Vec3 color(0.1, 0.1, 0.1);
+            constexpr Real sl = 0.1;
+            if (std::sin(phi / sl) * std::sin(theta / sl) > 0) {
+              color = Vec3(0.8, 0.8, 0.8);
+            }
+
+            // simple shading
+            const Vec3 sunDir = normalize(Vec3(1, 1, 1));
+            color *= std::max(dot(res.hitNormal, sunDir), 0.0f);
+
+            film->addPixel(i, j, color);
           } else {
             film->addPixel(i, j, Vec3(0));
           }
