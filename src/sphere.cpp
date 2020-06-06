@@ -33,16 +33,18 @@ int main() {
   intersector.add(std::make_shared<Sphere>(Vec3(0.5, 0, -1), radius));
   intersector.add(std::make_shared<Sphere>(Vec3(1, 0, -1.5), radius));
 
-  lsys.focus(-100);
+  lsys.focus(-1.5);
   lsys.computeExitPupilBounds();
 
   Parallel parallel;
   parallel.parallelFor2D(
       [&](unsigned int i, unsigned int j) {
-        const Real u = (2.0f * (i + 0.5f) - film->width) / film->width;
-        const Real v = (2.0f * (j + 0.5f) - film->height) / film->height;
-
         for (int k = 0; k < num_samples; ++k) {
+          const Real u =
+              (2.0f * (i + sampler->getNext()) - film->width) / film->width;
+          const Real v =
+              (2.0f * (j + sampler->getNext()) - film->height) / film->height;
+
           // sample ray
           Ray ray;
           Real ray_pdf;
