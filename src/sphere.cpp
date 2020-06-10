@@ -15,10 +15,10 @@ using json = nlohmann::json;
 #include "sphere.h"
 
 int main() {
-  constexpr int width = 512;
-  constexpr int height = 512;
-  constexpr int num_samples = 100;
-  const std::string path_to_lens = "../data/fisheye.10mm.json";
+  constexpr int width = 1024;
+  constexpr int height = 1024;
+  constexpr int num_samples = 1000;
+  const std::string path_to_lens = "../data/wide.22mm.json";
 
   std::shared_ptr<Sampler> sampler = std::make_shared<RandomSampler>();
 
@@ -29,11 +29,11 @@ int main() {
   // Scene
   LinearIntersector intersector;
   constexpr Real radius = 0.2f;
-  intersector.add(std::make_shared<Sphere>(Vec3(0, 0, -0.5), radius));
-  intersector.add(std::make_shared<Sphere>(Vec3(0.5, 0, -1), radius));
-  intersector.add(std::make_shared<Sphere>(Vec3(1, 0, -1.5), radius));
+  intersector.add(std::make_shared<Sphere>(Vec3(0, 0, -1), radius));
+  intersector.add(std::make_shared<Sphere>(Vec3(0.5, 0, -2), radius));
+  intersector.add(std::make_shared<Sphere>(Vec3(1, 0, -3), radius));
 
-  lsys.focus(-1.5);
+  lsys.focus(-2);
   lsys.computeExitPupilBounds();
 
   Parallel parallel;

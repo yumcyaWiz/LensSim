@@ -83,10 +83,10 @@ class LensSystem {
     if (!computeCardinalPoints()) exit(EXIT_FAILURE);
 
     // focus at z = -inf
-    if (!focus(-10000)) {
-      std::cerr << "failed to focus lens at z = -inf" << std::endl;
-      exit(EXIT_FAILURE);
-    }
+    // if (!focus(-10000)) {
+    //   std::cerr << "failed to focus lens at z = -inf" << std::endl;
+    //   exit(EXIT_FAILURE);
+    // }
   }
 
   bool loadJSON(const std::string& filename) {
