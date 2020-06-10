@@ -4,6 +4,8 @@ LensSim is a raytracer for Photographic Lens System.
 
 LensSim can simulate image of Lens System with IBL(Image Based Lighting) by Montecarlo Light Transportation.
 
+![](img.png)
+
 ## Features
 
 - [x] Ray Tracing
