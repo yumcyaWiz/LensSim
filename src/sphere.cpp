@@ -25,6 +25,9 @@ int main() {
       std::make_shared<Film>(width, height, 0.024, 0.024);
   LensSystem lsys(path_to_lens, film);
 
+  std::shared_ptr<Film> film_depth =
+      std::make_shared<Film>(width, height, 0.024, 0.024);
+
   // Scene
   LinearIntersector intersector;
   constexpr Real radius = 0.2f;
@@ -53,6 +56,9 @@ int main() {
 
           Hit res;
           if (intersector.intersect(ray, res)) {
+            // add depth
+            film_depth->addPixel(i, j, Vec3(res.t));
+
             // compute spherical coordinate
             Real phi = std::atan2(res.hitNormal.z(), res.hitNormal.x());
             if (phi < 0) phi += PI_MUL_2;
@@ -70,9 +76,11 @@ int main() {
             const Vec3 sunDir = normalize(Vec3(1, 1, 1));
             color *= std::max(dot(res.hitNormal, sunDir), 0.0f);
 
+            // add color
             film->addPixel(i, j, color);
           } else {
             film->addPixel(i, j, Vec3(0));
+            film_depth->addPixel(i, j, Vec3(0));
           }
         }
       },
@@ -82,6 +90,7 @@ int main() {
   // film->writePPM("output.ppm");
   // film->writeEXR("output.exr");
   film->writeTIFF("output.tiff");
+  film_depth->writeTIFF("depth.tiff");
 
   return 0;
 }
