@@ -10,3 +10,6 @@
 [submodule "ext/tinyexr"]
 	path = ext/tinyexr
 	url = git@github.com:syoyo/tinyexr.git
+[submodule "ext/tinydngloader"]
+	path = ext/tinydngloader
+	url = git@github.com:syoyo/tinydngloader.git
