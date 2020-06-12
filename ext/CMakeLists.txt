@@ -19,4 +19,5 @@ target_include_directories(tinyexr SYSTEM INTERFACE tinyexr)
 # tinydngloader
 add_library(tinydngloader INTERFACE)
 target_compile_definitions(tinydngloader INTERFACE TINY_DNG_LOADER_IMPLEMENTATION)
+target_compile_definitions(tinydngloader INTERFACE TINY_DNG_WRITER_IMPLEMENTATION)
 target_include_directories(tinydngloader SYSTEM INTERFACE tinydngloader)

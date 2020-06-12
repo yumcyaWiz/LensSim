@@ -79,9 +79,9 @@ int main() {
       32, 32, width, height);
 
   // output ppm
-  film->writePPM("output.ppm");
-  film->writeEXR("output.exr");
-  // film->writeTIFF("output.tiff");
+  // film->writePPM("output.ppm");
+  // film->writeEXR("output.exr");
+  film->writeTIFF("output.tiff");
 
   return 0;
 }
