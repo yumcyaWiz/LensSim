@@ -6,6 +6,7 @@
 #include <iostream>
 
 // ext
+#include "examples/dngwriter/tiny_dng_writer.h"
 #include "tinyexr.h"
 
 // prl2
