@@ -7,7 +7,6 @@
 using json = nlohmann::json;
 
 #include "core/spectrum.h"
-#include "ibl.h"
 #include "lens-system/lens-system.h"
 #include "linear.h"
 #include "parallel/parallel.h"
@@ -15,9 +14,9 @@ using json = nlohmann::json;
 #include "sphere.h"
 
 int main() {
-  constexpr int width = 1024;
-  constexpr int height = 1024;
-  constexpr int num_samples = 1000;
+  constexpr int width = 512;
+  constexpr int height = 512;
+  constexpr int num_samples = 100;
   const std::string path_to_lens = "../data/wide.22mm.json";
 
   std::shared_ptr<Sampler> sampler = std::make_shared<RandomSampler>();
@@ -82,6 +81,7 @@ int main() {
   // output ppm
   film->writePPM("output.ppm");
   film->writeEXR("output.exr");
+  // film->writeTIFF("output.tiff");
 
   return 0;
 }

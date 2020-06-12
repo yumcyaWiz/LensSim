@@ -3,7 +3,7 @@
 
 #include <string>
 
-// stb
+// stb.h
 #include "stb_image.h"
 
 // prl2

@@ -6,8 +6,11 @@
 #include <iostream>
 
 // ext
-#include "examples/dngwriter/tiny_dng_writer.h"
 #include "tinyexr.h"
+//
+#include "tiny_dng_loader.h"
+//
+#include "examples/dngwriter/tiny_dng_writer.h"
 
 // prl2
 #include "core/vec3.h"
@@ -179,6 +182,51 @@ class Film {
 
     file.close();
   }
+
+  // void writeTIFF(const std::string& filename) const {
+  //   std::vector<float> image(3 * width * height);
+  //   for (int j = 0; j < height; ++j) {
+  //     for (int i = 0; i < width; ++i) {
+  //       unsigned int s = samples[i];
+  //       Vec3 rgb;
+  //       if (s > 0) {
+  //         rgb = pixels[i] / s;
+  //       }
+
+  //       image[3 * i + 3 * width * j + 0] = rgb.x();
+  //       image[3 * i + 3 * width * j + 1] = rgb.y();
+  //       image[3 * i + 3 * width * j + 2] = rgb.z();
+  //     }
+  //   }
+
+  //   tinydngwriter::DNGImage tiff_image;
+  //   tiff_image.SetSubfileType(tinydngwriter::FILETYPE_REDUCEDIMAGE);
+  //   tiff_image.SetImageWidth(width);
+  //   tiff_image.SetImageLength(height);
+  //   tiff_image.SetRowsPerStrip(height);
+  //   uint16_t bps = 32;
+  //   tiff_image.SetBitsPerSample(1, &bps);
+  //   tiff_image.SetPlanarConfig(tinydngwriter::PLANARCONFIG_CONTIG);
+  //   tiff_image.SetCompression(tinydngwriter::COMPRESSION_NONE);
+  //   tiff_image.SetPhotometric(tinydngwriter::PHOTOMETRIC_RGB);
+  //   tiff_image.SetSamplesPerPixel(1);
+
+  //   uint16_t format = tinydngwriter::SAMPLEFORMAT_IEEEFP;
+  //   tiff_image.SetSampleFormat(1, &format);
+
+  //   tiff_image.SetImageData(reinterpret_cast<unsigned char*>(image.data()),
+  //                           image.size() * sizeof(float));
+
+  //   tinydngwriter::DNGWriter tiff_writer(false);
+  //   tiff_writer.AddImage(&tiff_image);
+
+  //   std::string err;
+  //   bool ret = tiff_writer.WriteToFile(filename.c_str(), &err);
+
+  //   if (!err.empty()) {
+  //     std::cerr << err << std::endl;
+  //   }
+  // }
 };
 
 #endif
