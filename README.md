@@ -22,6 +22,11 @@ LensSim can simulate image of Lens System with IBL(Image Based Lighting) by Mont
 * Aperture
 * Spherical Lens
 
+## Setup External Libraries
+```
+git submodule update --init
+```
+
 ## Build
 
 ```
