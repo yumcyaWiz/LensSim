@@ -10,3 +10,6 @@
 [submodule "ext/tinyexr"]
 	path = ext/tinyexr
 	url = git@github.com:syoyo/tinyexr.git
+[submodule "ext/pybind11"]
+	path = ext/pybind11
+	url = git@github.com:pybind/pybind11.git
