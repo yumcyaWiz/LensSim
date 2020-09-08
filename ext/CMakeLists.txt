@@ -23,3 +23,6 @@ target_compile_definitions(tinyexr INTERFACE
 target_include_directories(tinyexr SYSTEM INTERFACE
   tinyexr
 )
+
+# pybind11
+add_subdirectory(pybind11)
