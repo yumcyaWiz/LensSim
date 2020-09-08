@@ -19,5 +19,7 @@ PYBIND11_MODULE(LensSim, m) {
   py::class_<LensSystem>(m, "LensSystem")
       .def(py::init(&lsysFactory), py::arg("filename"), py::arg("width"),
            py::arg("height"), py::arg("width_length") = 0.025,
-           py::arg("height_length") = 0.025);
+           py::arg("height_length") = 0.025)
+      .def_readonly("object_focal_length", &LensSystem::object_focal_length)
+      .def_readonly("image_focal_length", &LensSystem::image_focal_length);
 }
