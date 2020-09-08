@@ -40,5 +40,6 @@ target_link_libraries(main PRIVATE LensSim)
 
 # pybind11
 pybind11_add_module(binding python/binding.cpp)
+set_target_properties(binding PROPERTIES OUTPUT_NAME "LensSim")
 target_include_directories(binding PRIVATE LensSim)
 target_link_libraries(binding PRIVATE LensSim)
