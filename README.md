@@ -19,6 +19,17 @@ LensSim can simulate image of Lens System with IBL(Image Based Lighting) by Mont
 * Aperture
 * Spherical Lens
 
+## Requirements
+
+* C++17
+* CMake 3.12 or Higher
+
+## Setup
+
+```
+git submodule update --init
+```
+
 ## Build
 
 ```

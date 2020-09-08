@@ -11,27 +11,34 @@ endif()
 # pthread
 find_package(Threads REQUIRED)
 
-# executable
-add_executable(main src/main.cpp)
+# LensSim
+add_library(LensSim STATIC)
 
 # compile settings
-target_compile_features(main PRIVATE cxx_std_17)
-set_target_properties(main PROPERTIES CXX_STANDARD_REQUIRED ON)
-set_target_properties(main PROPERTIES CXX_EXTENSIONS OFF)
+target_compile_features(LensSim PUBLIC cxx_std_17)
+set_target_properties(LensSim PROPERTIES CXX_STANDARD_REQUIRED ON)
+set_target_properties(LensSim PROPERTIES CXX_EXTENSIONS OFF)
 
 # src
-target_sources(main PRIVATE src/core/spectrum.cpp src/parallel/parallel.cpp src/samplers/rng.cpp)
+target_sources(LensSim PRIVATE src/core/spectrum.cpp src/parallel/parallel.cpp src/samplers/rng.cpp)
 
 # ext
 add_subdirectory(ext)
 
-# include and link
-target_include_directories(main PRIVATE src)
-target_link_libraries(main PRIVATE Threads::Threads)
-target_link_libraries(main PRIVATE pool)
-target_link_libraries(main PRIVATE nlohmann_json::nlohmann_json)
-target_link_libraries(main PRIVATE stb)
-target_link_libraries(main PRIVATE tinyexr)
+# LensSim - include and link
+target_include_directories(LensSim PUBLIC src)
+target_link_libraries(LensSim PUBLIC Threads::Threads)
+target_link_libraries(LensSim PUBLIC pool)
+target_link_libraries(LensSim PUBLIC nlohmann_json::nlohmann_json)
+target_link_libraries(LensSim PUBLIC stb)
+target_link_libraries(LensSim PUBLIC tinyexr)
+
+# IBL Example
+add_executable(main src/main.cpp)
+target_include_directories(main PRIVATE LensSim)
+target_link_libraries(main PRIVATE LensSim)
 
 # pybind11
 pybind11_add_module(binding python/binding.cpp)
+target_include_directories(binding PRIVATE LensSim)
+target_link_libraries(binding PRIVATE LensSim)
