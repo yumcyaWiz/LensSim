@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(LensSym LANGUAGES C CXX)
+project(LensSim LANGUAGES C CXX)
 
 # build type
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -12,7 +12,9 @@ endif()
 find_package(Threads REQUIRED)
 
 # LensSim
-add_library(LensSim STATIC)
+add_library(LensSim)
+# needed for pybind11 binding
+set_target_properties(LensSim PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 # compile settings
 target_compile_features(LensSim PUBLIC cxx_std_17)
@@ -20,7 +22,7 @@ set_target_properties(LensSim PROPERTIES CXX_STANDARD_REQUIRED ON)
 set_target_properties(LensSim PROPERTIES CXX_EXTENSIONS OFF)
 
 # src
-target_sources(LensSim PRIVATE src/core/spectrum.cpp src/parallel/parallel.cpp src/samplers/rng.cpp)
+target_sources(LensSim PRIVATE src/core/spectrum.cpp src/parallel/parallel.cpp src/samplers/rng.cpp src/lens-system/lens-system.cpp)
 
 # ext
 add_subdirectory(ext)
