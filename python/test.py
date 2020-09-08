@@ -2,4 +2,4 @@ import matplotlib.pyplot as plt
 
 from LensSim import LensSystem
 
-lsys = LensSystem("../data/dgauss50mm.json", 512, 512)
+lsys = LensSystem(filename="../data/dgauss50mm.json", width=512, height=512)

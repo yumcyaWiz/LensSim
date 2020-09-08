@@ -16,5 +16,8 @@ std::unique_ptr<LensSystem> lsysFactory(const std::string& filename,
 }
 
 PYBIND11_MODULE(LensSim, m) {
-  py::class_<LensSystem>(m, "LensSystem").def(py::init(&lsysFactory));
+  py::class_<LensSystem>(m, "LensSystem")
+      .def(py::init(&lsysFactory), py::arg("filename"), py::arg("width"),
+           py::arg("height"), py::arg("width_length") = 0.025,
+           py::arg("height_length") = 0.025);
 }
