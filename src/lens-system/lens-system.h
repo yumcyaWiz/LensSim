@@ -57,18 +57,25 @@ class LensSystem {
 
   LensSystem(const std::string& filename, const std::shared_ptr<Film> _film);
 
+  // load lens json
   bool loadJSON(const std::string& filename);
 
+  // raytrace
   bool raytrace(const Ray& ray_in, Ray& ray_out, bool reflection = false,
                 Sampler* sampler = nullptr) const;
 
+  // compute principal, focal points
   bool computeCardinalPoints();
 
+  // focus lens at z = focus_z
   bool focus(Real focus_z);
 
+  // compute exit pupil bounds at given point on film
   Bounds2 computeExitPupilBound(const Vec2& p) const;
+  // compute exit pupil bounds
   bool computeExitPupilBounds();
 
+  // sample ray going from image sensor to object space
   bool sampleRay(Real u, Real v, Real lambda, Sampler& sampler, Ray& ray_out,
                  Real& pdf, bool reflection = false) const;
 };
