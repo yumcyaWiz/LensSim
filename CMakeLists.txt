@@ -22,7 +22,13 @@ set_target_properties(LensSim PROPERTIES CXX_STANDARD_REQUIRED ON)
 set_target_properties(LensSim PROPERTIES CXX_EXTENSIONS OFF)
 
 # src
-target_sources(LensSim PRIVATE src/core/spectrum.cpp src/parallel/parallel.cpp src/samplers/rng.cpp src/lens-system/lens-system.cpp)
+target_sources(LensSim PRIVATE 
+  src/core/spectrum.cpp 
+  src/parallel/parallel.cpp 
+  src/samplers/rng.cpp 
+  src/lens-system/lens-system.cpp 
+  src/film.cpp
+)
 
 # ext
 add_subdirectory(ext)
