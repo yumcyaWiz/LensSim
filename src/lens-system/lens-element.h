@@ -21,6 +21,8 @@ class LensElement {
   Real curvature_radius;
   Real aperture_radius;
   Real thickness;
+  Real eta;
+
   Real z;
 
   SellmeierCofficient sellmeier;
@@ -30,10 +32,11 @@ class LensElement {
   LensElement(unsigned int _index, Real _aperture_radius, Real _thickness,
               Real _curvature_radius, Real _ior550, bool _is_aperture)
       : index(_index),
+        curvature_radius(_curvature_radius),
         aperture_radius(_aperture_radius),
         thickness(_thickness),
+        eta(_ior550),
         z(0),
-        curvature_radius(_curvature_radius),
         is_aperture(_is_aperture) {
     sellmeier =
         SellmeierCofficient(_ior550, 1.03, 0.23, 1.01, 0.006, 0.02, 103.56);

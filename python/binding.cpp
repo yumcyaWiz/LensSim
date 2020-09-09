@@ -35,6 +35,7 @@ PYBIND11_MODULE(LensSim, m) {
       .def_readonly("curvature_radius", &LensElement::curvature_radius)
       .def_readonly("aperture_radius", &LensElement::aperture_radius)
       .def_readonly("thickness", &LensElement::thickness)
+      .def_readonly("eta", &LensElement::eta)
       .def_readonly("z", &LensElement::z)
       .def_readonly("is_aperture", &LensElement::is_aperture);
 
