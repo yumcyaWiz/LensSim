@@ -13,6 +13,8 @@ namespace Prl2 {
 
 class alignas(16) Vec3 {
  public:
+  Real v[3];
+
   explicit Vec3() { v[0] = v[1] = v[2] = 0; }
   explicit Vec3(const Real& _x) {
     assert(!std::isnan(_x));
@@ -88,9 +90,6 @@ class alignas(16) Vec3 {
     v[2] /= k;
     return *this;
   }
-
- private:
-  Real v[3];
 };
 
 inline Vec3 operator+(const Vec3& v1, const Vec3& v2) {

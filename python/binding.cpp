@@ -22,4 +22,11 @@ PYBIND11_MODULE(LensSim, m) {
            py::arg("height_length") = 0.025)
       .def_readonly("object_focal_length", &LensSystem::object_focal_length)
       .def_readonly("image_focal_length", &LensSystem::image_focal_length);
+
+  py::class_<Vec3>(m, "Vec3", py::buffer_protocol())
+      .def_buffer([](Vec3& v) -> py::buffer_info {
+        return py::buffer_info(v.v, sizeof(Real),
+                               py::format_descriptor<Real>::format(), 1, {3},
+                               {sizeof(Real)});
+      });
 }
