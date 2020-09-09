@@ -321,3 +321,21 @@ bool LensSystem::sampleRay(Real u, Real v, Real lambda, Sampler& sampler,
 
   return true;
 }
+
+std::pair<std::vector<bool>, std::vector<Ray>> LensSystem::raytraceN(
+    const std::vector<Ray>& rays_in, bool reflection, Sampler* sampler) {
+  Parallel parallel;
+
+  std::vector<bool> traced(rays_in.size());
+  std::vector<Ray> rays_out(rays_in.size());
+
+  parallel.parallelFor1D(
+      [&](unsigned int i) {
+        Ray ray_out;
+        traced[i] = raytrace(rays_in[i], ray_out, reflection, sampler);
+        rays_out[i] = ray_out;
+      },
+      16, rays_in.size());
+
+  return {traced, rays_out};
+}

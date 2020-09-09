@@ -1,6 +1,9 @@
 #ifndef _LENS_SYSTEM_H
 #define _LENS_SYSTEM_H
 
+#include <tuple>
+#include <vector>
+
 #include "core/bounds2.h"
 #include "film.h"
 #include "lens-system/lens-element.h"
@@ -64,6 +67,11 @@ class LensSystem {
   bool raytrace(const Ray& ray_in, Ray& ray_out, bool reflection = false,
                 Sampler* sampler = nullptr) const;
 
+  // raytrace many rays
+  std::pair<std::vector<bool>, std::vector<Ray>> raytraceN(
+      const std::vector<Ray>& rays_in, bool reflection = false,
+      Sampler* sampler = nullptr);
+
   // compute principal, focal points
   bool computeCardinalPoints();
 
@@ -78,6 +86,9 @@ class LensSystem {
   // sample ray going from image sensor to object space
   bool sampleRay(Real u, Real v, Real lambda, Sampler& sampler, Ray& ray_out,
                  Real& pdf, bool reflection = false) const;
+
+  // sample points on front lens
+  bool samplePointsOnFrontLens() const;
 };
 
 #endif
