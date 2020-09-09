@@ -15,9 +15,9 @@ using json = nlohmann::json;
 int main() {
   constexpr int width = 512;
   constexpr int height = 512;
-  constexpr int num_samples = 10000;
-  const bool reflection = true;
-  const std::string path_to_lens = "../data/wide.22mm.json";
+  constexpr int num_samples = 100;
+  const bool reflection = false;
+  const std::string path_to_lens = "../data/dgauss50mm.json";
 
   std::shared_ptr<Sampler> sampler = std::make_shared<RandomSampler>();
 
@@ -27,7 +27,7 @@ int main() {
 
   IBL ibl("../data/PaperMill_E_3k.hdr");
 
-  lsys.focus(-0.2);
+  lsys.focus(-100);
   lsys.computeExitPupilBounds();
 
   Parallel parallel;
