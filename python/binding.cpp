@@ -2,7 +2,10 @@
 #include <string>
 
 #include "lens-system/lens-system.h"
+
+// pybind11
 #include "pybind11/pybind11.h"
+#include "pybind11/stl.h"
 
 namespace py = pybind11;
 
@@ -25,7 +28,8 @@ PYBIND11_MODULE(LensSim, m) {
            py::arg("height_length") = 0.025)
 
       .def_readonly("object_focal_length", &LensSystem::object_focal_length)
-      .def_readonly("image_focal_length", &LensSystem::image_focal_length);
+      .def_readonly("image_focal_length", &LensSystem::image_focal_length)
+      .def_readonly("elements", &LensSystem::elements);
 
   py::class_<LensElement>(m, "LensElement")
       .def_readonly("curvature_radius", &LensElement::curvature_radius)
