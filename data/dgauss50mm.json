@@ -39,7 +39,8 @@
     "curvature_radius": 0,
     "thickness": 4.5,
     "eta": 1,
-    "aperture_diameter": 17.1
+    "aperture_diameter": 17.1,
+    "is_aperture": true
   },
   "lens6": {
     "index": 6,

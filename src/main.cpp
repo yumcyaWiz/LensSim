@@ -27,7 +27,7 @@ int main() {
 
   IBL ibl("../data/PaperMill_E_3k.hdr");
 
-  lsys.focus(-100);
+  lsys.focus(-0.2);
   lsys.computeExitPupilBounds();
 
   Parallel parallel;

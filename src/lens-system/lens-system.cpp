@@ -22,8 +22,8 @@ LensSystem::LensSystem(const std::string& filename,
   // compute system length and z
   Real length = 0;
   for (auto itr = elements.rbegin(); itr != elements.rend(); itr++) {
-    length += (*itr)->thickness;
-    (*itr)->z = -length;
+    length += (*itr).thickness;
+    (*itr).z = -length;
   }
 
   // compute cardinal points
@@ -47,6 +47,7 @@ bool LensSystem::loadJSON(const std::string& filename) {
   // parse JSON
   JSON json;
   stream >> json;
+  stream.close();
 
   // push lens elements
   for (const auto& [key, value] : json.items()) {
@@ -58,25 +59,21 @@ bool LensSystem::loadJSON(const std::string& filename) {
     const Real aperture_radius =
         0.5f * value["aperture_diameter"].get<Real>() * 1e-3f;
 
-    // Aperture
-    if (curvature_radius == 0.0f) {
-      auto element =
-          std::make_shared<Aperture>(index, aperture_radius, thickness);
-      elements.push_back(element);
+    // optional
+    bool is_aperture = false;
+    if (value.count("is_aperture") > 0) {
+      is_aperture = value["is_aperture"].get<bool>();
     }
-    // Lens
-    else {
-      auto element = std::make_shared<Lens>(index, aperture_radius, thickness,
-                                            curvature_radius, ior);
-      elements.push_back(element);
-    }
+
+    const auto element = LensElement(index, aperture_radius, thickness,
+                                     curvature_radius, ior, is_aperture);
+    elements.push_back(element);
   }
 
   // sort lens elements by index
   std::sort(elements.begin(), elements.end(),
-            [](const std::shared_ptr<LensElement>& x1,
-               const std::shared_ptr<LensElement>& x2) {
-              return x1->index < x2->index;
+            [](const LensElement& x1, const LensElement& x2) {
+              return x1.index < x2.index;
             });
 
   return true;
@@ -94,13 +91,12 @@ bool LensSystem::raytrace(const Ray& ray_in, Ray& ray_out, bool reflection,
     // update element index
     element_index += ray.direction.z() > 0 ? 1 : -1;
     if (element_index < 0 || element_index >= elements.size()) break;
-    const auto element = elements[element_index];
+    const LensElement& element = elements[element_index];
 
     // Aperture
-    if (const std::shared_ptr<Aperture> aperture =
-            std::dynamic_pointer_cast<Aperture>(element)) {
+    if (element.is_aperture) {
       Hit res;
-      if (!aperture->intersect(ray, res)) return false;
+      if (!element.intersect(ray, res)) return false;
 
       // Update ray
       ray.origin = res.hitPos;
@@ -109,8 +105,7 @@ bool LensSystem::raytrace(const Ray& ray_in, Ray& ray_out, bool reflection,
       ior = 1.0f;
     }
     // Lens
-    else if (const std::shared_ptr<Lens> lens =
-                 std::dynamic_pointer_cast<Lens>(element)) {
+    else {
       // Compute Next Element IOR
       Real next_ior = 1.0f;
 
@@ -118,17 +113,15 @@ bool LensSystem::raytrace(const Ray& ray_in, Ray& ray_out, bool reflection,
       const int next_element_index =
           ray.direction.z() > 0 ? element_index : element_index - 1;
       if (next_element_index >= 0) {
-        const std::shared_ptr<LensElement> next_element =
-            elements[next_element_index];
-        if (const std::shared_ptr<Lens> next_lens =
-                std::dynamic_pointer_cast<Lens>(next_element)) {
-          next_ior = next_lens->ior(ray.lambda);
+        const LensElement& next_element = elements[next_element_index];
+        if (!next_element.is_aperture) {
+          next_ior = next_element.ior(ray.lambda);
         }
       }
 
       // Compute Intersection with Lens
       Hit res;
-      if (!lens->intersect(ray, res)) return false;
+      if (!element.intersect(ray, res)) return false;
 
       // Refract and Reflect
       Vec3 next_direction;
@@ -157,10 +150,6 @@ bool LensSystem::raytrace(const Ray& ray_in, Ray& ray_out, bool reflection,
 
       // update ior
       ior = next_ior;
-
-    } else {
-      std::cerr << "invalid lens element" << std::endl;
-      return false;
     }
   }
 
@@ -174,8 +163,8 @@ bool LensSystem::raytrace(const Ray& ray_in, Ray& ray_out, bool reflection,
 
 bool LensSystem::computeCardinalPoints() {
   // raytrace from object plane
-  Real height = 0.01f * elements.front()->aperture_radius;
-  Ray ray_in(Vec3(0, height, elements.front()->z - 1.0f), Vec3(0, 0, 1));
+  Real height = 0.01f * elements.front().aperture_radius;
+  Ray ray_in(Vec3(0, height, elements.front().z - 1.0f), Vec3(0, 0, 1));
   Ray ray_out;
   if (!raytrace(ray_in, ray_out)) {
     std::cerr << "failed to compute cardinal points" << std::endl;
@@ -194,7 +183,7 @@ bool LensSystem::computeCardinalPoints() {
   image_focal_length = image_focal_z - image_principal_z;
 
   // raytrace from image plane
-  height = 0.01f * elements.back()->aperture_radius;
+  height = 0.01f * elements.back().aperture_radius;
   ray_in = Ray(Vec3(0, height, 0), Vec3(0, 0, -1));
   if (!raytrace(ray_in, ray_out)) {
     std::cerr << "failed to compute cardinal points" << std::endl;
@@ -224,7 +213,7 @@ bool LensSystem::focus(Real focus_z) {
 
   // move lens elements
   for (auto& element : elements) {
-    element->z -= delta;
+    element.z -= delta;
   }
 
   // recompute cardinal points
@@ -246,8 +235,8 @@ Bounds2 LensSystem::computeExitPupilBound(const Vec2& p) const {
       const Real v =
           2.0f * static_cast<Real>(j) / num_exit_pupil_bounds_samples - 1.0f;
       const Vec3 samplePoint =
-          Vec3(lastElement->aperture_radius * u,
-               lastElement->aperture_radius * v, lastElement->z);
+          Vec3(lastElement.aperture_radius * u, lastElement.aperture_radius * v,
+               lastElement.z);
 
       // make ray
       const Vec3 origin(p.x(), p.y(), 0);
@@ -308,7 +297,7 @@ bool LensSystem::sampleRay(Real u, Real v, Real lambda, Sampler& sampler,
 
   // make input ray
   const Vec3 origin = Vec3(p.x(), p.y(), 0);
-  const Vec3 pBound3 = Vec3(pBound.x(), pBound.y(), elements.back()->z);
+  const Vec3 pBound3 = Vec3(pBound.x(), pBound.y(), elements.back().z);
   const Vec3 direction = normalize(pBound3 - origin);
   const Ray ray_in(origin, direction, lambda);
 

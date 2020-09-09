@@ -45,14 +45,14 @@ class LensSystem {
  public:
   std::shared_ptr<Film> film;
 
-  std::vector<std::shared_ptr<LensElement>> elements;
+  std::vector<LensElement> elements;
 
-  Real object_focal_z;
-  Real object_principal_z;
-  Real object_focal_length;
-  Real image_focal_z;
-  Real image_principal_z;
-  Real image_focal_length;
+  Real object_focal_z;       // 物側焦点位置
+  Real object_principal_z;   // 物側主点位置
+  Real object_focal_length;  // 物側焦点距離
+  Real image_focal_z;        // 像側焦点位置
+  Real image_principal_z;    // 像側主点位置
+  Real image_focal_length;   // 像側焦点距離
 
   static constexpr unsigned int num_exit_pupil_bounds = 64;
   static constexpr unsigned int num_exit_pupil_bounds_samples = 1024;

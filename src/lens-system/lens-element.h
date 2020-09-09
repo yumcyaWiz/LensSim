@@ -18,72 +18,64 @@ inline Vec3 alignNormal(const Vec3& v, const Vec3& n) {
 class LensElement {
  public:
   unsigned int index;
+  Real curvature_radius;
   Real aperture_radius;
   Real thickness;
   Real z;
-  LensElement(unsigned int _index, Real _aperture_radius, Real _thickness)
+
+  SellmeierCofficient sellmeier;
+
+  bool is_aperture;
+
+  LensElement(unsigned int _index, Real _aperture_radius, Real _thickness,
+              Real _curvature_radius, Real _ior550, bool _is_aperture)
       : index(_index),
         aperture_radius(_aperture_radius),
         thickness(_thickness),
-        z(0){};
-
-  virtual bool intersect(const Ray& ray, Hit& res) const = 0;
-};
-
-class Aperture : public LensElement {
- public:
-  Aperture(unsigned int _index, Real _aperture_radius, Real _thickness)
-      : LensElement(_index, _aperture_radius, _thickness){};
-
-  bool intersect(const Ray& ray, Hit& res) const override {
-    Real t = -(ray.origin.z() - z) / ray.direction.z();
-    Vec3 hitPos = ray(t);
-
-    Real r = hitPos.x() * hitPos.x() + hitPos.y() * hitPos.y();
-    if (r > aperture_radius * aperture_radius) return false;
-
-    res.t = t;
-    res.hitPos = ray(t);
-    res.hitNormal = alignNormal(ray.direction, Vec3(0, 0, -1));
-    return true;
-  };
-};
-
-class Lens : public LensElement {
- public:
-  Real curvature_radius;
-  SellmeierCofficient sellmeier;
-
-  Lens(unsigned int _index, Real _aperture_radius, Real _thickness,
-       Real _curvature_radius, Real _ior550)
-      : LensElement(_index, _aperture_radius, _thickness),
-        curvature_radius(_curvature_radius) {
+        z(0),
+        curvature_radius(_curvature_radius),
+        is_aperture(_is_aperture) {
     sellmeier =
         SellmeierCofficient(_ior550, 1.03, 0.23, 1.01, 0.006, 0.02, 103.56);
   }
 
-  bool intersect(const Ray& ray, Hit& res) const override {
-    Vec3 center(0, 0, z + curvature_radius);
-    Real b = dot(ray.origin - center, ray.direction);
-    Real c = length2(ray.origin - center) - curvature_radius * curvature_radius;
-    Real D = b * b - c;
-    if (D < 0) return false;
+  bool intersect(const Ray& ray, Hit& res) const {
+    if (is_aperture) {
+      Real t = -(ray.origin.z() - z) / ray.direction.z();
+      Vec3 hitPos = ray(t);
 
-    Real t0 = -b - std::sqrt(D);
-    Real t1 = -b + std::sqrt(D);
-    Real t = curvature_radius * ray.direction.z() > 0 ? t0 : t1;
-    Vec3 hitPos = ray(t);
+      Real r = hitPos.x() * hitPos.x() + hitPos.y() * hitPos.y();
+      if (r > aperture_radius * aperture_radius) return false;
 
-    Real r = hitPos.x() * hitPos.x() + hitPos.y() * hitPos.y();
-    if (r > aperture_radius * aperture_radius) return false;
+      res.t = t;
+      res.hitPos = ray(t);
+      res.hitNormal = alignNormal(ray.direction, Vec3(0, 0, -1));
+      return true;
+    } else {
+      Vec3 center(0, 0, z + curvature_radius);
+      Real b = dot(ray.origin - center, ray.direction);
+      Real c =
+          length2(ray.origin - center) - curvature_radius * curvature_radius;
+      Real D = b * b - c;
+      if (D < 0) return false;
 
-    res.t = t;
-    res.hitPos = hitPos;
-    res.hitNormal = alignNormal(ray.direction, normalize(res.hitPos - center));
-    return true;
+      Real t0 = -b - std::sqrt(D);
+      Real t1 = -b + std::sqrt(D);
+      Real t = curvature_radius * ray.direction.z() > 0 ? t0 : t1;
+      Vec3 hitPos = ray(t);
+
+      Real r = hitPos.x() * hitPos.x() + hitPos.y() * hitPos.y();
+      if (r > aperture_radius * aperture_radius) return false;
+
+      res.t = t;
+      res.hitPos = hitPos;
+      res.hitNormal =
+          alignNormal(ray.direction, normalize(res.hitPos - center));
+      return true;
+    }
   }
 
-  Real ior(Real lambda) { return sellmeier.ior(lambda); }
+  Real ior(Real lambda) const { return sellmeier.ior(lambda); }
 };
 
 #endif
