@@ -15,6 +15,9 @@ std::unique_ptr<LensSystem> lsysFactory(const std::string& filename,
   return std::make_unique<LensSystem>(filename, film);
 }
 
+Vec3 vec3test() { return Vec3(1, 2, 3); }
+Vec3 vec3test2(const Vec3& v1, const Vec3& v2) { return v1 + v2; }
+
 PYBIND11_MODULE(LensSim, m) {
   py::class_<LensSystem>(m, "LensSystem")
       .def(py::init(&lsysFactory), py::arg("filename"), py::arg("width"),
@@ -24,9 +27,15 @@ PYBIND11_MODULE(LensSim, m) {
       .def_readonly("image_focal_length", &LensSystem::image_focal_length);
 
   py::class_<Vec3>(m, "Vec3", py::buffer_protocol())
+      .def(py::init<>())
+      .def(py::init<Real>())
+      .def(py::init<Real, Real, Real>())
       .def_buffer([](Vec3& v) -> py::buffer_info {
         return py::buffer_info(v.v, sizeof(Real),
                                py::format_descriptor<Real>::format(), 1, {3},
                                {sizeof(Real)});
       });
+
+  m.def("vec3test", &vec3test, "");
+  m.def("vec3test2", &vec3test2, "");
 }
