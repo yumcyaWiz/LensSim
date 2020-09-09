@@ -27,6 +27,12 @@ PYBIND11_MODULE(LensSim, m) {
       .def_readonly("object_focal_length", &LensSystem::object_focal_length)
       .def_readonly("image_focal_length", &LensSystem::image_focal_length);
 
+  py::class_<LensElement>(m, "LensElement")
+      .def_readonly("curvature_radius", &LensElement::curvature_radius)
+      .def_readonly("aperture_radius", &LensElement::aperture_radius)
+      .def_readonly("thickness", &LensElement::thickness)
+      .def_readonly("z", &LensElement::z);
+
   py::class_<Vec3>(m, "Vec3", py::buffer_protocol())
       .def(py::init<>())
       .def(py::init<Real>())
