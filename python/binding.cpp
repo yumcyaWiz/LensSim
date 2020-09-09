@@ -35,7 +35,8 @@ PYBIND11_MODULE(LensSim, m) {
       .def_readonly("curvature_radius", &LensElement::curvature_radius)
       .def_readonly("aperture_radius", &LensElement::aperture_radius)
       .def_readonly("thickness", &LensElement::thickness)
-      .def_readonly("z", &LensElement::z);
+      .def_readonly("z", &LensElement::z)
+      .def_readonly("is_aperture", &LensElement::is_aperture);
 
   py::class_<Vec3>(m, "Vec3", py::buffer_protocol())
       .def(py::init<>())
