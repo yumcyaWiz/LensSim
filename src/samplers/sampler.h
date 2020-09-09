@@ -13,7 +13,8 @@ namespace Prl2 {
 // 乱数を生成するクラス
 class Sampler {
  public:
-  Sampler() {}
+  Sampler() = default;
+  virtual ~Sampler() = default;
 
   // シード値を設定する
   virtual void setSeed(uint64_t seed) = 0;
