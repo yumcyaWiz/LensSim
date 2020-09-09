@@ -23,6 +23,7 @@ PYBIND11_MODULE(LensSim, m) {
       .def(py::init(&lsysFactory), py::arg("filename"), py::arg("width"),
            py::arg("height"), py::arg("width_length") = 0.025,
            py::arg("height_length") = 0.025)
+
       .def_readonly("object_focal_length", &LensSystem::object_focal_length)
       .def_readonly("image_focal_length", &LensSystem::image_focal_length);
 
@@ -35,6 +36,11 @@ PYBIND11_MODULE(LensSim, m) {
                                py::format_descriptor<Real>::format(), 1, {3},
                                {sizeof(Real)});
       });
+
+  py::class_<Ray>(m, "Ray", py::buffer_protocol())
+      .def(py::init<>())
+      .def(py::init<Vec3, Vec3, Real>(), py::arg("origin"),
+           py::arg("direction"), py::arg("lambda") = 550.0);
 
   m.def("vec3test", &vec3test, "");
   m.def("vec3test2", &vec3test2, "");
