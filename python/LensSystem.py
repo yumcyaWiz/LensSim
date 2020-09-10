@@ -13,6 +13,18 @@ class LensSystem:
     def focal_length(self):
         return self.lsys.image_focal_length
 
+    def vertical_fov(self):
+        return self.lsys.vertical_fov
+
+    def horizontal_fov(self):
+        return self.lsys.horizontal_fov
+
+    def diagonal_fov(self):
+        return self.lsys.diagonal_fov
+
+    def length(self):
+        return self.lsys.system_length
+
     def plot(self):
         """
         plot LensSystem with matplotlib
@@ -88,3 +100,11 @@ class LensSystem:
         ax.grid('on')
         plt.xlabel('$z \mathrm{[mm]}$')
         plt.ylabel('$y \mathrm{[mm]}$')
+
+        return ax
+
+    def optical_path_diagram(self, n_rays=10):
+        # Plot Lenses
+        ax = self.plot()
+
+        return ax
