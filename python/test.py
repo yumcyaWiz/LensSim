@@ -9,7 +9,5 @@ lsys = LensSystem("../data/dgauss50mm.json", width=512,
 print(lsys.focal_length())
 print(np.degrees(lsys.vertical_fov()))
 
-# lsys.optical_path_diagram()
-# plt.show()
-
-print(lsys.lsys.raytrace_path(Ray(Vec3(0, 0, 0), Vec3(0, 0, 1))))
+lsys.optical_path_diagram()
+plt.show()

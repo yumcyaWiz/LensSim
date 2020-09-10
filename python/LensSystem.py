@@ -94,17 +94,44 @@ class LensSystem:
         length = max(z_list) - min(z_list)
         max_aperture_radius = max([
             element.aperture_radius for element in self.lsys.elements])
-        ax.set_xlim([min(z_list) - 0.3*length, max(z_list) + 0.3*length])
+        ax.set_xlim([min(z_list) - 0.3*length, 0.3*length])
         ax.set_ylim([-1.1 * max_aperture_radius, 1.1*max_aperture_radius])
         ax.set_aspect('equal')
         ax.grid('on')
-        plt.xlabel('$z \mathrm{[mm]}$')
-        plt.ylabel('$y \mathrm{[mm]}$')
+        plt.xlabel('$z \mathrm{[m]}$')
+        plt.ylabel('$y \mathrm{[m]}$')
 
         return ax
 
     def optical_path_diagram(self, n_rays=10):
         # Plot Lenses
         ax = self.plot()
+
+        # Plot Optical Path
+        for i in range(n_rays):
+            u = 2*(i + 0.5)/n_rays - 1
+            h = self.lsys.elements[0].aperture_radius
+            rays = self.lsys.raytrace_path(
+                LensSim.Ray(
+                    LensSim.Vec3(0, u*h, self.lsys.elements[0].z - 1),
+                    LensSim.Vec3(0, 0, 1)
+                )
+            )
+
+            # Optical Path
+            line_x = list(map(lambda x: x.origin[2], rays))
+            line_y = list(map(lambda x: x.origin[1], rays))
+
+            # add last path
+            if len(line_x) == len(self.lsys.elements) + 1:
+                # compute intersection with y = 0
+                if rays[-1].direction[1] != 0:
+                    t = -rays[-1].origin[1]/rays[-1].direction[1]
+                    line_x.append(rays[-1].origin[2] + t*rays[-1].direction[2])
+                    line_y.append(rays[-1].origin[1] + t*rays[-1].direction[1])
+
+            # Plot
+            # ax.scatter(line_x, line_y, c="lime", s=10)
+            ax.plot(line_x, line_y, c="lime")
 
         return ax
