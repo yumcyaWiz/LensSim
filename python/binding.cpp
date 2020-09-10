@@ -18,16 +18,28 @@ std::unique_ptr<LensSystem> lsysFactory(const std::string& filename,
   return std::make_unique<LensSystem>(filename, film);
 }
 
+std::string vec2string(const Vec3& v) {
+  return "(" + std::to_string(v.x()) + ", " + std::to_string(v.y()) + ", " +
+         std::to_string(v.z()) + ")";
+}
+std::string ray2string(const Ray& ray) {
+  return "origin: " + vec2string(ray.origin) + " " +
+         "direction: " + vec2string(ray.direction);
+}
+
 PYBIND11_MODULE(LensSim, m) {
   py::class_<Vec3>(m, "Vec3", py::buffer_protocol())
       .def(py::init<>())
       .def(py::init<Real>())
       .def(py::init<Real, Real, Real>())
+
       .def_buffer([](Vec3& v) -> py::buffer_info {
         return py::buffer_info(v.v, sizeof(Real),
                                py::format_descriptor<Real>::format(), 1, {3},
                                {sizeof(Real)});
-      });
+      })
+
+      .def("__repr__", &vec2string);
 
   py::class_<Ray>(m, "Ray")
       .def(py::init<>())
@@ -35,7 +47,9 @@ PYBIND11_MODULE(LensSim, m) {
            py::arg("direction"), py::arg("lambda") = 550.0)
 
       .def_readonly("origin", &Ray::origin)
-      .def_readonly("direction", &Ray::direction);
+      .def_readonly("direction", &Ray::direction)
+
+      .def("__repr__", &ray2string);
 
   py::class_<Sampler>(m, "Sampler");
 

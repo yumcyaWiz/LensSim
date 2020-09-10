@@ -19,4 +19,4 @@ ray_in = Ray(Vec3(0, 0, -1), Vec3(0, 0, 1))
 ray_out = Ray()
 lsys.lsys.raytrace(ray_in=ray_in,
                    ray_out=ray_out)
-print(ray_out.origin)
+print(ray_out)
