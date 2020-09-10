@@ -20,14 +20,23 @@ LensSystem::LensSystem(const std::string& filename,
   if (!loadJSON(filename)) exit(EXIT_FAILURE);
 
   // compute system length and z
-  Real length = 0;
+  Real _length = 0;
   for (auto itr = elements.rbegin(); itr != elements.rend(); itr++) {
-    length += (*itr).thickness;
-    (*itr).z = -length;
+    _length += (*itr).thickness;
+    (*itr).z = -_length;
   }
+  system_length = _length;
 
   // compute cardinal points
   if (!computeCardinalPoints()) exit(EXIT_FAILURE);
+
+  // compute fov
+  horizontal_fov =
+      2.0f * std::atan2(film->width_length, 2.0f * image_focal_length);
+  vertical_fov =
+      2.0f * std::atan2(film->height_length, 2.0f * image_focal_length);
+  diagonal_fov =
+      2.0f * std::atan2(film->diagonal_length, 2.0f * image_focal_length);
 
   // focus at z = -inf
   if (!focus(-10000)) {

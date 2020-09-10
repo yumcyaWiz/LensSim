@@ -47,6 +47,12 @@ class LensSystem {
 
   std::vector<LensElement> elements;
 
+  Real system_length;  // レンズ系の長さ
+
+  Real horizontal_fov;  // 水平FOV [radian]
+  Real vertical_fov;    // 垂直FOV [radian]
+  Real diagonal_fov;    // 対角FOV [radian]
+
   Real object_focal_z;       // 物側焦点位置
   Real object_principal_z;   // 物側主点位置
   Real object_focal_length;  // 物側焦点距離
