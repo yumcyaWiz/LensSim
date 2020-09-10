@@ -66,6 +66,8 @@ class LensSystem {
   // raytrace
   bool raytrace(const Ray& ray_in, Ray& ray_out, bool reflection = false,
                 Sampler* sampler = nullptr) const;
+  // raytrace and return raytraced path
+  std::vector<Vec3> raytrace_path(const Ray& ray_in) const;
 
   // raytrace many rays
   std::pair<std::vector<bool>, std::vector<Ray>> raytraceN(

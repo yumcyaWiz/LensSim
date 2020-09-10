@@ -161,6 +161,71 @@ bool LensSystem::raytrace(const Ray& ray_in, Ray& ray_out, bool reflection,
   return true;
 }
 
+std::vector<Vec3> LensSystem::raytrace_path(const Ray& ray_in) const {
+  std::vector<Vec3> ret;
+
+  int element_index = ray_in.direction.z() > 0 ? -1 : elements.size();
+  const int initial_element_index = element_index;
+
+  Ray ray = ray_in;
+  Real ior = 1.0f;
+  while (true) {
+    // push ray origin
+    ret.push_back(ray.origin);
+
+    // update element index
+    element_index += ray.direction.z() > 0 ? 1 : -1;
+    if (element_index < 0 || element_index >= elements.size()) break;
+    const LensElement& element = elements[element_index];
+
+    // Aperture
+    if (element.is_aperture) {
+      Hit res;
+      if (!element.intersect(ray, res)) break;
+
+      // Update ray
+      ray.origin = res.hitPos;
+
+      // Update ior
+      ior = 1.0f;
+    }
+    // Lens
+    else {
+      // Compute Next Element IOR
+      Real next_ior = 1.0f;
+
+      // Compute Next Element
+      const int next_element_index =
+          ray.direction.z() > 0 ? element_index : element_index - 1;
+      if (next_element_index >= 0) {
+        const LensElement& next_element = elements[next_element_index];
+        if (!next_element.is_aperture) {
+          next_ior = next_element.ior(ray.lambda);
+        }
+      }
+
+      // Compute Intersection with Lens
+      Hit res;
+      if (!element.intersect(ray, res)) break;
+
+      // Refract and Reflect
+      Vec3 next_direction;
+      if (!refract(-ray.direction, next_direction, res.hitNormal, ior,
+                   next_ior))
+        break;
+
+      // Set Next Ray
+      ray.origin = res.hitPos;
+      ray.direction = normalize(next_direction);
+
+      // update ior
+      ior = next_ior;
+    }
+  }
+
+  return ret;
+}
+
 bool LensSystem::computeCardinalPoints() {
   // raytrace from object plane
   Real height = 0.01f * elements.front().aperture_radius;
