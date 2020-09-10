@@ -170,8 +170,8 @@ bool LensSystem::raytrace(const Ray& ray_in, Ray& ray_out, bool reflection,
   return true;
 }
 
-std::vector<Vec3> LensSystem::raytrace_path(const Ray& ray_in) const {
-  std::vector<Vec3> ret;
+std::vector<Ray> LensSystem::raytrace_path(const Ray& ray_in) const {
+  std::vector<Ray> ret;
 
   int element_index = ray_in.direction.z() > 0 ? -1 : elements.size();
   const int initial_element_index = element_index;
@@ -180,7 +180,7 @@ std::vector<Vec3> LensSystem::raytrace_path(const Ray& ray_in) const {
   Real ior = 1.0f;
   while (true) {
     // push ray origin
-    ret.push_back(ray.origin);
+    ret.push_back(ray);
 
     // update element index
     element_index += ray.direction.z() > 0 ? 1 : -1;
