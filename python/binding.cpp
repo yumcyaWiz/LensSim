@@ -39,6 +39,7 @@ PYBIND11_MODULE(LensSim, m) {
                                {sizeof(Real)});
       })
 
+      .def("__getitem__", [](const Vec3& v, int i) { return v.v[i]; })
       .def("__repr__", &vec2string);
 
   py::class_<Ray>(m, "Ray")
