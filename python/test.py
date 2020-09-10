@@ -9,12 +9,13 @@ import matplotlib.pyplot as plt
 # print(lsys.image_focal_length)
 # print(lsys.elements[0].aperture_radius)
 
+from LensSim import Vec3, Ray, vec3test2
 from LensSystem import LensSystem
 
 lsys = LensSystem("../data/dgauss50mm.json", width=512,
                   height=512, width_length=0.025, height_length=0.025)
 
-print(lsys.focal_length())
-
-lsys.plot()
-plt.show()
+ray_in = Ray(Vec3(0, 0, -1), Vec3(0, 0, 1))
+ray_out = Ray()
+print(lsys.lsys.raytrace(ray_in=ray_in,
+                         ray_out=ray_out))

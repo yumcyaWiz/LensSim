@@ -22,23 +22,6 @@ Vec3 vec3test() { return Vec3(1, 2, 3); }
 Vec3 vec3test2(const Vec3& v1, const Vec3& v2) { return v1 + v2; }
 
 PYBIND11_MODULE(LensSim, m) {
-  py::class_<LensSystem>(m, "LensSystem")
-      .def(py::init(&lsysFactory), py::arg("filename"), py::arg("width"),
-           py::arg("height"), py::arg("width_length") = 0.025,
-           py::arg("height_length") = 0.025)
-
-      .def_readonly("object_focal_length", &LensSystem::object_focal_length)
-      .def_readonly("image_focal_length", &LensSystem::image_focal_length)
-      .def_readonly("elements", &LensSystem::elements);
-
-  py::class_<LensElement>(m, "LensElement")
-      .def_readonly("curvature_radius", &LensElement::curvature_radius)
-      .def_readonly("aperture_radius", &LensElement::aperture_radius)
-      .def_readonly("thickness", &LensElement::thickness)
-      .def_readonly("eta", &LensElement::eta)
-      .def_readonly("z", &LensElement::z)
-      .def_readonly("is_aperture", &LensElement::is_aperture);
-
   py::class_<Vec3>(m, "Vec3", py::buffer_protocol())
       .def(py::init<>())
       .def(py::init<Real>())
@@ -49,10 +32,35 @@ PYBIND11_MODULE(LensSim, m) {
                                {sizeof(Real)});
       });
 
-  py::class_<Ray>(m, "Ray", py::buffer_protocol())
+  py::class_<Ray>(m, "Ray")
       .def(py::init<>())
       .def(py::init<Vec3, Vec3, Real>(), py::arg("origin"),
            py::arg("direction"), py::arg("lambda") = 550.0);
+
+  py::class_<Sampler>(m, "Sampler");
+
+  py::class_<LensElement>(m, "LensElement")
+      .def_readonly("curvature_radius", &LensElement::curvature_radius)
+      .def_readonly("aperture_radius", &LensElement::aperture_radius)
+      .def_readonly("thickness", &LensElement::thickness)
+      .def_readonly("eta", &LensElement::eta)
+      .def_readonly("z", &LensElement::z)
+      .def_readonly("is_aperture", &LensElement::is_aperture);
+
+  py::class_<LensSystem>(m, "LensSystem")
+      .def(py::init(&lsysFactory), py::arg("filename"), py::arg("width"),
+           py::arg("height"), py::arg("width_length") = 0.025,
+           py::arg("height_length") = 0.025)
+
+      .def_readonly("object_focal_length", &LensSystem::object_focal_length)
+      .def_readonly("image_focal_length", &LensSystem::image_focal_length)
+      .def_readonly("elements", &LensSystem::elements)
+
+      .def("raytrace", &LensSystem::raytrace, py::arg("ray_in"),
+           py::arg("ray_out"), py::arg("reflection") = false,
+           py::arg("sampler") = nullptr)
+      .def("raytrace2", &LensSystem::raytrace2, py::arg("ray_in"),
+           py::arg("ray_out"));
 
   m.def("vec3test", &vec3test, "");
   m.def("vec3test2", &vec3test2, "");

@@ -14,6 +14,9 @@ class LensSystem:
         return self.lsys.image_focal_length
 
     def plot(self):
+        """
+        plot LensSystem with matplotlib
+        """
         fig, ax = plt.subplots()
         for i in range(len(self.lsys.elements)):
             element = self.lsys.elements[i]
