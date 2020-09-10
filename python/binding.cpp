@@ -18,9 +18,6 @@ std::unique_ptr<LensSystem> lsysFactory(const std::string& filename,
   return std::make_unique<LensSystem>(filename, film);
 }
 
-Vec3 vec3test() { return Vec3(1, 2, 3); }
-Vec3 vec3test2(const Vec3& v1, const Vec3& v2) { return v1 + v2; }
-
 PYBIND11_MODULE(LensSim, m) {
   py::class_<Vec3>(m, "Vec3", py::buffer_protocol())
       .def(py::init<>())
@@ -35,7 +32,10 @@ PYBIND11_MODULE(LensSim, m) {
   py::class_<Ray>(m, "Ray")
       .def(py::init<>())
       .def(py::init<Vec3, Vec3, Real>(), py::arg("origin"),
-           py::arg("direction"), py::arg("lambda") = 550.0);
+           py::arg("direction"), py::arg("lambda") = 550.0)
+
+      .def_readonly("origin", &Ray::origin)
+      .def_readonly("direction", &Ray::direction);
 
   py::class_<Sampler>(m, "Sampler");
 
@@ -58,10 +58,5 @@ PYBIND11_MODULE(LensSim, m) {
 
       .def("raytrace", &LensSystem::raytrace, py::arg("ray_in"),
            py::arg("ray_out"), py::arg("reflection") = false,
-           py::arg("sampler") = nullptr)
-      .def("raytrace2", &LensSystem::raytrace2, py::arg("ray_in"),
-           py::arg("ray_out"));
-
-  m.def("vec3test", &vec3test, "");
-  m.def("vec3test2", &vec3test2, "");
+           py::arg("sampler") = nullptr);
 }
