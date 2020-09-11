@@ -25,6 +25,18 @@ class LensSystem:
     def length(self):
         return self.lsys.system_length
 
+    def object_focal_z(self):
+        return self.lsys.object_focal_z
+
+    def object_principal_z(self):
+        return self.lsys.object_principal_z
+
+    def image_focal_z(self):
+        return self.lsys.image_focal_z
+
+    def image_principal_z(self):
+        return self.lsys.image_principal_z
+
     def plot(self):
         """
         plot LensSystem with matplotlib
@@ -133,5 +145,11 @@ class LensSystem:
             # Plot
             # ax.scatter(line_x, line_y, c="lime", s=10)
             ax.plot(line_x, line_y, c="lime")
+
+        # Plot Cardinal Points
+        ax.scatter(self.object_focal_z(), 0, c="red")
+        ax.scatter(self.object_principal_z(), 0, c="blue")
+        ax.scatter(self.image_focal_z(), 0, c="red")
+        ax.scatter(self.image_principal_z(), 0, c="blue")
 
         return ax
