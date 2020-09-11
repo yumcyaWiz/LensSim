@@ -94,7 +94,7 @@ class LensSystem {
 
   // compute exit pupil
   std::pair<GridData<Real>, std::array<Real, 4>> computeExitPupil(
-      const Vec2& pFilm, unsigned int n_grids) const;
+      const Vec2& pFilm, unsigned int n_grids = 512) const;
 
   // compute primary ray
   bool computePrimaryRay(const Vec3& origin, Ray& primary_ray,
