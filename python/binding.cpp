@@ -68,7 +68,11 @@ PYBIND11_MODULE(LensSim, m) {
            py::arg("height_length") = 0.025)
 
       .def_readonly("object_focal_length", &LensSystem::object_focal_length)
+      .def_readonly("object_focal_z", &LensSystem::object_focal_z)
+      .def_readonly("object_principal_z", &LensSystem::object_principal_z)
       .def_readonly("image_focal_length", &LensSystem::image_focal_length)
+      .def_readonly("image_focal_z", &LensSystem::image_focal_z)
+      .def_readonly("image_principal_z", &LensSystem::image_principal_z)
       .def_readonly("elements", &LensSystem::elements)
       .def_readonly("system_length", &LensSystem::system_length)
       .def_readonly("vertical_fov", &LensSystem::vertical_fov)
