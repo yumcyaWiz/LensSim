@@ -79,6 +79,26 @@ class LensElement {
   }
 
   Real ior(Real lambda) const { return sellmeier.ior(lambda); }
+
+  std::vector<Vec3> samplePoints(unsigned int N) const {
+    std::vector<Vec3> ret;
+
+    // grid sampling
+    for (int i = 0; i < N; ++i) {
+      const Real u = (2.0 * i - N) / N;
+      for (int j = 0; j < N; ++j) {
+        const Real v = (2.0 * j - N) / N;
+        const Real x = u * aperture_radius;
+        const Real y = v * aperture_radius;
+
+        if (x * x + y * y < aperture_radius * aperture_radius) {
+          ret.push_back(Vec3(x, y, z));
+        }
+      }
+    }
+
+    return ret;
+  }
 };
 
 #endif
