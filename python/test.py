@@ -9,5 +9,6 @@ lsys = LensSystem("../data/dgauss50mm.json", width=512,
 print(lsys.focal_length())
 print(np.degrees(lsys.vertical_fov()))
 
-lsys.plot_exit_pupil(pFilm=(0.01, 0), n_grids=512)
-plt.show()
+primary_ray = Ray()
+lsys.lsys.computePrimaryRay(Vec3(0, 0, -1), primary_ray)
+print(primary_ray)

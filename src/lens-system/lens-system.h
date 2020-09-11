@@ -98,7 +98,7 @@ class LensSystem {
 
   // compute primary ray
   bool computePrimaryRay(const Vec3& origin, Ray& primary_ray,
-                         unsigned int n_grids = 100) const;
+                         unsigned int n_grids = 512) const;
 
   // sample ray going from image sensor to object space
   bool sampleRay(Real u, Real v, Real lambda, Sampler& sampler, Ray& ray_out,
