@@ -70,6 +70,14 @@ PYBIND11_MODULE(LensSim, m) {
 
   py::class_<Sampler>(m, "Sampler");
 
+  py::class_<GridData<Real>>(m, "GridData", py::buffer_protocol())
+      .def_buffer([](GridData<Real>& grid) -> py::buffer_info {
+        return py::buffer_info(grid.data.data(), sizeof(Real),
+                               py::format_descriptor<Real>::format(), 2,
+                               {grid.nrows, grid.ncols},
+                               {sizeof(Real) * grid.ncols, sizeof(Real)});
+      });
+
   py::class_<LensElement>(m, "LensElement")
       .def_readonly("curvature_radius", &LensElement::curvature_radius)
       .def_readonly("aperture_radius", &LensElement::aperture_radius)
