@@ -19,6 +19,14 @@ LensSystem::LensSystem(const std::string& filename,
   // load json
   if (!loadJSON(filename)) exit(EXIT_FAILURE);
 
+  // compute aperture index
+  for (int i = 0; i < elements.size(); ++i) {
+    if (elements[i].is_aperture) {
+      aperture_index = i;
+      break;
+    }
+  }
+
   // compute system length and z
   Real _length = 0;
   for (auto itr = elements.rbegin(); itr != elements.rend(); itr++) {

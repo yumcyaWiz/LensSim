@@ -48,6 +48,7 @@ class LensSystem {
   std::shared_ptr<Film> film;
 
   std::vector<LensElement> elements;
+  unsigned int aperture_index;
 
   Real system_length;  // レンズ系の長さ
 
