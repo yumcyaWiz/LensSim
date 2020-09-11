@@ -1,3 +1,5 @@
+from typing import Tuple
+
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
@@ -123,7 +125,7 @@ class LensSystem:
         for i in range(n_rays):
             u = 2*(i + 0.5)/n_rays - 1
             h = self.lsys.elements[0].aperture_radius
-            rays = self.lsys.raytrace_path(
+            rays = self.lsys.raytracePath(
                 LensSim.Ray(
                     LensSim.Vec3(0, u*h, self.lsys.elements[0].z - 1),
                     LensSim.Vec3(0, 0, 1)
@@ -151,5 +153,19 @@ class LensSystem:
         ax.scatter(self.object_principal_z(), 0, c="blue")
         ax.scatter(self.image_focal_z(), 0, c="red")
         ax.scatter(self.image_principal_z(), 0, c="blue")
+
+        return ax
+
+    def plot_exit_pupil(self, pFilm: Tuple[float, float] = (0, 0), n_grids: int = 100):
+        fig, ax = plt.subplots()
+
+        # compute exit pupil
+        grid, extent = self.lsys.computeExitPupil(
+            LensSim.Vec2(pFilm[0], pFilm[1]), n_grids)
+
+        # Plot
+        ax.imshow(grid, extent=extent, cmap="gray")
+        ax.set_xlabel("$x \mathrm{[m]}$")
+        ax.set_ylabel("$y \mathrm{[m]}$")
 
         return ax

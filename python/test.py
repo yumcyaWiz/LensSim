@@ -9,9 +9,5 @@ lsys = LensSystem("../data/dgauss50mm.json", width=512,
 print(lsys.focal_length())
 print(np.degrees(lsys.vertical_fov()))
 
-# lsys.optical_path_diagram()
-# plt.show()
-
-grid, extends = lsys.lsys.computeExitPupil(Vec2(0, 0), 100)
-plt.imshow(np.array(grid), extent=extends, cmap='gray')
+lsys.plot_exit_pupil(pFilm=(0.01, 0), n_grids=512)
 plt.show()
