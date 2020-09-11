@@ -86,15 +86,12 @@ class LensElement {
 
     // grid sampling
     for (int j = 0; j < N; ++j) {
-      const Real v = (2.0 * j - N) / N;
+      const Real v = (2.0 * (j + 0.5) - N) / N;
       for (int i = 0; i < N; ++i) {
-        const Real u = (2.0 * i - N) / N;
+        const Real u = (2.0 * (i + 0.5) - N) / N;
         const Real x = u * aperture_radius;
         const Real y = v * aperture_radius;
-
-        if (x * x + y * y < aperture_radius * aperture_radius) {
-          ret.set(j, i, Vec3(x, y, z));
-        }
+        ret.set(j, i, Vec3(x, y, z));
       }
     }
 
