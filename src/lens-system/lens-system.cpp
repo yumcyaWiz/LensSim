@@ -385,20 +385,37 @@ bool LensSystem::sampleRay(Real u, Real v, Real lambda, Sampler& sampler,
   return true;
 }
 
-std::pair<std::vector<bool>, std::vector<Ray>> LensSystem::raytraceN(
-    const std::vector<Ray>& rays_in, bool reflection, Sampler* sampler) {
+GridData<std::pair<bool, Ray>> LensSystem::raytraceN(
+    const GridData<Ray>& rays_in, bool reflection, Sampler* sampler) {
+  GridData<std::pair<bool, Ray>> ret(rays_in.nrows, rays_in.ncols);
+
   Parallel parallel;
-
-  std::vector<bool> traced(rays_in.size());
-  std::vector<Ray> rays_out(rays_in.size());
-
-  parallel.parallelFor1D(
-      [&](unsigned int i) {
+  parallel.parallelFor2D(
+      [&](unsigned int i, unsigned int j) {
+        bool traced;
         Ray ray_out;
-        traced[i] = raytrace(rays_in[i], ray_out, reflection, sampler);
-        rays_out[i] = ray_out;
-      },
-      16, rays_in.size());
+        traced = raytrace(rays_in.get(i, j), ray_out, reflection, sampler);
 
-  return {traced, rays_out};
+        ret.set(i, j, {traced, ray_out});
+      },
+      16, 16, rays_in.nrows, rays_in.ncols);
+
+  return ret;
+}
+
+std::pair<GridData<Real>, std::array<Real, 4>> LensSystem::computeExitPupil(
+    unsigned int n_grids) const {
+  const auto& lastElement = elements.back();
+
+  // compute extends
+  std::array<Real, 4> extends;
+  extends[0] = -lastElement.aperture_radius;
+  extends[1] = lastElement.aperture_radius;
+  extends[2] = -lastElement.aperture_radius;
+  extends[3] = lastElement.aperture_radius;
+
+  // compute grids
+  const auto grids = elements.back().samplePoints(n_grids);
+
+  // raytrace
 }

@@ -1,11 +1,13 @@
 #ifndef _LENS_SYSTEM_H
 #define _LENS_SYSTEM_H
 
+#include <array>
 #include <tuple>
 #include <vector>
 
 #include "core/bounds2.h"
 #include "film.h"
+#include "grid-data.h"
 #include "lens-system/lens-element.h"
 
 using namespace Prl2;
@@ -76,9 +78,9 @@ class LensSystem {
   std::vector<Ray> raytrace_path(const Ray& ray_in) const;
 
   // raytrace many rays
-  std::pair<std::vector<bool>, std::vector<Ray>> raytraceN(
-      const std::vector<Ray>& rays_in, bool reflection = false,
-      Sampler* sampler = nullptr);
+  GridData<std::pair<bool, Ray>> raytraceN(const GridData<Ray>& rays_in,
+                                           bool reflection = false,
+                                           Sampler* sampler = nullptr);
 
   // compute principal, focal points
   bool computeCardinalPoints();
@@ -90,6 +92,10 @@ class LensSystem {
   Bounds2 computeExitPupilBound(const Vec2& p) const;
   // compute exit pupil bounds
   bool computeExitPupilBounds();
+
+  // compute exit pupil
+  std::pair<GridData<Real>, std::array<Real, 4>> computeExitPupil(
+      unsigned int n_grids) const;
 
   // sample ray going from image sensor to object space
   bool sampleRay(Real u, Real v, Real lambda, Sampler& sampler, Ray& ray_out,
