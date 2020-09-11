@@ -75,8 +75,7 @@ class LensSystem {
   bool raytrace(const Ray& ray_in, Ray& ray_out, bool reflection = false,
                 Sampler* sampler = nullptr) const;
   // raytrace and return raytraced path
-  std::vector<Ray> raytrace_path(const Ray& ray_in) const;
-
+  std::vector<Ray> raytracePath(const Ray& ray_in) const;
   // raytrace many rays
   GridData<std::pair<bool, Ray>> raytraceN(const GridData<Ray>& rays_in,
                                            bool reflection = false,
@@ -97,12 +96,13 @@ class LensSystem {
   std::pair<GridData<Real>, std::array<Real, 4>> computeExitPupil(
       const Vec2& pFilm, unsigned int n_grids) const;
 
+  // compute primary ray
+  bool computePrimaryRay(const Vec3& origin, Ray& primary_ray,
+                         unsigned int n_grids = 100) const;
+
   // sample ray going from image sensor to object space
   bool sampleRay(Real u, Real v, Real lambda, Sampler& sampler, Ray& ray_out,
                  Real& pdf, bool reflection = false) const;
-
-  // sample points on front lens
-  bool samplePointsOnFrontLens() const;
 };
 
 #endif

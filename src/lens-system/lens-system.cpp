@@ -170,7 +170,7 @@ bool LensSystem::raytrace(const Ray& ray_in, Ray& ray_out, bool reflection,
   return true;
 }
 
-std::vector<Ray> LensSystem::raytrace_path(const Ray& ray_in) const {
+std::vector<Ray> LensSystem::raytracePath(const Ray& ray_in) const {
   std::vector<Ray> ret;
 
   int element_index = ray_in.direction.z() > 0 ? -1 : elements.size();
@@ -438,4 +438,42 @@ std::pair<GridData<Real>, std::array<Real, 4>> LensSystem::computeExitPupil(
   }
 
   return {exit_pupil, extends};
+}
+
+bool LensSystem::computePrimaryRay(const Vec3& origin, Ray& primary_ray,
+                                   unsigned int n_grids) const {
+  // compute grids
+  const GridData<Vec3> grids = elements.front().samplePoints(n_grids);
+
+  // make rays
+  GridData<Ray> rays_in(n_grids, n_grids);
+  for (int i = 0; i < n_grids; ++i) {
+    for (int j = 0; j < n_grids; ++j) {
+      rays_in.set(i, j, Ray(origin, normalize(grids.get(i, j) - origin)));
+    }
+  }
+
+  // raytrace
+  const auto result = raytraceN(rays_in);
+
+  // compute entrance pupil center
+  unsigned int n_average = 0;
+  Vec3 entrance_pupil_center;
+  for (int i = 0; i < n_grids; ++i) {
+    for (int j = 0; j < n_grids; ++j) {
+      if (result.get(i, j).first) {
+        entrance_pupil_center += grids.get(i, j);
+        n_average++;
+      }
+    }
+  }
+  if (n_average == 0) {
+    std::cerr << "failed to compute primary ray" << std::endl;
+    return false;
+  }
+  entrance_pupil_center /= n_average;
+
+  primary_ray = Ray(origin, normalize(entrance_pupil_center - origin));
+
+  return true;
 }
