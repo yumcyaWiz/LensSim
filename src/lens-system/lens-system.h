@@ -80,7 +80,7 @@ class LensSystem {
   // raytrace many rays
   GridData<std::pair<bool, Ray>> raytraceN(const GridData<Ray>& rays_in,
                                            bool reflection = false,
-                                           Sampler* sampler = nullptr);
+                                           Sampler* sampler = nullptr) const;
 
   // compute principal, focal points
   bool computeCardinalPoints();
@@ -95,7 +95,7 @@ class LensSystem {
 
   // compute exit pupil
   std::pair<GridData<Real>, std::array<Real, 4>> computeExitPupil(
-      unsigned int n_grids) const;
+      const Vec2& pFilm, unsigned int n_grids) const;
 
   // sample ray going from image sensor to object space
   bool sampleRay(Real u, Real v, Real lambda, Sampler& sampler, Ray& ray_out,

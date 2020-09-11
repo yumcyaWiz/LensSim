@@ -386,7 +386,7 @@ bool LensSystem::sampleRay(Real u, Real v, Real lambda, Sampler& sampler,
 }
 
 GridData<std::pair<bool, Ray>> LensSystem::raytraceN(
-    const GridData<Ray>& rays_in, bool reflection, Sampler* sampler) {
+    const GridData<Ray>& rays_in, bool reflection, Sampler* sampler) const {
   GridData<std::pair<bool, Ray>> ret(rays_in.nrows, rays_in.ncols);
 
   Parallel parallel;
@@ -404,7 +404,7 @@ GridData<std::pair<bool, Ray>> LensSystem::raytraceN(
 }
 
 std::pair<GridData<Real>, std::array<Real, 4>> LensSystem::computeExitPupil(
-    unsigned int n_grids) const {
+    const Vec2& pFilm, unsigned int n_grids) const {
   const auto& lastElement = elements.back();
 
   // compute extends
@@ -415,7 +415,27 @@ std::pair<GridData<Real>, std::array<Real, 4>> LensSystem::computeExitPupil(
   extends[3] = lastElement.aperture_radius;
 
   // compute grids
-  const auto grids = elements.back().samplePoints(n_grids);
+  const GridData<Vec3> grids = elements.back().samplePoints(n_grids);
+
+  // make rays
+  GridData<Ray> rays_in(n_grids, n_grids);
+  for (int i = 0; i < n_grids; ++i) {
+    for (int j = 0; j < n_grids; ++j) {
+      const Vec3 pFilm3 = Vec3(pFilm.x(), pFilm.y(), 0);
+      rays_in.set(i, j, Ray(pFilm3, normalize(grids.get(i, j) - pFilm3)));
+    }
+  }
 
   // raytrace
+  const auto result = raytraceN(rays_in);
+
+  // represent exit pupil as 0, 1
+  GridData<Real> exit_pupil(result.nrows, result.ncols);
+  for (int i = 0; i < result.nrows; ++i) {
+    for (int j = 0; j < result.ncols; ++j) {
+      exit_pupil.set(i, j, result.get(i, j).first);
+    }
+  }
+
+  return {exit_pupil, extends};
 }
