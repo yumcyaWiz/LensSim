@@ -28,6 +28,22 @@ std::string ray2string(const Ray& ray) {
 }
 
 PYBIND11_MODULE(LensSim, m) {
+  py::class_<Vec2>(m, "Vec2", py::buffer_protocol())
+      .def(py::init<>())
+      .def(py::init<Real>())
+      .def(py::init<Real, Real>())
+
+      .def_buffer([](Vec2& v) -> py::buffer_info {
+        return py::buffer_info(v.v, sizeof(Real),
+                               py::format_descriptor<Real>::format(), 1, {2},
+                               {sizeof(Real)});
+      })
+
+      .def("__getitem__", [](const Vec2& v, int i) { return v.v[i]; })
+      .def("__repr__", [](const Vec2& v) {
+        return "(" + std::to_string(v.x()) + ", " + std::to_string(v.y()) + ")";
+      });
+
   py::class_<Vec3>(m, "Vec3", py::buffer_protocol())
       .def(py::init<>())
       .def(py::init<Real>())
