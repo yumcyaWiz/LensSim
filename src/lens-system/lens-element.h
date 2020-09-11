@@ -7,6 +7,7 @@
 #include "core/ray.h"
 #include "core/vec2.h"
 #include "core/vec3.h"
+#include "grid-data.h"
 #include "lens-system/sellmeier.h"
 
 using namespace Prl2;
@@ -80,19 +81,19 @@ class LensElement {
 
   Real ior(Real lambda) const { return sellmeier.ior(lambda); }
 
-  std::vector<Vec3> samplePoints(unsigned int N) const {
-    std::vector<Vec3> ret;
+  GridData<Vec3> samplePoints(unsigned int N) const {
+    GridData<Vec3> ret(N, N);
 
     // grid sampling
-    for (int i = 0; i < N; ++i) {
-      const Real u = (2.0 * i - N) / N;
-      for (int j = 0; j < N; ++j) {
-        const Real v = (2.0 * j - N) / N;
+    for (int j = 0; j < N; ++j) {
+      const Real v = (2.0 * j - N) / N;
+      for (int i = 0; i < N; ++i) {
+        const Real u = (2.0 * i - N) / N;
         const Real x = u * aperture_radius;
         const Real y = v * aperture_radius;
 
         if (x * x + y * y < aperture_radius * aperture_radius) {
-          ret.push_back(Vec3(x, y, z));
+          ret.set(j, i, Vec3(x, y, z));
         }
       }
     }
