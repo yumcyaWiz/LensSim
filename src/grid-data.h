@@ -1,5 +1,8 @@
 #ifndef _GRID_DATA_H
 #define _GRID_DATA_H
+
+#include <vector>
+
 #include "core/type.h"
 
 using namespace Prl2;
@@ -10,13 +13,12 @@ class GridData {
   const unsigned int nrows;
   const unsigned int ncols;
 
-  T* data;
+  std::vector<T> data;
 
   GridData(unsigned int _nrows, unsigned int _ncols)
       : nrows(_nrows), ncols(_ncols) {
-    data = new T[ncols * nrows];
+    data.resize(nrows * ncols);
   }
-  ~GridData() { delete[] data; }
 
   T get(unsigned int i, unsigned int j) const { return data[j + ncols * i]; }
 
