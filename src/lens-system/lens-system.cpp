@@ -286,6 +286,35 @@ bool LensSystem::computeCardinalPoints() {
   return true;
 }
 
+bool LensSystem::computePupilPosition() {
+  // raytrace from pupil to object
+  Ray ray_in(Vec3(0, 0, elements[aperture_index].z),
+             normalize(Vec3(0, 0.01, -1)));
+  Ray ray_out;
+  if (!raytrace(ray_in, ray_out)) {
+    std::cerr << "failed to compute entrance pupil position" << std::endl;
+    return false;
+  }
+
+  // compute entrance pupil position
+  Real t = -ray_out.origin.y() / ray_out.direction.y();
+  entrance_pupil_z = ray_out(t).z();
+
+  // raytrace from pupil to image
+  ray_in =
+      Ray(Vec3(0, 0, elements[aperture_index].z), normalize(Vec3(0, 0.01, 1)));
+  if (!raytrace(ray_in, ray_out)) {
+    std::cerr << "failed to compute exit pupil position" << std::endl;
+    return false;
+  }
+
+  // compute exit pupil position
+  t = -ray_out.origin.y() / ray_out.direction.y();
+  exit_pupil_z = ray_out(t).z();
+
+  return true;
+}
+
 bool LensSystem::focus(Real focus_z) {
   const Real delta =
       0.5f * (object_principal_z - focus_z + image_principal_z -
