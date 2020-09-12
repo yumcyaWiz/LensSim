@@ -46,11 +46,14 @@ LensSystem::LensSystem(const std::string& filename,
   diagonal_fov =
       2.0f * std::atan2(film->diagonal_length, 2.0f * image_focal_length);
 
+  // compute pupil position
+  if (!computePupilPosition()) exit(EXIT_FAILURE);
+
   // focus at z = -inf
-  if (!focus(-10000)) {
-    std::cerr << "failed to focus lens at z = -inf" << std::endl;
-    exit(EXIT_FAILURE);
-  }
+  // if (!focus(-10000)) {
+  //   std::cerr << "failed to focus lens at z = -inf" << std::endl;
+  //   exit(EXIT_FAILURE);
+  // }
 }
 
 bool LensSystem::loadJSON(const std::string& filename) {
