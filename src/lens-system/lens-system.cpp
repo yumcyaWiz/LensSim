@@ -290,9 +290,11 @@ bool LensSystem::computeCardinalPoints() {
 }
 
 bool LensSystem::computePupilPosition() {
+  const auto& aperture = elements[aperture_index];
+
   // raytrace from pupil to object
-  Ray ray_in(Vec3(0, 0, elements[aperture_index].z),
-             normalize(Vec3(0, 0.01, -1)));
+  Ray ray_in(Vec3(0, 0.01 * aperture.aperture_radius, aperture.z),
+             Vec3(0, 0, -1));
   Ray ray_out;
   if (!raytrace(ray_in, ray_out)) {
     std::cerr << "failed to compute entrance pupil position" << std::endl;
@@ -305,7 +307,7 @@ bool LensSystem::computePupilPosition() {
 
   // raytrace from pupil to image
   ray_in =
-      Ray(Vec3(0, 0, elements[aperture_index].z), normalize(Vec3(0, 0.01, 1)));
+      Ray(Vec3(0, 0.01 * aperture.aperture_radius, aperture.z), Vec3(0, 0, 1));
   if (!raytrace(ray_in, ray_out)) {
     std::cerr << "failed to compute exit pupil position" << std::endl;
     return false;
