@@ -246,6 +246,36 @@ std::vector<Ray> LensSystem::raytracePath(const Ray& ray_in) const {
   return ret;
 }
 
+std::vector<ParaxialRay> LensSystem::raytraceParaxial(const ParaxialRay& ray_in,
+                                                      Real lambda) const {
+  std::vector<ParaxialRay> ret;
+  ret.push_back(ray_in);
+
+  Real ior = 1.0;
+  Real ior_prev = 1.0;
+  Real u_prev = ray_in.u;
+  Real h_prev = ray_in.h;
+  for (const auto& element : elements) {
+    // compute ior of element
+    ior = element.ior(lambda);
+
+    // compute paraxial variables
+    const Real u =
+        ior_prev / ior * u_prev +
+        (ior - ior_prev) / (ior_prev * element.curvature_radius) * h_prev;
+    const Real h = h_prev - element.thickness * u;
+
+    ret.push_back(ParaxialRay(u, h));
+
+    // update
+    ior_prev = ior;
+    u_prev = u;
+    h_prev = h;
+  }
+
+  return ret;
+}
+
 bool LensSystem::computeCardinalPoints() {
   // raytrace from object plane
   Real height = 0.01f * elements.front().aperture_radius;

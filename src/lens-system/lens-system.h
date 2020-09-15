@@ -43,6 +43,15 @@ inline Vec2 rotate2D(const Vec2& p, Real theta) {
               p.x() * std::sin(theta) + p.y() * std::cos(theta));
 }
 
+// 近軸光線追跡のレイ
+struct ParaxialRay {
+  Real u;  // z軸となす角度
+  Real h;  // 光線の高さ
+
+  ParaxialRay() {}
+  ParaxialRay(Real _u, Real _h) : u(_u), h(_h) {}
+};
+
 class LensSystem {
  public:
   std::shared_ptr<Film> film;
@@ -84,6 +93,10 @@ class LensSystem {
   GridData<std::pair<bool, Ray>> raytraceN(const GridData<Ray>& rays_in,
                                            bool reflection = false,
                                            Sampler* sampler = nullptr) const;
+
+  // paraxial raytrace
+  std::vector<ParaxialRay> raytraceParaxial(const ParaxialRay& ray_in,
+                                            Real lambda = 550.0) const;
 
   // compute principal, focal points
   bool computeCardinalPoints();
