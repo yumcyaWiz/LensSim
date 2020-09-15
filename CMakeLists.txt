@@ -51,3 +51,9 @@ pybind11_add_module(binding python/binding.cpp)
 set_target_properties(binding PROPERTIES OUTPUT_NAME "LensSim")
 target_include_directories(binding PRIVATE LensSim)
 target_link_libraries(binding PRIVATE LensSim)
+
+# copy build output to python/
+add_custom_command(TARGET binding POST_BUILD 
+  COMMAND "${CMAKE_COMMAND}" -E copy "$<TARGET_FILE:binding>" "${PROJECT_SOURCE_DIR}/python/$<TARGET_FILE_NAME:binding>" 
+  COMMENT "Copying build output to python/"
+)
