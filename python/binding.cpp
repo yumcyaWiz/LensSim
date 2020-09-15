@@ -86,8 +86,7 @@ PYBIND11_MODULE(LensSim, m) {
       .def_readonly("h", &ParaxialRay::h)
 
       .def("__repr__", [](const ParaxialRay& ray) {
-        return "u = " + std::to_string(ray.u) +
-               ", h = " + std::to_string(ray.h);
+        return "(" + std::to_string(ray.u) + ", " + std::to_string(ray.h) + ")";
       });
 
   py::class_<LensElement>(m, "LensElement")
