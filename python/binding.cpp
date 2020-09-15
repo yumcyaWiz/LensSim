@@ -121,6 +121,8 @@ PYBIND11_MODULE(LensSim, m) {
            py::arg("ray_out"), py::arg("reflection") = false,
            py::arg("sampler") = nullptr)
       .def("raytracePath", &LensSystem::raytracePath, py::arg("ray_in"))
+      .def("raytraceParaxial", &LensSystem::raytraceParaxial, py::arg("ray_in"),
+           py::arg("lambda") = 550.0)
       .def("computeExitPupil", &LensSystem::computeExitPupil, py::arg("pFilm"),
            py::arg("n_grids") = 512)
       .def("computePrimaryRay", &LensSystem::computePrimaryRay,
