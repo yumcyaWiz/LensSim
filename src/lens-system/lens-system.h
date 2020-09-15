@@ -70,7 +70,7 @@ class LensSystem {
   static constexpr unsigned int num_exit_pupil_bounds_samples = 1024;
   std::vector<Bounds2> exit_pupil_bounds;
 
-  LensSystem(const std::string& filename, const std::shared_ptr<Film> _film);
+  LensSystem(const std::string& filename, const std::shared_ptr<Film>& _film);
 
   // load lens json
   bool loadJSON(const std::string& filename);

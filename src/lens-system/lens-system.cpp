@@ -14,7 +14,7 @@ using JSON = nlohmann::json;
 #include "parallel/parallel.h"
 
 LensSystem::LensSystem(const std::string& filename,
-                       const std::shared_ptr<Film> _film)
+                       const std::shared_ptr<Film>& _film)
     : film(_film) {
   // load json
   if (!loadJSON(filename)) exit(EXIT_FAILURE);
