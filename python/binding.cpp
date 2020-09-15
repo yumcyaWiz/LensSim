@@ -78,6 +78,18 @@ PYBIND11_MODULE(LensSim, m) {
                                {sizeof(Real) * grid.ncols, sizeof(Real)});
       });
 
+  py::class_<ParaxialRay>(m, "ParaxialRay")
+      .def(py::init<>())
+      .def(py::init<Real, Real>())
+
+      .def_readonly("u", &ParaxialRay::u)
+      .def_readonly("h", &ParaxialRay::h)
+
+      .def("__repr__", [](const ParaxialRay& ray) {
+        return "u = " + std::to_string(ray.u) +
+               ", h = " + std::to_string(ray.h);
+      });
+
   py::class_<LensElement>(m, "LensElement")
       .def_readonly("curvature_radius", &LensElement::curvature_radius)
       .def_readonly("aperture_radius", &LensElement::aperture_radius)
