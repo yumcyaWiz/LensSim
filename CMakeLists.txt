@@ -57,3 +57,8 @@ add_custom_command(TARGET binding POST_BUILD
   COMMAND "${CMAKE_COMMAND}" -E copy "$<TARGET_FILE:binding>" "${PROJECT_SOURCE_DIR}/python/$<TARGET_FILE_NAME:binding>" 
   COMMENT "Copying build output to python/"
 )
+
+# test
+add_executable(test test/test.cpp)
+target_include_directories(test PRIVATE LensSim)
+target_link_libraries(test PRIVATE LensSim)
