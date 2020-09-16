@@ -8,16 +8,25 @@ LensSim can simulate image of Lens System with IBL(Image Based Lighting) by Mont
 
 - [x] Ray Tracing
 - [x] Focusing
-- [x] Exit Pupil Sampling
-- [x] Spectral Rendering with IBL
+- [x] Sampling Ray from Exit Pupil
 - [x] Vignetting
 - [x] Lens Flare
 - [x] Chromatic Aberration
+- [x] Paraxial Ray Tracing
+- [x] Spectral Rendering with IBL
+- [x] Python Binding
+- [ ] Geometric Point Spread Function(PSF)
+- [ ] Geometric Optical Transfer Function(OTF), Modulation Transfer Function(MTF)
+- [ ] Wavefront Aberration
+- [ ] Zernike Polynomial
+- [ ] Diffraction Point Spread Function(PSF)
+- [ ] Diffraction Optical Transfer Function(OTF), Modulation Transfer Function(MTF)
 
-### Lens Elements
+### Supported Lens Element
 
-* Aperture
-* Spherical Lens
+- [x] Aperture
+- [x] Spherical Lens
+- [ ] Aspheric Lens
 
 ## Requirements
 
@@ -38,6 +47,10 @@ cd build
 cmake -DCMAKE_BUILD_TYPE=Release ..
 make
 ```
+## Python Binding
+
+See `python/example.py`
+
 
 ## Externals
 
@@ -45,3 +58,4 @@ make
 * [nlohmann/json](https://github.com/nlohmann/json) - MIT License
 * [nothings/stb](https://github.com/nothings/stb) - Public Domain or MIT License 
 * [syoyo/tinyexr](https://github.com/syoyo/tinyexr) - 3-clause BSD License
+* [pybind/pybind11](https://github.com/pybind/pybind11) - BSD-style license 
