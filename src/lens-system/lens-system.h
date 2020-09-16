@@ -96,8 +96,8 @@ class LensSystem {
                                             int start = 0, int end = -1,
                                             Real lambda = 550.0) const;
 
-  // compute principal, focal points
-  bool computeCardinalPoints();
+  // compute principal, focal points, focal length
+  void computeCardinalPoints();
 
   // focus lens at z = focus_z
   bool focus(Real focus_z);

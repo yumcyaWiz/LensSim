@@ -36,7 +36,7 @@ LensSystem::LensSystem(const std::string& filename,
   system_length = _length;
 
   // compute cardinal points
-  if (!computeCardinalPoints()) exit(EXIT_FAILURE);
+  computeCardinalPoints();
 
   // compute fov
   horizontal_fov =
@@ -300,15 +300,30 @@ std::vector<ParaxialRay> LensSystem::raytraceParaxial(const ParaxialRay& ray_in,
   return ret;
 }
 
-bool LensSystem::computeCardinalPoints() {
+void LensSystem::computeCardinalPoints() {
   // compute image focal point
   // paraxial raytrace with (u, h) = (0, 1)
   auto result = raytraceParaxial(ParaxialRay(0, 1));
   image_focal_z = elements.back().z + result.back().h / result.back().u;
 
-  // compute object focal point
+  // compute principal point
+  image_principal_z = elements.back().z +
+                      (result.back().h - result.front().h) / result.back().u;
 
-  return true;
+  // compute image focal length
+  image_focal_length = image_focal_z - image_principal_z;
+
+  // compute object focal point
+  // paraxial reverse raytrace with (u, h) = (0, 1)
+  result = raytraceParaxial(ParaxialRay(0, 1), -1, 0);
+  object_focal_z = elements.back().z + result.back().h / result.back().u;
+
+  // compute object principal point
+  object_principal_z = elements.back().z +
+                       (result.back().h - result.front().h) / result.back().u;
+
+  // compute object focal length
+  object_focal_length = -(object_focal_z - object_principal_z);
 }
 
 bool LensSystem::focus(Real focus_z) {
@@ -324,7 +339,7 @@ bool LensSystem::focus(Real focus_z) {
   }
 
   // recompute cardinal points
-  if (!computeCardinalPoints()) return false;
+  computeCardinalPoints();
 
   return true;
 }
