@@ -281,11 +281,16 @@ std::vector<ParaxialRay> LensSystem::raytraceParaxial(const ParaxialRay& ray_in,
       // compute ior of element
       ior = element.ior(lambda);
 
+      // compute thickness
+      Real thickness = 0;
+      if (i != elements.size() - 1) {
+        thickness = element.thickness;
+      }
+
       // compute paraxial ray
       const Real u =
-          ior_prev / ior * u_prev +
-          (ior - ior_prev) / (ior * element.curvature_radius) * h_prev;
-      const Real h = h_prev - element.thickness * u;
+          ior_prev / ior * u_prev + (ior - ior_prev) / (ior * r) * h_prev;
+      const Real h = h_prev - thickness * u;
 
       // save paraxial ray
       ret.push_back(ParaxialRay(u, h));
@@ -299,22 +304,29 @@ std::vector<ParaxialRay> LensSystem::raytraceParaxial(const ParaxialRay& ray_in,
   // reverse paraxial raytrace
   else {
     for (int i = start_index; i >= end_index; --i) {
-      const auto& element = elements[i];
-
       // compute curvature radius
-      Real r = element.curvature_radius;
-      if (element.is_aperture) {
-        r = 1e9;
+      Real r = -elements[i].curvature_radius;
+      if (elements[i].is_aperture) {
+        r = -1e9;
       }
 
       // compute ior of element
-      ior = element.ior(lambda);
+      if (i > 0) {
+        ior = elements[i - 1].ior(lambda);
+      } else {
+        ior = 1.0;
+      }
+
+      // compute thickness
+      Real thickness = 0;
+      if (i > 0) {
+        thickness = elements[i - 1].thickness;
+      }
 
       // compute paraxial ray
       const Real u =
-          ior_prev / ior * u_prev +
-          (ior - ior_prev) / (ior * element.curvature_radius) * h_prev;
-      const Real h = h_prev - element.thickness * u;
+          ior_prev / ior * u_prev + (ior - ior_prev) / (ior * r) * h_prev;
+      const Real h = h_prev - thickness * u;
 
       // save paraxial ray
       ret.push_back(ParaxialRay(u, h));
