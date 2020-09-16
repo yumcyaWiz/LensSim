@@ -256,17 +256,21 @@ std::vector<ParaxialRay> LensSystem::raytraceParaxial(const ParaxialRay& ray_in,
   Real u_prev = ray_in.u;
   Real h_prev = ray_in.h;
   for (const auto& element : elements) {
-    // skip aperture
-    if (element.is_aperture) continue;
+    // compute curvature radius
+    Real r = element.curvature_radius;
+    if (element.is_aperture) {
+      r = 1e9;
+    }
 
     // compute ior of element
     ior = element.ior(lambda);
 
-    // compute paraxial variables
+    // compute paraxial ray
     const Real u = ior_prev / ior * u_prev +
                    (ior - ior_prev) / (ior * element.curvature_radius) * h_prev;
     const Real h = h_prev - element.thickness * u;
 
+    // save paraxial ray
     ret.push_back(ParaxialRay(u, h));
 
     // update
