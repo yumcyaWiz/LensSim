@@ -566,3 +566,36 @@ bool LensSystem::computePrimaryRay(const Vec3& origin, Ray& primary_ray,
 
   return true;
 }
+
+std::vector<Vec3> LensSystem::computeSpotDiagram(const Vec3& origin,
+                                                 unsigned int n_grids) const {
+  std::vector<Vec3> ret;
+
+  // compute grids
+  const GridData<Vec3> grids = elements.front().samplePoints(n_grids);
+
+  // make rays
+  GridData<Ray> rays_in(n_grids, n_grids);
+  for (int i = 0; i < n_grids; ++i) {
+    for (int j = 0; j < n_grids; ++j) {
+      rays_in.set(i, j, Ray(origin, normalize(grids.get(i, j) - origin)));
+    }
+  }
+
+  // raytrace
+  const auto result = raytraceN(rays_in);
+
+  // compute intersect position at image plane(z = 0)
+  for (int i = 0; i < n_grids; ++i) {
+    for (int j = 0; j < n_grids; ++j) {
+      if (result.get(i, j).first) {
+        const Ray& ray = result.get(i, j).second;
+        const Real t = -ray.origin.z() / ray.direction.z();
+        const Vec3 pFilm = ray(t);
+        ret.push_back(pFilm);
+      }
+    }
+  }
+
+  return ret;
+}
