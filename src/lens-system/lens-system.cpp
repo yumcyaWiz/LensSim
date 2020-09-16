@@ -585,12 +585,12 @@ std::vector<Vec3> LensSystem::computeSpotDiagram(const Vec3& origin,
   // raytrace
   const auto result = raytraceN(rays_in);
 
-  // compute intersect position at image plane(z = 0)
+  // compute intersect position at gaussian plane
   for (int i = 0; i < n_grids; ++i) {
     for (int j = 0; j < n_grids; ++j) {
       if (result.get(i, j).first) {
         const Ray& ray = result.get(i, j).second;
-        const Real t = -ray.origin.z() / ray.direction.z();
+        const Real t = -(ray.origin.z() - image_focal_z) / ray.direction.z();
         const Vec3 pFilm = ray(t);
         ret.push_back(pFilm);
       }
