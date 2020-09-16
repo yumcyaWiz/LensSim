@@ -108,7 +108,8 @@ class LensSystem:
         length = max(z_list) - min(z_list)
         max_aperture_radius = max([
             element.aperture_radius for element in self.lsys.elements])
-        ax.set_xlim([min(z_list) - 0.3*length, 0.3*length])
+        ax.set_xlim([min(z_list) - 0.3*length,
+                     self.image_focal_z() + 0.3*length])
         ax.set_ylim([-1.1 * max_aperture_radius, 1.1*max_aperture_radius])
         ax.set_aspect('equal')
         ax.grid('on')
@@ -138,9 +139,10 @@ class LensSystem:
 
             # add last path
             if len(line_x) == len(self.lsys.elements) + 1:
-                # compute intersection with y = 0
-                if rays[-1].direction[1] != 0:
-                    t = -rays[-1].origin[1]/rays[-1].direction[1]
+                # compute intersection with gaussian plane
+                if rays[-1].direction[2] != 0:
+                    t = -(rays[-1].origin[2] - self.image_focal_z()) / \
+                        rays[-1].direction[2]
                     line_x.append(rays[-1].origin[2] + t*rays[-1].direction[2])
                     line_y.append(rays[-1].origin[1] + t*rays[-1].direction[1])
 
