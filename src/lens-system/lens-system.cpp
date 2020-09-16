@@ -245,11 +245,11 @@ std::vector<ParaxialRay> LensSystem::raytraceParaxial(const ParaxialRay& ray_in,
 
   // compute start, end index
   int start_index = start;
-  if (start == -1) {
+  if (start_index == -1) {
     start_index = elements.size() - 1;
   }
   int end_index = end;
-  if (end == -1) {
+  if (end_index == -1) {
     end_index = elements.size() - 1;
   }
 
@@ -268,10 +268,8 @@ std::vector<ParaxialRay> LensSystem::raytraceParaxial(const ParaxialRay& ray_in,
   Real u_prev = ray_in.u;
   Real h_prev = ray_in.h;
 
-  const int idx_start = start_index < end_index ? start_index : end_index;
-  const int idx_end = start_index < end_index ? end_index : start_index;
-  const int idx_inc = end_index - start_index > 0 ? 1 : -1;
-  for (int i = idx_start; i <= idx_end; i += idx_inc) {
+  const int inc = end_index - start_index > 0 ? 1 : -1;
+  for (int i = start_index; i <= end_index; i += inc) {
     const auto& element = elements[i];
 
     // compute curvature radius
