@@ -44,7 +44,9 @@ class LensElement {
   }
 
   bool intersect(const Ray& ray, Hit& res) const {
-    if (is_aperture) {
+    // if element is aperture or curvature radius is too big, treat element as
+    // plane
+    if (is_aperture || curvature_radius > 10000) {
       Real t = -(ray.origin.z() - z) / ray.direction.z();
       Vec3 hitPos = ray(t);
 
