@@ -171,3 +171,23 @@ class LensSystem:
         ax.set_ylabel("$y \mathrm{[m]}$")
 
         return ax
+
+    def spot_diagram(self, origin: np.array, n_grids: int):
+        fig, ax = plt.subplots()
+
+        # compute spot diagram
+        spots = self.lsys.computeSpotDiagram(
+            LensSim.Vec3(origin[0], origin[1], origin[2]),
+            n_grids
+        )
+
+        # retrieve x, y
+        x = list(map(lambda x: x[0], spots))
+        y = list(map(lambda x: x[1], spots))
+
+        # Plot
+        ax.scatter(x, y, s=10)
+        ax.set_xlabel("$x \mathrm{[m]}$")
+        ax.set_ylabel("$y \mathrm{[m]}$")
+
+        return ax
