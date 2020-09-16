@@ -124,5 +124,7 @@ PYBIND11_MODULE(LensSim, m) {
       .def("computeExitPupil", &LensSystem::computeExitPupil, py::arg("pFilm"),
            py::arg("n_grids") = 512)
       .def("computePrimaryRay", &LensSystem::computePrimaryRay,
-           py::arg("origin"), py::arg("primary_ray"), py::arg("n_grids") = 512);
+           py::arg("origin"), py::arg("primary_ray"), py::arg("n_grids") = 512)
+      .def("computeSpotDiagram", &LensSystem::computeSpotDiagram,
+           py::arg("origin"), py::arg("n_grids"));
 }

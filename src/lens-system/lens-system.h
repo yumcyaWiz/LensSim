@@ -113,7 +113,7 @@ class LensSystem {
 
   // compute spot diagram
   std::vector<Vec3> computeSpotDiagram(const Vec3& origin,
-                                       unsigned int n_grids = 512) const;
+                                       unsigned int n_grids) const;
 
   // compute primary ray
   bool computePrimaryRay(const Vec3& origin, Ray& primary_ray,
