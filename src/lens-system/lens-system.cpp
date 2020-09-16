@@ -45,15 +45,6 @@ LensSystem::LensSystem(const std::string& filename,
       2.0f * std::atan2(film->height_length, 2.0f * image_focal_length);
   diagonal_fov =
       2.0f * std::atan2(film->diagonal_length, 2.0f * image_focal_length);
-
-  // compute pupil position
-  if (!computePupilPosition()) exit(EXIT_FAILURE);
-
-  // focus at z = -inf
-  // if (!focus(-10000)) {
-  //   std::cerr << "failed to focus lens at z = -inf" << std::endl;
-  //   exit(EXIT_FAILURE);
-  // }
 }
 
 bool LensSystem::loadJSON(const std::string& filename) {
@@ -321,37 +312,6 @@ bool LensSystem::computeCardinalPoints() {
 
   // compute object focal length
   object_focal_length = object_focal_z - object_principal_z;
-
-  return true;
-}
-
-bool LensSystem::computePupilPosition() {
-  const auto& aperture = elements[aperture_index];
-
-  // raytrace from pupil to object
-  Ray ray_in(Vec3(0, 0.01 * aperture.aperture_radius, aperture.z),
-             Vec3(0, 0, -1));
-  Ray ray_out;
-  if (!raytrace(ray_in, ray_out)) {
-    std::cerr << "failed to compute entrance pupil position" << std::endl;
-    return false;
-  }
-
-  // compute entrance pupil position
-  Real t = -ray_out.origin.y() / ray_out.direction.y();
-  entrance_pupil_z = ray_out(t).z();
-
-  // raytrace from pupil to image
-  ray_in =
-      Ray(Vec3(0, 0.01 * aperture.aperture_radius, aperture.z), Vec3(0, 0, 1));
-  if (!raytrace(ray_in, ray_out)) {
-    std::cerr << "failed to compute exit pupil position" << std::endl;
-    return false;
-  }
-
-  // compute exit pupil position
-  t = -ray_out.origin.y() / ray_out.direction.y();
-  exit_pupil_z = ray_out(t).z();
 
   return true;
 }

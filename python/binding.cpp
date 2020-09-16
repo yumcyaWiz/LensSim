@@ -113,8 +113,6 @@ PYBIND11_MODULE(LensSim, m) {
       .def_readonly("vertical_fov", &LensSystem::vertical_fov)
       .def_readonly("horizontal_fov", &LensSystem::horizontal_fov)
       .def_readonly("diagonal_fov", &LensSystem::diagonal_fov)
-      .def_readonly("entrance_pupil_z", &LensSystem::entrance_pupil_z)
-      .def_readonly("exit_pupil_z", &LensSystem::exit_pupil_z)
 
       .def("raytrace", &LensSystem::raytrace, py::arg("ray_in"),
            py::arg("ray_out"), py::arg("reflection") = false,
