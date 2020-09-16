@@ -1,11 +1,29 @@
 # LensSim
 
-LensSim is a raytracer for Photographic Lens System.
+LensSim is a C++ library and GUI tool for photographic lens system.
 
-LensSim can simulate image of Lens System with IBL(Image Based Lighting) by Montecarlo Light Transportation.
+It's goal is to make C++ library for optical computations in lens design, and make user-friendly Python GUI tool to help lens designer.
 
-![](img.png)
-![](img2.png)
+LensSim can simulate image of photographic lens with Image Based Lighting(IBL) by Montecarlo Light Transportation.
+
+## Gallery
+
+### Spectral Rendering with Image Based Lighting(IBL)
+
+Rendering of double gauss lens(`data/dgauss50mm.json`). 
+
+You can see some aberrations like chromatic aberration, and lens flare.
+
+see `src/main.cpp`
+
+![](img/img.png)
+
+### Optical Path Diagram
+
+see `python/example.py`
+
+![](img/img2.png)
+
 
 ## Features
 
@@ -38,11 +56,6 @@ LensSim can simulate image of Lens System with IBL(Image Based Lighting) by Mont
 
 ## Setup
 
-```
-git submodule update --init
-```
-
-## Setup External Libraries
 ```
 git submodule update --init
 ```
