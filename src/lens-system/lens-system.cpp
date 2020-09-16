@@ -268,31 +268,62 @@ std::vector<ParaxialRay> LensSystem::raytraceParaxial(const ParaxialRay& ray_in,
   Real u_prev = ray_in.u;
   Real h_prev = ray_in.h;
 
-  const int inc = end_index - start_index > 0 ? 1 : -1;
-  for (int i = start_index; i <= end_index; i += inc) {
-    const auto& element = elements[i];
+  if (start_index < end_index) {
+    for (int i = start_index; i <= end_index; ++i) {
+      const auto& element = elements[i];
 
-    // compute curvature radius
-    Real r = element.curvature_radius;
-    if (element.is_aperture) {
-      r = 1e9;
+      // compute curvature radius
+      Real r = element.curvature_radius;
+      if (element.is_aperture) {
+        r = 1e9;
+      }
+
+      // compute ior of element
+      ior = element.ior(lambda);
+
+      // compute paraxial ray
+      const Real u =
+          ior_prev / ior * u_prev +
+          (ior - ior_prev) / (ior * element.curvature_radius) * h_prev;
+      const Real h = h_prev - element.thickness * u;
+
+      // save paraxial ray
+      ret.push_back(ParaxialRay(u, h));
+
+      // update
+      ior_prev = ior;
+      u_prev = u;
+      h_prev = h;
     }
+  }
+  // reverse paraxial raytrace
+  else {
+    for (int i = start_index; i >= end_index; --i) {
+      const auto& element = elements[i];
 
-    // compute ior of element
-    ior = element.ior(lambda);
+      // compute curvature radius
+      Real r = element.curvature_radius;
+      if (element.is_aperture) {
+        r = 1e9;
+      }
 
-    // compute paraxial ray
-    const Real u = ior_prev / ior * u_prev +
-                   (ior - ior_prev) / (ior * element.curvature_radius) * h_prev;
-    const Real h = h_prev - element.thickness * u;
+      // compute ior of element
+      ior = element.ior(lambda);
 
-    // save paraxial ray
-    ret.push_back(ParaxialRay(u, h));
+      // compute paraxial ray
+      const Real u =
+          ior_prev / ior * u_prev +
+          (ior - ior_prev) / (ior * element.curvature_radius) * h_prev;
+      const Real h = h_prev - element.thickness * u;
 
-    // update
-    ior_prev = ior;
-    u_prev = u;
-    h_prev = h;
+      // save paraxial ray
+      ret.push_back(ParaxialRay(u, h));
+
+      // update
+      ior_prev = ior;
+      u_prev = u;
+      h_prev = h;
+    }
   }
 
   return ret;
@@ -314,10 +345,10 @@ void LensSystem::computeCardinalPoints() {
   // compute object focal point
   // paraxial reverse raytrace with (u, h) = (0, 1)
   result = raytraceParaxial(ParaxialRay(0, 1), -1, 0);
-  object_focal_z = elements.back().z + result.back().h / result.back().u;
+  object_focal_z = elements.front().z + result.back().h / result.back().u;
 
   // compute object principal point
-  object_principal_z = elements.back().z +
+  object_principal_z = elements.front().z +
                        (result.back().h - result.front().h) / result.back().u;
 
   // compute object focal length
