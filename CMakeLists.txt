@@ -1,10 +1,5 @@
-<<<<<<< HEAD
 cmake_minimum_required(VERSION 3.12)
 project(LensSim LANGUAGES C CXX)
-=======
-cmake_minimum_required(VERSION 3.10)
-project(LensSym LANGUAGES C CXX)
->>>>>>> master
 
 # build type
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -38,7 +33,6 @@ target_sources(LensSim PRIVATE
 # ext
 add_subdirectory(ext)
 
-<<<<<<< HEAD
 # LensSim - include and link
 target_include_directories(LensSim PUBLIC src)
 target_link_libraries(LensSim PUBLIC Threads::Threads)
@@ -66,12 +60,3 @@ add_custom_command(TARGET binding POST_BUILD
 
 # test
 add_subdirectory(test/)
-=======
-# include and link
-target_include_directories(main PRIVATE src)
-target_link_libraries(main PRIVATE Threads::Threads)
-target_link_libraries(main PRIVATE pool)
-target_link_libraries(main PRIVATE nlohmann_json::nlohmann_json)
-target_link_libraries(main PRIVATE stb)
-target_link_libraries(main PRIVATE tinyexr)
->>>>>>> master
