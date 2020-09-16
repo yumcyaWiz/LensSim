@@ -238,15 +238,42 @@ std::vector<Ray> LensSystem::raytracePath(const Ray& ray_in) const {
 }
 
 std::vector<ParaxialRay> LensSystem::raytraceParaxial(const ParaxialRay& ray_in,
+                                                      int start, int end,
                                                       Real lambda) const {
   std::vector<ParaxialRay> ret;
   ret.push_back(ray_in);
 
-  Real ior = 1.0;
-  Real ior_prev = 1.0;
+  // compute start, end index
+  int start_index = start;
+  if (start == -1) {
+    start_index = elements.size() - 1;
+  }
+  int end_index = end;
+  if (end == -1) {
+    end_index = elements.size() - 1;
+  }
+
+  // invalid index case
+  if (start_index < 0 || start_index >= elements.size() || end_index < 0 ||
+      end_index >= elements.size()) {
+    std::cerr << "invalid start, end index" << std::endl;
+    return ret;
+  }
+
+  // paraxial raytrace
+  Real ior;
+  Real ior_prev = (start_index == 0 || start_index == elements.size() - 1)
+                      ? 1.0
+                      : elements[start_index].ior(lambda);
   Real u_prev = ray_in.u;
   Real h_prev = ray_in.h;
-  for (const auto& element : elements) {
+
+  const int idx_start = start_index < end_index ? start_index : end_index;
+  const int idx_end = start_index < end_index ? end_index : start_index;
+  const int idx_inc = end_index - start_index > 0 ? 1 : -1;
+  for (int i = idx_start; i <= idx_end; i += idx_inc) {
+    const auto& element = elements[i];
+
     // compute curvature radius
     Real r = element.curvature_radius;
     if (element.is_aperture) {
@@ -274,44 +301,12 @@ std::vector<ParaxialRay> LensSystem::raytraceParaxial(const ParaxialRay& ray_in,
 }
 
 bool LensSystem::computeCardinalPoints() {
-  // raytrace from object plane
-  Real height = 0.01f * elements.front().aperture_radius;
-  Ray ray_in(Vec3(0, height, elements.front().z - 1.0f), Vec3(0, 0, 1));
-  Ray ray_out;
-  if (!raytrace(ray_in, ray_out)) {
-    std::cerr << "failed to compute cardinal points" << std::endl;
-    return false;
-  }
-
   // compute image focal point
-  Real t = -ray_out.origin.y() / ray_out.direction.y();
-  image_focal_z = ray_out(t).z();
-
-  // compute image principal point
-  t = -(ray_out.origin.y() - height) / ray_out.direction.y();
-  image_principal_z = ray_out(t).z();
-
-  // compute image focal length
-  image_focal_length = image_focal_z - image_principal_z;
-
-  // raytrace from image plane
-  height = 0.01f * elements.back().aperture_radius;
-  ray_in = Ray(Vec3(0, height, 0), Vec3(0, 0, -1));
-  if (!raytrace(ray_in, ray_out)) {
-    std::cerr << "failed to compute cardinal points" << std::endl;
-    return false;
-  }
+  // paraxial raytrace with (u, h) = (0, 1)
+  auto result = raytraceParaxial(ParaxialRay(0, 1));
+  image_focal_z = elements.back().z + result.back().h / result.back().u;
 
   // compute object focal point
-  t = -ray_out.origin.y() / ray_out.direction.y();
-  object_focal_z = ray_out(t).z();
-
-  // compute object principal point
-  t = -(ray_out.origin.y() - height) / ray_out.direction.y();
-  object_principal_z = ray_out(t).z();
-
-  // compute object focal length
-  object_focal_length = object_focal_z - object_principal_z;
 
   return true;
 }

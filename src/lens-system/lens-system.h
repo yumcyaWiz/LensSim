@@ -93,6 +93,7 @@ class LensSystem {
 
   // paraxial raytrace
   std::vector<ParaxialRay> raytraceParaxial(const ParaxialRay& ray_in,
+                                            int start = 0, int end = -1,
                                             Real lambda = 550.0) const;
 
   // compute principal, focal points
