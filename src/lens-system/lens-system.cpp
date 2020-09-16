@@ -357,10 +357,10 @@ void LensSystem::computeCardinalPoints() {
   // compute object focal point
   // paraxial reverse raytrace with (u, h) = (0, 1)
   result = raytraceParaxial(ParaxialRay(0, 1), -1, 0);
-  object_focal_z = elements.front().z + result.back().h / result.back().u;
+  object_focal_z = elements.front().z - result.back().h / result.back().u;
 
   // compute object principal point
-  object_principal_z = elements.front().z +
+  object_principal_z = elements.front().z -
                        (result.back().h - result.front().h) / result.back().u;
 
   // compute object focal length
