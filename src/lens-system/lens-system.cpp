@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iostream>
 #include <memory>
+#include <numeric>
 #include <string>
 #include <vector>
 
@@ -598,4 +599,71 @@ std::vector<Vec3> LensSystem::computeSpotDiagram(const Vec3& origin,
   }
 
   return ret;
+}
+
+std::pair<GridData<Real>, std::array<Real, 4>> LensSystem::computeGeometricPSF(
+    const Vec3& origin, unsigned int n_grids) const {
+  // compute grids
+  const GridData<Vec3> grids = elements.front().samplePoints(n_grids);
+
+  // make rays
+  GridData<Ray> rays_in(n_grids, n_grids);
+  for (int i = 0; i < n_grids; ++i) {
+    for (int j = 0; j < n_grids; ++j) {
+      rays_in.set(i, j, Ray(origin, normalize(grids.get(i, j) - origin)));
+    }
+  }
+
+  // raytrace
+  const auto result = raytraceN(rays_in);
+
+  // compute intersect position at gaussian plane
+  std::vector<Vec3> points;
+  for (int i = 0; i < n_grids; ++i) {
+    for (int j = 0; j < n_grids; ++j) {
+      if (result.get(i, j).first) {
+        const Ray& ray = result.get(i, j).second;
+        const Real t = -(ray.origin.z() - image_focal_z) / ray.direction.z();
+        const Vec3 pFilm = ray(t);
+        points.push_back(pFilm);
+      }
+    }
+  }
+
+  // compute min, max by rfold
+  const Vec3 pmin = std::accumulate(
+      points.begin(), points.end(), Vec3(),
+      [](const Vec3& v1, const Vec3& v2) { return min(v1, v2); });
+  const Vec3 pmax = std::accumulate(
+      points.begin(), points.end(), Vec3(),
+      [](const Vec3& v1, const Vec3& v2) { return max(v1, v2); });
+
+  // compute extent
+  const std::array<Real, 4> extent = {pmin.x(), pmax.x(), pmin.y(), pmax.y()};
+
+  // init
+  GridData<Real> psf(n_grids, n_grids);
+  for (int i = 0; i < n_grids; ++i) {
+    for (int j = 0; j < n_grids; ++j) {
+      psf.set(i, j, 0);
+    }
+  }
+
+  // compute psf by grid
+  for (const auto& p : points) {
+    // compute grid index
+    const unsigned int i = (p.x() - pmin.x()) / (pmax.x() - pmin.x()) * n_grids;
+    const unsigned int j = (p.y() - pmin.y()) / (pmax.y() - pmin.y()) * n_grids;
+
+    // accumulate
+    psf.set(i, j, psf.get(i, j) + 1);
+  }
+
+  // normalize
+  const Real max_value = *std::max_element(psf.data.begin(), psf.data.end());
+  for (int i = 0; i < psf.data.size(); ++i) {
+    psf.data[i] /= max_value;
+  }
+
+  return {psf, extent};
 }
