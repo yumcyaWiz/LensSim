@@ -128,11 +128,17 @@ class LensSystem:
             h = self.lsys.elements[0].aperture_radius
 
             # make ray
-            direction = LensSim.Vec3(0, np.sin(theta), np.cos(theta))
-            origin = LensSim.Vec3(0, u*h, self.lsys.elements[0].z) - direction
+            ray_direction = LensSim.Vec3(0, np.sin(theta), np.cos(theta))
+            ray_origin = LensSim.Vec3(
+                0, u*h, self.lsys.elements[0].z) - ray_direction
+            if origin is not None:
+                ray_origin = LensSim.Vec3(origin[0], origin[1], origin[2])
+                ray_direction = LensSim.normalize(LensSim.Vec3(
+                    0, u*h, self.lsys.elements[0].z) - ray_origin)
 
             # raytrace
-            rays = self.lsys.raytracePath(LensSim.Ray(origin, direction))
+            rays = self.lsys.raytracePath(
+                LensSim.Ray(ray_origin, ray_direction))
 
             # Optical Path
             line_x = list(map(lambda x: x.origin[2], rays))
