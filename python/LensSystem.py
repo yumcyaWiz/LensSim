@@ -12,8 +12,14 @@ class LensSystem:
         self.lsys = LensSim.LensSystem(
             filepath, width, height, width_length=width_length, height_length=height_length)
 
-    def focal_length(self):
-        return self.lsys.image_focal_length
+    def effective_focal_length(self):
+        return self.lsys.effective_focal_length()
+
+    def front_focal_length(self):
+        return self.lsys.front_focal_length()
+
+    def back_focal_length(self):
+        return self.lsys.back_focal_length()
 
     def vertical_fov(self):
         return self.lsys.vertical_fov
