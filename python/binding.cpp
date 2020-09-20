@@ -56,7 +56,9 @@ PYBIND11_MODULE(LensSim, m) {
       })
 
       .def("__getitem__", [](const Vec3& v, int i) { return v.v[i]; })
-      .def("__repr__", &vec2string);
+      .def("__repr__", &vec2string)
+      .def("__add__", [](const Vec3& v1, const Vec3& v2) { return v1 + v2; })
+      .def("__sub__", [](const Vec3& v1, const Vec3& v2) { return v1 - v2; });
 
   py::class_<Ray>(m, "Ray")
       .def(py::init<>())
