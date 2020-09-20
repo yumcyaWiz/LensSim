@@ -200,5 +200,17 @@ inline Vec3 lerp3(const Real& u, const Real& v, const Vec3& p0, const Vec3& p1,
   return (1.0f - u - v) * p0 + u * p1 + v * p2;
 }
 
+inline Vec3 min(const Vec3& v1, const Vec3& v2) {
+  return Vec3(v1.x() < v2.x() ? v1.x() : v2.x(),
+              v1.y() < v2.y() ? v1.y() : v2.y(),
+              v1.z() < v2.z() ? v1.z() : v2.z());
+}
+
+inline Vec3 max(const Vec3& v1, const Vec3& v2) {
+  return Vec3(v1.x() > v2.x() ? v1.x() : v2.x(),
+              v1.y() > v2.y() ? v1.y() : v2.y(),
+              v1.z() > v2.z() ? v1.z() : v2.z());
+}
+
 }  // namespace Prl2
 #endif
