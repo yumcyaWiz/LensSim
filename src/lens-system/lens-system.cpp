@@ -91,6 +91,14 @@ bool LensSystem::loadJSON(const std::string& filename) {
   return true;
 }
 
+Real LensSystem::effective_focal_length() const { return image_focal_length; }
+Real LensSystem::front_focal_length() const {
+  return std::abs(elements.front().z - object_focal_z);
+}
+Real LensSystem::back_focal_length() const {
+  return std::abs(image_focal_z - elements.back().z);
+}
+
 bool LensSystem::raytrace(const Ray& ray_in, Ray& ray_out, bool reflection,
                           Sampler* sampler) const {
   int element_index = ray_in.direction.z() > 0 ? -1 : elements.size();

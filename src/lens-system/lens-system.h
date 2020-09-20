@@ -82,6 +82,13 @@ class LensSystem {
   // load lens json
   bool loadJSON(const std::string& filename);
 
+  // compute effective focal length
+  Real effective_focal_length() const;
+  // compute front focal length
+  Real front_focal_length() const;
+  // compute back focal length
+  Real back_focal_length() const;
+
   // raytrace
   bool raytrace(const Ray& ray_in, Ray& ray_out, bool reflection = false,
                 Sampler* sampler = nullptr) const;
