@@ -193,7 +193,23 @@ class LensSystem:
         y = list(map(lambda x: x[1], spots))
 
         # Plot
-        ax.scatter(x, y, s=10)
+        ax.scatter(x, y, s=1)
+        ax.set_xlabel("$x \mathrm{[m]}$")
+        ax.set_ylabel("$y \mathrm{[m]}$")
+
+        return ax
+
+    def geometric_psf(self, origin: np.array, n_rays: int, n_grids: int):
+        fig, ax = plt.subplots()
+
+        # compute geometric PSF
+        psf, extent = self.lsys.computeGeometricPSF(
+            LensSim.Vec3(origin[0], origin[1], origin[2]),
+            n_rays,
+            n_grids
+        )
+
+        ax.imshow(psf, extent=extent, cmap='jet')
         ax.set_xlabel("$x \mathrm{[m]}$")
         ax.set_ylabel("$y \mathrm{[m]}$")
 
