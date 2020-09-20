@@ -117,6 +117,9 @@ PYBIND11_MODULE(LensSim, m) {
       .def_readonly("horizontal_fov", &LensSystem::horizontal_fov)
       .def_readonly("diagonal_fov", &LensSystem::diagonal_fov)
 
+      .def("effective_focal_length", &LensSystem::effective_focal_length)
+      .def("front_focal_length", &LensSystem::front_focal_length)
+      .def("back_focal_length", &LensSystem::back_focal_length)
       .def("raytrace", &LensSystem::raytrace, py::arg("ray_in"),
            py::arg("ray_out"), py::arg("reflection") = false,
            py::arg("sampler") = nullptr)
