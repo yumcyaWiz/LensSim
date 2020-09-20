@@ -3,7 +3,7 @@
 
 namespace Prl2 {
 
-using Real = float;
+using Real = double;
 
 using Radiance = Real;
 

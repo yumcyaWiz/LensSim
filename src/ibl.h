@@ -18,7 +18,7 @@ class IBL {
   int width;
   int height;
 
-  Real* pixels;
+  float* pixels;
 
   IBL(const std::string& filename) {
     int c;

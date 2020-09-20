@@ -159,7 +159,8 @@ inline std::ostream& operator<<(std::ostream& stream, const Vec3& v) {
 inline void cartesianToSpherical(const Vec3& v, Real& theta, Real& phi) {
   phi = std::atan2(v.z(), v.x());
   if (phi < 0) phi += PI_MUL_2;
-  theta = std::acos(std::clamp(v.y(), -1.0f, 1.0f));
+  theta = std::acos(
+      std::clamp(v.y(), static_cast<Real>(-1.0), static_cast<Real>(1.0)));
 }
 
 // 球面座標から方向ベクトルを生成

@@ -29,7 +29,8 @@ inline bool refract(const Vec3& wi, Vec3& wt, const Vec3& n, const Real& ior1,
                     const Real& ior2) {
   const Real eta = ior1 / ior2;
   const Real cosThetaI = dot(wi, n);
-  const Real sin2ThetaI = std::max(0.0f, 1.0f - cosThetaI * cosThetaI);
+  const Real sin2ThetaI = std::max(
+      static_cast<Real>(0.0), static_cast<Real>(1.0) - cosThetaI * cosThetaI);
   const Real sin2ThetaT = eta * eta * sin2ThetaI;
   if (sin2ThetaT >= 1.0f) return false;
   const Real cosThetaT = std::sqrt(1.0f - sin2ThetaT);
