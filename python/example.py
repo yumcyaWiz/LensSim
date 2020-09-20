@@ -9,7 +9,9 @@ if __name__ == "__main__":
                       height=512, width_length=0.025, height_length=0.025)
 
     # print lens parameters
-    print("Focal Length: {0}".format(lsys.focal_length()))
+    print("EFL: {0}".format(lsys.effective_focal_length()))
+    print("FFL: {0}".format(lsys.front_focal_length()))
+    print("BFL: {0}".format(lsys.back_focal_length()))
 
     # plot optical path diagram
     lsys.optical_path_diagram()
