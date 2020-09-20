@@ -118,7 +118,7 @@ class LensSystem:
 
         return ax
 
-    def optical_path_diagram(self, n_rays=10):
+    def optical_path_diagram(self, n_rays=10, theta=0, origin=None):
         # Plot Lenses
         ax = self.plot()
 
@@ -126,12 +126,13 @@ class LensSystem:
         for i in range(n_rays):
             u = 2*(i + 0.5)/n_rays - 1
             h = self.lsys.elements[0].aperture_radius
-            rays = self.lsys.raytracePath(
-                LensSim.Ray(
-                    LensSim.Vec3(0, u*h, self.lsys.elements[0].z - 1),
-                    LensSim.Vec3(0, 0, 1)
-                )
-            )
+
+            # make ray
+            direction = LensSim.Vec3(0, np.sin(theta), np.cos(theta))
+            origin = LensSim.Vec3(0, u*h, self.lsys.elements[0].z) - direction
+
+            # raytrace
+            rays = self.lsys.raytracePath(LensSim.Ray(origin, direction))
 
             # Optical Path
             line_x = list(map(lambda x: x.origin[2], rays))
