@@ -602,14 +602,14 @@ std::vector<Vec3> LensSystem::computeSpotDiagram(const Vec3& origin,
 }
 
 std::pair<GridData<Real>, std::array<Real, 4>> LensSystem::computeGeometricPSF(
-    const Vec3& origin, unsigned int n_grids) const {
+    const Vec3& origin, unsigned int n_rays, unsigned int n_grids) const {
   // compute grids
-  const GridData<Vec3> grids = elements.front().samplePoints(n_grids);
+  const GridData<Vec3> grids = elements.front().samplePoints(n_rays);
 
   // make rays
-  GridData<Ray> rays_in(n_grids, n_grids);
-  for (int i = 0; i < n_grids; ++i) {
-    for (int j = 0; j < n_grids; ++j) {
+  GridData<Ray> rays_in(n_rays, n_rays);
+  for (int i = 0; i < n_rays; ++i) {
+    for (int j = 0; j < n_rays; ++j) {
       rays_in.set(i, j, Ray(origin, normalize(grids.get(i, j) - origin)));
     }
   }
@@ -619,8 +619,8 @@ std::pair<GridData<Real>, std::array<Real, 4>> LensSystem::computeGeometricPSF(
 
   // compute intersect position at gaussian plane
   std::vector<Vec3> points;
-  for (int i = 0; i < n_grids; ++i) {
-    for (int j = 0; j < n_grids; ++j) {
+  for (int i = 0; i < n_rays; ++i) {
+    for (int j = 0; j < n_rays; ++j) {
       if (result.get(i, j).first) {
         const Ray& ray = result.get(i, j).second;
         const Real t = -(ray.origin.z() - image_focal_z) / ray.direction.z();
@@ -656,7 +656,7 @@ std::pair<GridData<Real>, std::array<Real, 4>> LensSystem::computeGeometricPSF(
     const unsigned int j = (p.y() - pmin.y()) / (pmax.y() - pmin.y()) * n_grids;
 
     // accumulate
-    psf.set(i, j, psf.get(i, j) + 1);
+    psf.set(j, i, psf.get(j, i) + 1);
   }
 
   // normalize

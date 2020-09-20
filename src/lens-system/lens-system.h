@@ -117,7 +117,8 @@ class LensSystem {
                                        unsigned int n_grids) const;
 
   std::pair<GridData<Real>, std::array<Real, 4>> computeGeometricPSF(
-      const Vec3& origin, unsigned int n_grids = 512) const;
+      const Vec3& origin, unsigned int n_rays = 512,
+      unsigned int n_grids = 512) const;
 
   // compute primary ray
   bool computePrimaryRay(const Vec3& origin, Ray& primary_ray,
