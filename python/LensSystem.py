@@ -215,7 +215,9 @@ class LensSystem:
             n_grids
         )
 
-        ax.imshow(psf, extent=extent, cmap='jet')
+        im = ax.imshow(psf, extent=extent, cmap='jet')
+        fig.colorbar(im)
+        ax.set_title('Geometric PSF')
         ax.set_xlabel("$x \mathrm{[m]}$")
         ax.set_ylabel("$y \mathrm{[m]}$")
 
