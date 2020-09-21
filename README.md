@@ -2,7 +2,7 @@
 
 LensSim is a C++ library and GUI tool for photographic lens system.
 
-It's goal is to make C++ library for optical computations in lens design, and make user-friendly Python GUI tool to help lens designer.
+It's goal is to make C++ library for optical computations in lens design, and make user-friendly Python GUI tool to help lens design tasks.
 
 LensSim can simulate image of photographic lens with Image Based Lighting(IBL) by Montecarlo Light Transportation.
 
@@ -24,6 +24,18 @@ see `python/example.py`
 
 ![](img/img2.png)
 
+### Spot Diagram
+
+Spot Diagram of `data/dgauss50mm.json`
+
+![](img/spot_diagram.png)
+
+### Geometric PSF
+
+Geometric Point Spread Function(PSF) of `data/dgauss50mm.json`
+
+![](img/gpsf.png)
+
 
 ## Features
 
@@ -36,7 +48,8 @@ see `python/example.py`
 - [x] Paraxial Ray Tracing
 - [x] Spectral Rendering with IBL
 - [x] Python Binding
-- [ ] Geometric Point Spread Function(PSF)
+- [x] Spot Diagram
+- [x] Geometric Point Spread Function(PSF)
 - [ ] Geometric Optical Transfer Function(OTF), Modulation Transfer Function(MTF)
 - [ ] Wavefront Aberration
 - [ ] Zernike Polynomial
