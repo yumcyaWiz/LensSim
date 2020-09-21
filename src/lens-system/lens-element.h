@@ -28,7 +28,7 @@ class LensElement {
 
   SellmeierCofficient sellmeier;
 
-  bool is_aperture;
+  bool is_stop;
 
   LensElement(unsigned int _index, Real _aperture_radius, Real _thickness,
               Real _curvature_radius, Real _ior550, bool _is_aperture)
@@ -38,7 +38,7 @@ class LensElement {
         thickness(_thickness),
         eta(_ior550),
         z(0),
-        is_aperture(_is_aperture) {
+        is_stop(_is_aperture) {
     sellmeier =
         SellmeierCofficient(_ior550, 1.03, 0.23, 1.01, 0.006, 0.02, 103.56);
   }
@@ -46,7 +46,7 @@ class LensElement {
   bool intersect(const Ray& ray, Hit& res) const {
     // if element is aperture or curvature radius is too big, treat element as
     // plane
-    if (is_aperture || curvature_radius > 10000) {
+    if (is_stop || curvature_radius > 10000) {
       Real t = -(ray.origin.z() - z) / ray.direction.z();
       Vec3 hitPos = ray(t);
 

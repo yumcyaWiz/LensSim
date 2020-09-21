@@ -22,7 +22,7 @@ LensSystem::LensSystem(const std::string& filename,
 
   // compute aperture index
   for (int i = 0; i < elements.size(); ++i) {
-    if (elements[i].is_aperture) {
+    if (elements[i].is_stop) {
       aperture_index = i;
       break;
     }
@@ -72,13 +72,13 @@ bool LensSystem::loadJSON(const std::string& filename) {
         0.5f * value["aperture_diameter"].get<Real>() * 1e-3f;
 
     // optional
-    bool is_aperture = false;
-    if (value.count("is_aperture") > 0) {
-      is_aperture = value["is_aperture"].get<bool>();
+    bool is_stop = false;
+    if (value.count("is_stop") > 0) {
+      is_stop = value["is_stop"].get<bool>();
     }
 
     const auto element = LensElement(index, aperture_radius, thickness,
-                                     curvature_radius, ior, is_aperture);
+                                     curvature_radius, ior, is_stop);
     elements.push_back(element);
   }
 
@@ -114,7 +114,7 @@ bool LensSystem::raytrace(const Ray& ray_in, Ray& ray_out, bool reflection,
     const LensElement& element = elements[element_index];
 
     // Aperture
-    if (element.is_aperture) {
+    if (element.is_stop) {
       Hit res;
       if (!element.intersect(ray, res)) return false;
 
@@ -134,7 +134,7 @@ bool LensSystem::raytrace(const Ray& ray_in, Ray& ray_out, bool reflection,
           ray.direction.z() > 0 ? element_index : element_index - 1;
       if (next_element_index >= 0) {
         const LensElement& next_element = elements[next_element_index];
-        if (!next_element.is_aperture) {
+        if (!next_element.is_stop) {
           next_ior = next_element.ior(ray.lambda);
         }
       }
@@ -199,7 +199,7 @@ std::vector<Ray> LensSystem::raytracePath(const Ray& ray_in) const {
     const LensElement& element = elements[element_index];
 
     // Aperture
-    if (element.is_aperture) {
+    if (element.is_stop) {
       Hit res;
       if (!element.intersect(ray, res)) break;
 
@@ -219,7 +219,7 @@ std::vector<Ray> LensSystem::raytracePath(const Ray& ray_in) const {
           ray.direction.z() > 0 ? element_index : element_index - 1;
       if (next_element_index >= 0) {
         const LensElement& next_element = elements[next_element_index];
-        if (!next_element.is_aperture) {
+        if (!next_element.is_stop) {
           next_ior = next_element.ior(ray.lambda);
         }
       }
@@ -283,7 +283,7 @@ std::vector<ParaxialRay> LensSystem::raytraceParaxial(const ParaxialRay& ray_in,
 
       // compute curvature radius
       Real r = element.curvature_radius;
-      if (element.is_aperture) {
+      if (element.is_stop) {
         r = 1e9;
       }
 
@@ -315,7 +315,7 @@ std::vector<ParaxialRay> LensSystem::raytraceParaxial(const ParaxialRay& ray_in,
     for (int i = start_index; i >= end_index; --i) {
       // compute curvature radius
       Real r = -elements[i].curvature_radius;
-      if (elements[i].is_aperture) {
+      if (elements[i].is_stop) {
         r = -1e9;
       }
 
