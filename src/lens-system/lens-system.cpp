@@ -75,8 +75,11 @@ bool LensSystem::loadJSON(const std::string& filename) {
       is_stop = value["is_stop"].get<bool>();
     }
 
+    // select ior equation
+    const auto ior_equation = std::make_shared<ConstantIOR>(ior);
+
     const auto element = LensElement(index, aperture_radius, thickness,
-                                     curvature_radius, ior, is_stop);
+                                     curvature_radius, ior_equation, is_stop);
     elements.push_back(element);
   }
 

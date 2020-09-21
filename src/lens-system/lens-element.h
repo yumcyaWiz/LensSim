@@ -22,26 +22,24 @@ class LensElement {
   Real curvature_radius;
   Real aperture_radius;
   Real thickness;
-  Real eta;
 
   Real z;
 
-  SellmeierCofficient sellmeier;
+  std::shared_ptr<IOREquation> ior_equation;
 
   bool is_stop;
 
   LensElement(unsigned int _index, Real _aperture_radius, Real _thickness,
-              Real _curvature_radius, Real _ior550, bool _is_aperture)
+              Real _curvature_radius,
+              const std::shared_ptr<IOREquation>& _ior_equation,
+              bool _is_aperture)
       : index(_index),
         curvature_radius(_curvature_radius),
         aperture_radius(_aperture_radius),
         thickness(_thickness),
-        eta(_ior550),
         z(0),
-        is_stop(_is_aperture) {
-    sellmeier =
-        SellmeierCofficient(_ior550, 1.03, 0.23, 1.01, 0.006, 0.02, 103.56);
-  }
+        ior_equation(_ior_equation),
+        is_stop(_is_aperture) {}
 
   bool intersect(const Ray& ray, Hit& res) const {
     // if element is aperture or curvature radius is too big, treat element as
@@ -81,7 +79,7 @@ class LensElement {
     }
   }
 
-  Real ior(Real lambda) const { return sellmeier.ior(lambda); }
+  Real ior(Real lambda) const { return ior_equation->ior(lambda); }
 
   GridData<Vec3> samplePoints(unsigned int N) const {
     GridData<Vec3> ret(N, N);
