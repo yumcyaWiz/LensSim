@@ -27,7 +27,10 @@ class CauthyEquation : public IOREquation {
   CauthyEquation() {}
   CauthyEquation(Real _A, Real _B) : A(_A), B(_B) {}
 
-  Real ior(Real lambda) const override { return A + B / lambda * lambda; }
+  Real ior(Real lambda) const override {
+    const Real mu = 1e-3 * lambda;
+    return A + B / (mu * mu);
+  }
 };
 
 inline CauthyEquation fitCauthy(Real nD, Real nF) {
@@ -38,7 +41,7 @@ inline CauthyEquation fitCauthy(Real nD, Real nF) {
   const Real alpha2 = 1 / (lambdaF * lambdaF);
   const Real det = 1 / (alpha2 - alpha1);
 
-  return CauthyEquation(det * (alpha2 * nD - alpha1 * nF), det * (nD - nF));
+  return CauthyEquation(det * (alpha2 * nD - alpha1 * nF), det * (nF - nD));
 }
 
 struct SellmeierCofficient : public IOREquation {
