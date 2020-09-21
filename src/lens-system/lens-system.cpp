@@ -63,13 +63,11 @@ bool LensSystem::loadJSON(const std::string& filename) {
 
   // push lens elements
   for (const auto& [key, value] : json.items()) {
-    // unit conversion from [mm] to [m]
     const unsigned int index = value["index"].get<unsigned int>();
-    const Real curvature_radius = value["curvature_radius"].get<Real>() * 1e-3f;
-    const Real thickness = value["thickness"].get<Real>() * 1e-3f;
+    const Real curvature_radius = value["curvature_radius"].get<Real>();
+    const Real thickness = value["thickness"].get<Real>();
     const Real ior = value["eta"].get<Real>();
-    const Real aperture_radius =
-        0.5f * value["aperture_diameter"].get<Real>() * 1e-3f;
+    const Real aperture_radius = 0.5f * value["aperture_diameter"].get<Real>();
 
     // optional
     bool is_stop = false;

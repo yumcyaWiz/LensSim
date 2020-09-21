@@ -119,8 +119,8 @@ class LensSystem:
         ax.set_ylim([-1.1 * max_aperture_radius, 1.1*max_aperture_radius])
         ax.set_aspect('equal')
         ax.grid('on')
-        plt.xlabel('$z \mathrm{[m]}$')
-        plt.ylabel('$y \mathrm{[m]}$')
+        plt.xlabel('$z \mathrm{[mm]}$')
+        plt.ylabel('$y \mathrm{[mm]}$')
 
         return ax
 
@@ -180,8 +180,8 @@ class LensSystem:
 
         # Plot
         ax.imshow(grid, extent=extent, cmap="gray")
-        ax.set_xlabel("$x \mathrm{[m]}$")
-        ax.set_ylabel("$y \mathrm{[m]}$")
+        ax.set_xlabel("$x \mathrm{[mm]}$")
+        ax.set_ylabel("$y \mathrm{[mm]}$")
 
         return ax
 
@@ -200,8 +200,8 @@ class LensSystem:
 
         # Plot
         ax.scatter(x, y, s=1)
-        ax.set_xlabel("$x \mathrm{[m]}$")
-        ax.set_ylabel("$y \mathrm{[m]}$")
+        ax.set_xlabel("$x \mathrm{[mm]}$")
+        ax.set_ylabel("$y \mathrm{[mm]}$")
 
         return ax
 
@@ -218,7 +218,7 @@ class LensSystem:
         im = ax.imshow(psf, extent=extent, cmap='jet')
         fig.colorbar(im)
         ax.set_title('Geometric PSF')
-        ax.set_xlabel("$x \mathrm{[m]}$")
-        ax.set_ylabel("$y \mathrm{[m]}$")
+        ax.set_xlabel("$x \mathrm{[mm]}$")
+        ax.set_ylabel("$y \mathrm{[mm]}$")
 
         return ax
