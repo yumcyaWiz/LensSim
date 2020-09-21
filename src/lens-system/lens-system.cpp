@@ -66,7 +66,7 @@ bool LensSystem::loadJSON(const std::string& filename) {
     const unsigned int index = value["index"].get<unsigned int>();
     const Real curvature_radius = value["curvature_radius"].get<Real>();
     const Real thickness = value["thickness"].get<Real>();
-    const Real ior = value["eta"].get<Real>();
+    const Real nd = value["nd"].get<Real>();
     const Real aperture_radius = 0.5f * value["aperture_diameter"].get<Real>();
 
     // optional
@@ -76,7 +76,7 @@ bool LensSystem::loadJSON(const std::string& filename) {
     }
 
     // select ior equation
-    const auto ior_equation = std::make_shared<ConstantIOR>(ior);
+    const auto ior_equation = std::make_shared<ConstantIOR>(nd);
 
     const auto element = LensElement(index, aperture_radius, thickness,
                                      curvature_radius, ior_equation, is_stop);
