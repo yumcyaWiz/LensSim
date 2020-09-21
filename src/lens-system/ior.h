@@ -1,5 +1,5 @@
-#ifndef _SELLMEIER_H
-#define _SELLMEIER_H
+#ifndef _IOR_H
+#define _IOR_H
 
 #include <cmath>
 

@@ -8,7 +8,7 @@
 #include "core/vec2.h"
 #include "core/vec3.h"
 #include "grid-data.h"
-#include "lens-system/sellmeier.h"
+#include "lens-system/ior.h"
 
 using namespace Prl2;
 
