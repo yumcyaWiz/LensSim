@@ -54,7 +54,7 @@ class LensSystem:
             element = self.lsys.elements[i]
             # Draw Lens Element
             # Aperture
-            if element.is_aperture:
+            if element.is_stop:
                 line_x = [element.z, element.z]
                 line_y = [element.aperture_radius,
                           1.2*element.aperture_radius]
@@ -78,7 +78,7 @@ class LensSystem:
                 element_prev = self.lsys.elements[i - 1]
 
                 # current or previous element is aperture radius
-                if element.is_aperture or element_prev.is_aperture:
+                if element.is_stop or element_prev.is_stop:
                     continue
 
                 # previous element is air
