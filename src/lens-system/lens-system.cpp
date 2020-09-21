@@ -6,6 +6,7 @@
 #include <iostream>
 #include <memory>
 #include <numeric>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -63,10 +64,10 @@ bool LensSystem::loadJSON(const std::string& filename) {
 
   // push lens elements
   for (const auto& [key, value] : json.items()) {
+    // required
     const unsigned int index = value["index"].get<unsigned int>();
     const Real curvature_radius = value["curvature_radius"].get<Real>();
     const Real thickness = value["thickness"].get<Real>();
-    const Real nd = value["nd"].get<Real>();
     const Real aperture_radius = 0.5f * value["aperture_diameter"].get<Real>();
 
     // optional
@@ -75,9 +76,35 @@ bool LensSystem::loadJSON(const std::string& filename) {
       is_stop = value["is_stop"].get<bool>();
     }
 
-    // select ior equation
-    const auto ior_equation = std::make_shared<ConstantIOR>(nd);
+    std::optional<Real> nd;
+    if (value.count("nd") > 0) {
+      nd = value["nd"].get<Real>();
+    }
 
+    std::optional<Real> nD;
+    if (value.count("nD") > 0) {
+      nD = value["nD"].get<Real>();
+    }
+
+    std::optional<Real> nF;
+    if (value.count("nF") > 0) {
+      nF = value["nF"].get<Real>();
+    }
+
+    // select ior equation
+    std::shared_ptr<IOREquation> ior_equation;
+    if (nd) {
+      ior_equation = std::make_shared<ConstantIOR>(nd.value());
+    } else if (nD && nF) {
+      ior_equation =
+          std::make_shared<CauthyEquation>(fitCauthy(nD.value(), nF.value()));
+    } else {
+      std::cerr << "failed to create ior equation for this lens element"
+                << std::endl;
+      return false;
+    }
+
+    // make lens element
     const auto element = LensElement(index, aperture_radius, thickness,
                                      curvature_radius, ior_equation, is_stop);
     elements.push_back(element);
