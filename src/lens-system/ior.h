@@ -10,6 +10,15 @@ class IOREquation {
   virtual Real ior(Real lambda) const = 0;
 };
 
+class ConstantIOR : public IOREquation {
+ public:
+  Real _ior;
+
+  ConstantIOR(Real _ior) : _ior(_ior) {}
+
+  Real ior(Real lambda) const override { return _ior; }
+};
+
 class CauthyEquation : public IOREquation {
  public:
   Real A;
