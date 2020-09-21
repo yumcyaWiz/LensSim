@@ -5,6 +5,27 @@
 
 #include "core/type.h"
 
+struct CauthyEquation {
+  Real A;
+  Real B;
+
+  CauthyEquation() {}
+  CauthyEquation(Real _A, Real _B) : A(_A), B(_B) {}
+
+  Real ior(Real lambda) const { return A + B / lambda * lambda; }
+};
+
+inline CauthyEquation fitCauthy(Real nD, Real nF) {
+  constexpr Real lambdaD = 0.5893;
+  constexpr Real lambdaF = 0.4861;
+
+  const Real alpha1 = 1 / (lambdaD * lambdaD);
+  const Real alpha2 = 1 / (lambdaF * lambdaF);
+  const Real det = 1 / (alpha2 - alpha1);
+
+  return CauthyEquation(det * (alpha2 * nD - alpha1 * nF), det * (nD - nF));
+}
+
 struct SellmeierCofficient {
   Real alpha;
   Real B[3];
