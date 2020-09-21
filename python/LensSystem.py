@@ -82,7 +82,7 @@ class LensSystem:
                     continue
 
                 # previous element is air
-                if element_prev.eta == 1:
+                if element_prev.ior(0.550) == 1:
                     continue
 
                 z = element.z

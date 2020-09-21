@@ -97,7 +97,8 @@ PYBIND11_MODULE(LensSim, m) {
       .def_readonly("aperture_radius", &LensElement::aperture_radius)
       .def_readonly("thickness", &LensElement::thickness)
       .def_readonly("z", &LensElement::z)
-      .def_readonly("is_stop", &LensElement::is_stop);
+      .def_readonly("is_stop", &LensElement::is_stop)
+      .def("ior", &LensElement::ior, py::arg("lambda"));
 
   py::class_<LensSystem>(m, "LensSystem")
       .def(py::init(&lsysFactory), py::arg("filename"), py::arg("width"),
