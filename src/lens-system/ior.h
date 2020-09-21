@@ -5,14 +5,20 @@
 
 #include "core/type.h"
 
-struct CauthyEquation {
+class IOREquation {
+ public:
+  virtual Real ior(Real lambda) const = 0;
+};
+
+class CauthyEquation : public IOREquation {
+ public:
   Real A;
   Real B;
 
   CauthyEquation() {}
   CauthyEquation(Real _A, Real _B) : A(_A), B(_B) {}
 
-  Real ior(Real lambda) const { return A + B / lambda * lambda; }
+  Real ior(Real lambda) const override { return A + B / lambda * lambda; }
 };
 
 inline CauthyEquation fitCauthy(Real nD, Real nF) {
@@ -26,7 +32,8 @@ inline CauthyEquation fitCauthy(Real nD, Real nF) {
   return CauthyEquation(det * (alpha2 * nD - alpha1 * nF), det * (nD - nF));
 }
 
-struct SellmeierCofficient {
+struct SellmeierCofficient : public IOREquation {
+ public:
   Real alpha;
   Real B[3];
   Real C[3];
@@ -48,7 +55,7 @@ struct SellmeierCofficient {
                                B[2] * lambda2 / (lambda2 - C[2]));
   }
 
-  Real ior(Real lambda) const {
+  Real ior(Real lambda) const override {
     const Real l = lambda * 1e-3f;
     const Real l2 = l * l;
     return std::sqrt(1 + B[0] * l2 / (l2 - C[0]) + B[1] * l2 / (l2 - C[1]) +
