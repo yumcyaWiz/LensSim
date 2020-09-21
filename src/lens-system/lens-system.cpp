@@ -638,16 +638,44 @@ std::pair<GridData<Real>, std::array<Real, 4>> LensSystem::computeGeometricPSF(
     }
   }
 
-  // compute min, max by rfold
-  const Vec3 pmin = std::accumulate(
-      points.begin(), points.end(), Vec3(),
-      [](const Vec3& v1, const Vec3& v2) { return min(v1, v2); });
-  const Vec3 pmax = std::accumulate(
-      points.begin(), points.end(), Vec3(),
-      [](const Vec3& v1, const Vec3& v2) { return max(v1, v2); });
+  // compute primary ray
+  Ray primary_ray;
+  if (!computePrimaryRay(origin, primary_ray)) {
+    std::cerr << "failed to compute primary ray" << std::endl;
+    std::exit(EXIT_FAILURE);
+  }
+
+  // raytrace
+  Ray primary_ray_out;
+  if (!raytrace(primary_ray, primary_ray_out)) {
+    std::cerr << "failed to raytrace primary ray" << std::endl;
+    std::exit(EXIT_FAILURE);
+  }
+
+  // compute intersect position at gaussian plane
+  const Vec3 pFilm_primary =
+      primary_ray_out(-(primary_ray_out.origin.z() - image_focal_z) /
+                      primary_ray_out.direction.z());
+
+  // compute mean, variance
+  const Vec3 p_mean =
+      std::accumulate(points.begin(), points.end(), Vec3()) / points.size();
+  const Vec3 p_var =
+      std::accumulate(points.begin(), points.end(), Vec3(),
+                      [&](const Vec3& v1, const Vec3& v2) {
+                        return v1 + (v2 - p_mean) * (v2 - p_mean);
+                      }) /
+      points.size();
 
   // compute extent
-  const std::array<Real, 4> extent = {pmin.x(), pmax.x(), pmin.y(), pmax.y()};
+  const Real xstd = std::sqrt(p_var.x());
+  const Real ystd = std::sqrt(p_var.y());
+  const Real grid_width = xstd > ystd ? 3 * xstd : 3 * ystd;
+  const Real xmin = pFilm_primary.x() - grid_width;
+  const Real xmax = pFilm_primary.x() + grid_width;
+  const Real ymin = pFilm_primary.y() - grid_width;
+  const Real ymax = pFilm_primary.y() + grid_width;
+  const std::array<Real, 4> extent = {xmin, xmax, ymin, ymax};
 
   // init
   GridData<Real> psf(n_grids, n_grids);
@@ -660,11 +688,12 @@ std::pair<GridData<Real>, std::array<Real, 4>> LensSystem::computeGeometricPSF(
   // compute psf by grid
   for (const auto& p : points) {
     // compute grid index
-    const unsigned int i = (p.x() - pmin.x()) / (pmax.x() - pmin.x()) * n_grids;
-    const unsigned int j = (p.y() - pmin.y()) / (pmax.y() - pmin.y()) * n_grids;
+    const unsigned int i = (p.x() - xmin) / (xmax - xmin) * n_grids;
+    const unsigned int j = (p.y() - ymin) / (ymax - ymin) * n_grids;
 
     // accumulate
-    psf.set(j, i, psf.get(j, i) + 1);
+    if (i >= 0 && i < n_grids && j >= 0 && j < n_grids)
+      psf.set(j, i, psf.get(j, i) + 1);
   }
 
   // normalize
