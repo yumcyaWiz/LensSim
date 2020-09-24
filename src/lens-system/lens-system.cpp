@@ -329,8 +329,8 @@ std::vector<ParaxialRay> LensSystem::raytraceParaxial(const ParaxialRay& ray_in,
 
       // compute paraxial ray
       const Real u =
-          ior_prev / ior * u_prev + (ior - ior_prev) / (ior * r) * h_prev;
-      const Real h = h_prev - thickness * u;
+          ior_prev / ior * u_prev - (ior - ior_prev) / (ior * r) * h_prev;
+      const Real h = h_prev + thickness * u;
 
       // save paraxial ray
       ret.push_back(ParaxialRay(u, h));
@@ -385,10 +385,10 @@ void LensSystem::computeCardinalPoints() {
   // compute image focal point
   // paraxial raytrace with (u, h) = (0, 1)
   auto result = raytraceParaxial(ParaxialRay(0, 1));
-  image_focal_z = elements.back().z + result.back().h / result.back().u;
+  image_focal_z = elements.back().z - result.back().h / result.back().u;
 
   // compute principal point
-  image_principal_z = elements.back().z +
+  image_principal_z = elements.back().z -
                       (result.back().h - result.front().h) / result.back().u;
 
   // compute image focal length
