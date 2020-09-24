@@ -194,12 +194,11 @@ class LensSystem:
 
         return ax
 
-    def spot_diagram(self, origin: np.array, n_grids: int):
+    def spot_diagram(self, n_grids: int):
         fig, ax = plt.subplots()
 
         # compute spot diagram
         spots = self.lsys.computeSpotDiagram(
-            LensSim.Vec3(origin[0], origin[1], origin[2]),
             n_grids
         )
 
@@ -214,12 +213,11 @@ class LensSystem:
 
         return ax
 
-    def geometric_psf(self, origin: np.array, n_rays: int, n_grids: int):
+    def geometric_psf(self, n_rays: int, n_grids: int):
         fig, ax = plt.subplots()
 
         # compute geometric PSF
         psf, extent = self.lsys.computeGeometricPSF(
-            LensSim.Vec3(origin[0], origin[1], origin[2]),
             n_rays,
             n_grids
         )
