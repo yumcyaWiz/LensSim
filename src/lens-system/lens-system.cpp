@@ -571,7 +571,7 @@ std::pair<GridData<Real>, std::array<Real, 4>> LensSystem::computeExitPupil(
   return {exit_pupil, extends};
 }
 
-bool LensSystem::computePrimaryRay(const Vec3& origin, Ray& primary_ray,
+bool LensSystem::computePrimaryRay(Ray& primary_ray,
                                    unsigned int n_grids) const {
   // compute grids
   const GridData<Vec3> grids = elements.front().samplePoints(n_grids);
@@ -580,7 +580,8 @@ bool LensSystem::computePrimaryRay(const Vec3& origin, Ray& primary_ray,
   GridData<Ray> rays_in(n_grids, n_grids);
   for (int i = 0; i < n_grids; ++i) {
     for (int j = 0; j < n_grids; ++j) {
-      rays_in.set(i, j, Ray(origin, normalize(grids.get(i, j) - origin)));
+      rays_in.set(i, j,
+                  Ray(object_pos, normalize(grids.get(i, j) - object_pos)));
     }
   }
 
@@ -604,13 +605,12 @@ bool LensSystem::computePrimaryRay(const Vec3& origin, Ray& primary_ray,
   }
   entrance_pupil_center /= n_average;
 
-  primary_ray = Ray(origin, normalize(entrance_pupil_center - origin));
+  primary_ray = Ray(object_pos, normalize(entrance_pupil_center - object_pos));
 
   return true;
 }
 
-std::vector<Vec3> LensSystem::computeSpotDiagram(const Vec3& origin,
-                                                 unsigned int n_grids) const {
+std::vector<Vec3> LensSystem::computeSpotDiagram(unsigned int n_grids) const {
   std::vector<Vec3> ret;
 
   // compute grids
@@ -620,7 +620,8 @@ std::vector<Vec3> LensSystem::computeSpotDiagram(const Vec3& origin,
   GridData<Ray> rays_in(n_grids, n_grids);
   for (int i = 0; i < n_grids; ++i) {
     for (int j = 0; j < n_grids; ++j) {
-      rays_in.set(i, j, Ray(origin, normalize(grids.get(i, j) - origin)));
+      rays_in.set(i, j,
+                  Ray(object_pos, normalize(grids.get(i, j) - object_pos)));
     }
   }
 
@@ -643,7 +644,7 @@ std::vector<Vec3> LensSystem::computeSpotDiagram(const Vec3& origin,
 }
 
 std::pair<GridData<Real>, std::array<Real, 4>> LensSystem::computeGeometricPSF(
-    const Vec3& origin, unsigned int n_rays, unsigned int n_grids) const {
+    unsigned int n_rays, unsigned int n_grids) const {
   // compute grids
   const GridData<Vec3> grids = elements.front().samplePoints(n_rays);
 
@@ -651,7 +652,8 @@ std::pair<GridData<Real>, std::array<Real, 4>> LensSystem::computeGeometricPSF(
   GridData<Ray> rays_in(n_rays, n_rays);
   for (int i = 0; i < n_rays; ++i) {
     for (int j = 0; j < n_rays; ++j) {
-      rays_in.set(i, j, Ray(origin, normalize(grids.get(i, j) - origin)));
+      rays_in.set(i, j,
+                  Ray(object_pos, normalize(grids.get(i, j) - object_pos)));
     }
   }
 
@@ -673,7 +675,7 @@ std::pair<GridData<Real>, std::array<Real, 4>> LensSystem::computeGeometricPSF(
 
   // compute primary ray
   Ray primary_ray;
-  if (!computePrimaryRay(origin, primary_ray)) {
+  if (!computePrimaryRay(primary_ray)) {
     std::cerr << "failed to compute primary ray" << std::endl;
     std::exit(EXIT_FAILURE);
   }

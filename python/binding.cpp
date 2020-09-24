@@ -133,12 +133,11 @@ PYBIND11_MODULE(LensSim, m) {
            py::arg("n_grids") = 512)
       .def("setObjectPosition", &LensSystem::setObjectPosition, py::arg("pos"))
       .def("computePrimaryRay", &LensSystem::computePrimaryRay,
-           py::arg("origin"), py::arg("primary_ray"), py::arg("n_grids") = 512)
+           py::arg("primary_ray"), py::arg("n_grids") = 512)
       .def("computeSpotDiagram", &LensSystem::computeSpotDiagram,
-           py::arg("origin"), py::arg("n_grids"))
+           py::arg("n_grids"))
       .def("computeGeometricPSF", &LensSystem::computeGeometricPSF,
-           py::arg("origin"), py::arg("n_rays") = 512,
-           py::arg("n_grids") = 512);
+           py::arg("n_rays") = 512, py::arg("n_grids") = 512);
 
   m.def("normalize", [](const Vec3& v) { return normalize(v); });
 }

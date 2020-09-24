@@ -131,16 +131,13 @@ class LensSystem {
       const Vec2& pFilm, unsigned int n_grids = 512) const;
 
   // compute spot diagram
-  std::vector<Vec3> computeSpotDiagram(const Vec3& origin,
-                                       unsigned int n_grids) const;
+  std::vector<Vec3> computeSpotDiagram(unsigned int n_grids) const;
 
   std::pair<GridData<Real>, std::array<Real, 4>> computeGeometricPSF(
-      const Vec3& origin, unsigned int n_rays = 512,
-      unsigned int n_grids = 512) const;
+      unsigned int n_rays = 512, unsigned int n_grids = 512) const;
 
   // compute primary ray
-  bool computePrimaryRay(const Vec3& origin, Ray& primary_ray,
-                         unsigned int n_grids = 512) const;
+  bool computePrimaryRay(Ray& primary_ray, unsigned int n_grids = 512) const;
 
   // sample ray going from image sensor to object space
   bool sampleRay(Real u, Real v, Real lambda, Sampler& sampler, Ray& ray_out,
