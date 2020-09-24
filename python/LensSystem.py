@@ -51,6 +51,9 @@ class LensSystem:
     def exit_pupil_position(self):
         return self.lsys.exit_pupil_z
 
+    def set_object_pos(self, pos: np.array):
+        self.lsys.setObjectPosition(LensSim.Vec3(pos[0], pos[1], pos[2]))
+
     def plot(self):
         """
         plot LensSystem with matplotlib
