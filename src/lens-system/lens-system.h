@@ -73,6 +73,9 @@ class LensSystem {
   Real image_principal_z;    // 像側主点位置
   Real image_focal_length;   // 像側焦点距離
 
+  Real entrance_pupil_z;  // 入射瞳位置
+  Real exit_pupil_z;      // 射出瞳位置
+
   static constexpr unsigned int num_exit_pupil_bounds = 64;
   static constexpr unsigned int num_exit_pupil_bounds_samples = 1024;
   std::vector<Bounds2> exit_pupil_bounds;
@@ -106,6 +109,9 @@ class LensSystem {
 
   // compute principal, focal points, focal length
   void computeCardinalPoints();
+
+  // compute entrance, exit pupil position
+  void computePupilPosition();
 
   // focus lens at z = focus_z
   bool focus(Real focus_z);

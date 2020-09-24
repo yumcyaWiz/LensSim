@@ -732,3 +732,31 @@ std::pair<GridData<Real>, std::array<Real, 4>> LensSystem::computeGeometricPSF(
 
   return {psf, extent};
 }
+
+void LensSystem::computePupilPosition() {
+  // axial raytrace
+  auto axial_result = raytraceParaxial(ParaxialRay(1, 1));
+  // principal raytrace
+  auto principal_result = raytraceParaxial(ParaxialRay(-1, 0));
+
+  // compute principal ray
+  Real B = -principal_result[aperture_index].h / axial_result[aperture_index].h;
+  Real yp = principal_result.front().h + B * axial_result.front().h;
+  Real up = principal_result.front().u + B * axial_result.front().u;
+
+  // compute entrance pupil position
+  entrance_pupil_z = elements.front().z - yp / up;
+
+  // axial raytrace(reverse)
+  axial_result = raytraceParaxial(ParaxialRay(1, 1), -1, 0);
+  // principal raytrace(reverse)
+  principal_result = raytraceParaxial(ParaxialRay(-1, 0), -1, 0);
+
+  // compute principal ray
+  B = -principal_result[aperture_index].h / axial_result[aperture_index].h;
+  yp = principal_result.back().h + B * axial_result.back().h;
+  up = principal_result.back().u + B * axial_result.back().u;
+
+  // compute exit pupil position
+  exit_pupil_z = elements.back().z - yp / up;
+}
