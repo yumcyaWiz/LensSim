@@ -40,6 +40,9 @@ LensSystem::LensSystem(const std::string& filename,
   // compute cardinal points
   computeCardinalPoints();
 
+  // compute pupil position
+  computePupilPosition();
+
   // compute fov
   horizontal_fov =
       2.0f * std::atan2(film->width_length, 2.0f * image_focal_length);
