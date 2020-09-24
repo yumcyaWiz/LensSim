@@ -45,6 +45,12 @@ class LensSystem:
     def image_principal_z(self):
         return self.lsys.image_principal_z
 
+    def entrance_pupil_position(self):
+        return self.lsys.entrance_pupil_z
+
+    def exit_pupil_position(self):
+        return self.lsys.exit_pupil_z
+
     def plot(self):
         """
         plot LensSystem with matplotlib
