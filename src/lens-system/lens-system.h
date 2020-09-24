@@ -91,11 +91,11 @@ class LensSystem {
   void setObjectPosition(const Vec3& pos);
 
   // compute effective focal length
-  Real effective_focal_length() const;
+  Real effectiveFocalLength() const;
   // compute front focal length
-  Real front_focal_length() const;
+  Real frontFocalLength() const;
   // compute back focal length
-  Real back_focal_length() const;
+  Real backFocalLength() const;
 
   // raytrace
   bool raytrace(const Ray& ray_in, Ray& ray_out, bool reflection = false,

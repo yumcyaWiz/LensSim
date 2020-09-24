@@ -124,11 +124,11 @@ bool LensSystem::loadJSON(const std::string& filename) {
 
 void LensSystem::setObjectPosition(const Vec3& pos) { object_pos = pos; }
 
-Real LensSystem::effective_focal_length() const { return image_focal_length; }
-Real LensSystem::front_focal_length() const {
+Real LensSystem::effectiveFocalLength() const { return image_focal_length; }
+Real LensSystem::frontFocalLength() const {
   return std::abs(elements.front().z - object_focal_z);
 }
-Real LensSystem::back_focal_length() const {
+Real LensSystem::backFocalLength() const {
   return std::abs(image_focal_z - elements.back().z);
 }
 

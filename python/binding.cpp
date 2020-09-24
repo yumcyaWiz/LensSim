@@ -119,9 +119,9 @@ PYBIND11_MODULE(LensSim, m) {
       .def_readonly("entrance_pupil_z", &LensSystem::entrance_pupil_z)
       .def_readonly("exit_pupil_z", &LensSystem::exit_pupil_z)
 
-      .def("effective_focal_length", &LensSystem::effective_focal_length)
-      .def("front_focal_length", &LensSystem::front_focal_length)
-      .def("back_focal_length", &LensSystem::back_focal_length)
+      .def("effectiveFocalLength", &LensSystem::effectiveFocalLength)
+      .def("frontFocalLength", &LensSystem::frontFocalLength)
+      .def("backFocalLength", &LensSystem::backFocalLength)
       .def("raytrace", &LensSystem::raytrace, py::arg("ray_in"),
            py::arg("ray_out"), py::arg("reflection") = false,
            py::arg("sampler") = nullptr)

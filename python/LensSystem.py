@@ -13,13 +13,13 @@ class LensSystem:
             filepath, width, height, width_length=width_length, height_length=height_length)
 
     def effective_focal_length(self):
-        return self.lsys.effective_focal_length()
+        return self.lsys.effectiveFocalLength()
 
     def front_focal_length(self):
-        return self.lsys.front_focal_length()
+        return self.lsys.frontFocalLength()
 
     def back_focal_length(self):
-        return self.lsys.back_focal_length()
+        return self.lsys.backFocalLength()
 
     def vertical_fov(self):
         return self.lsys.vertical_fov
