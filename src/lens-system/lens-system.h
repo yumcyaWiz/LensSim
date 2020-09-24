@@ -76,6 +76,8 @@ class LensSystem {
   Real entrance_pupil_z;  // 入射瞳位置
   Real exit_pupil_z;      // 射出瞳位置
 
+  Vec3 object_pos;  // 物点
+
   static constexpr unsigned int num_exit_pupil_bounds = 64;
   static constexpr unsigned int num_exit_pupil_bounds_samples = 1024;
   std::vector<Bounds2> exit_pupil_bounds;
@@ -84,6 +86,9 @@ class LensSystem {
 
   // load lens json
   bool loadJSON(const std::string& filename);
+
+  // set object position
+  void setObjectPosition(const Vec3& pos);
 
   // compute effective focal length
   Real effective_focal_length() const;
