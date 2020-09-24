@@ -78,6 +78,9 @@ class LensSystem {
 
   Vec3 object_pos;  // 物点
 
+  std::vector<Real> reference_wavelengths = {0.58756, 0.4861,
+                                             0.6563};  // 参照波長[μm]
+
   static constexpr unsigned int num_exit_pupil_bounds = 64;
   static constexpr unsigned int num_exit_pupil_bounds_samples = 1024;
   std::vector<Bounds2> exit_pupil_bounds;
