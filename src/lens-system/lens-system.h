@@ -78,8 +78,8 @@ class LensSystem {
 
   Vec3 object_pos;  // 物点
 
-  std::vector<Real> reference_wavelengths = {0.58756, 0.4861,
-                                             0.6563};  // 参照波長[μm]
+  std::vector<Real> reference_wavelengths = {587.56, 486.1,
+                                             656.3};  // 参照波長[nm]
 
   static constexpr unsigned int num_exit_pupil_bounds = 64;
   static constexpr unsigned int num_exit_pupil_bounds_samples = 1024;
@@ -113,7 +113,7 @@ class LensSystem {
   // paraxial raytrace
   std::vector<ParaxialRay> raytraceParaxial(const ParaxialRay& ray_in,
                                             int start = 0, int end = -1,
-                                            Real lambda = 550.0) const;
+                                            Real lambda = 587.56) const;
 
   // compute principal, focal points, focal length
   void computeCardinalPoints();
